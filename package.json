@@ -1,6 +1,6 @@
 {
   "name": "react-native-fingerprint-scanner",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "React Native Fingerprint Scanner for Android and iOS",
   "main": "index.js",
   "keywords": [
