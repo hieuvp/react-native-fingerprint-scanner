@@ -9,6 +9,7 @@
     "react-component",
     "react",
     "native",
+    "touchid",
     "touch-id",
     "fingerprint",
     "fingerprint-scanner"
