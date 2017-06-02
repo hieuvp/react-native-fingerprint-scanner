@@ -1,17 +1,19 @@
-
 {
-  "name": "react-native-react-native-fingerprint-scanner",
+  "name": "react-native-fingerprint-scanner",
   "version": "1.0.0",
-  "description": "",
+  "description": "React Native Fingerprint Scanner for Android and iOS",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "keywords": [
-    "react-native"
+    "react-native",
+    "react-native-component",
+    "react-component",
+    "react",
+    "native",
+    "touch-id",
+    "fingerprint",
+    "fingerprint-scanner"
   ],
-  "author": "",
-  "license": "",
+  "author": "Hieu Van (https://github.com/hieuvp)",
   "peerDependencies": {
     "react-native": "^0.41.2"
   }
