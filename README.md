@@ -34,14 +34,6 @@
       compile project(':react-native-fingerprint-scanner')
   	```
 
-#### Windows
-[Read it! :D](https://github.com/ReactWindows/react-native)
-
-1. In Visual Studio add the `ReactNativeFingerprintScanner.sln` in `node_modules/react-native-fingerprint-scanner/windows/ReactNativeFingerprintScanner.sln` folder to their solution, reference from their app.
-2. Open up your `MainPage.cs` app
-  - Add `using Com.Reactlibrary.ReactNativeFingerprintScanner;` to the usings at the top of the file
-  - Add `new ReactNativeFingerprintScannerPackage()` to the `List<IReactPackage>` returned by the `Packages` method
-
 
 ## Usage
 ```javascript
