@@ -22,6 +22,8 @@
     "ios": "cd examples && react-native run-ios",
     "cleanup": "rm -rf yarn.lock node_modules && cd examples && rm -rf yarn.lock node_modules",
     "cleanup:install": "yarn cleanup && yarn && cd examples && yarn",
-    "release:patch": "npm version --force patch && npm publish && git push --follow-tags"
+    "release:patch": "npm version --force patch && npm publish && git push --follow-tags",
+    "release:minor": "npm version --force minor && npm publish && git push --follow-tags",
+    "release:major": "npm version --force major && npm publish && git push --follow-tags"
   }
 }
