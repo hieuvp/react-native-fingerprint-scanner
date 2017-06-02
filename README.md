@@ -1,5 +1,8 @@
 # react-native-fingerprint-scanner
 
+[![Version](https://img.shields.io/npm/v/react-native-fingerprint-scanner.svg)](https://www.npmjs.com/package/react-native-fingerprint-scanner)
+[![NPM](https://img.shields.io/npm/dm/react-native-fingerprint-scanner.svg)](https://www.npmjs.com/package/react-native-fingerprint-scanner)
+
 ## Getting started
 
 `$ npm install react-native-fingerprint-scanner --save`
