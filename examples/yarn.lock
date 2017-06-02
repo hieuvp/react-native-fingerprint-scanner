@@ -2930,7 +2930,7 @@ react-devtools-core@^2.0.8:
     ws "^2.0.3"
 
 "react-native-fingerprint-scanner@file:../":
-  version "1.0.1"
+  version "1.0.4"
 
 react-native@0.44.2:
   version "0.44.2"

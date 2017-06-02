@@ -1,4 +1,3 @@
-
 # react-native-fingerprint-scanner
 
 ## Getting started
