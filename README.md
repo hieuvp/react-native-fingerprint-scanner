@@ -22,7 +22,7 @@
 #### Android
 
 1. Open up `android/app/src/main/java/[...]/MainActivity.java`
-  - Add `import com.reactlibrary.ReactNativeFingerprintScannerPackage;` to the imports at the top of the file
+  - Add `import com.hieuvp.fingerprint.ReactNativeFingerprintScannerPackage;` to the imports at the top of the file
   - Add `new ReactNativeFingerprintScannerPackage()` to the list returned by the `getPackages()` method
 2. Append the following lines to `android/settings.gradle`:
   	```
@@ -42,4 +42,3 @@ import ReactNativeFingerprintScanner from 'react-native-fingerprint-scanner';
 // TODO: What to do with the module?
 ReactNativeFingerprintScanner;
 ```
-  
