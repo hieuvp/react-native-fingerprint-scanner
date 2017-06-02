@@ -1,5 +1,3 @@
-import { NativeModules } from 'react-native';
+import FingerprintScanner from './src';
 
-const { ReactNativeFingerprintScanner } = NativeModules;
-
-export default ReactNativeFingerprintScanner;
+export default FingerprintScanner;
