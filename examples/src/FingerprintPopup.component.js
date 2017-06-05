@@ -6,7 +6,8 @@ import {
   Image,
   Text,
   TouchableOpacity,
-  View
+  View,
+  ViewPropTypes
 } from 'react-native';
 
 import styles from './FingerprintPopup.component.styles';
@@ -47,7 +48,7 @@ class FingerprintPopup extends Component {
 }
 
 FingerprintPopup.propTypes = {
-  style: View.propTypes.style,
+  style: ViewPropTypes.style,
   onBackPressed: PropTypes.func
 };
 
