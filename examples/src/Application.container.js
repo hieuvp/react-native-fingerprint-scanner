@@ -11,11 +11,22 @@ import FingerprintPopup from './FingerprintPopup.component';
 
 class Application extends Component {
 
-  onPress = () => {
+  constructor(props) {
+    super(props);
+    this.state = { popupShowed: false };
+  }
 
+  handleFingerprintShowed = () => {
+    this.setState({ popupShowed: true });
+  };
+
+  handleFingerprintDismissed = () => {
+    this.setState({ popupShowed: false });
   };
 
   render() {
+    const { popupShowed } = this.state;
+
     return (
       <View style={styles.container}>
 
@@ -26,11 +37,19 @@ class Application extends Component {
           https://github.com/hieuvp/react-native-fingerprint-scanner
         </Text>
 
-        <TouchableOpacity style={styles.fingerprint} onPress={this.onPress}>
+        <TouchableOpacity
+          style={styles.fingerprint}
+          onPress={this.handleFingerprintShowed}
+        >
           <Image source={require('./assets/finger_print.png')} />
         </TouchableOpacity>
 
-        <FingerprintPopup />
+        {popupShowed && (
+          <FingerprintPopup
+            style={styles.popup}
+            onBackPressed={this.handleFingerprintDismissed}
+          />
+        )}
 
       </View>
     );

@@ -24,5 +24,8 @@ export default StyleSheet.create({
   fingerprint: {
     padding: 20,
     marginVertical: 30,
+  },
+  popup: {
+    marginHorizontal: 35,
   }
 });
