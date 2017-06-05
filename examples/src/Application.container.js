@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 
 import styles from './Application.container.styles';
+import FingerprintPopup from './FingerprintPopup.component';
 
 class Application extends Component {
 
@@ -28,6 +29,8 @@ class Application extends Component {
         <TouchableOpacity style={styles.fingerprint} onPress={this.onPress}>
           <Image source={require('./assets/finger_print.png')} />
         </TouchableOpacity>
+
+        <FingerprintPopup />
 
       </View>
     );
