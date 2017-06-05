@@ -13,6 +13,31 @@ export default StyleSheet.create({
     alignItems: 'center',
   },
   contentContainer: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: '#ffffff',
-  }
+  },
+  logo: {
+    marginVertical: 45,
+  },
+  heading: {
+    textAlign: 'center',
+    color: '#00a4de',
+    fontSize: 21,
+  },
+  subheading: {
+    textAlign: 'center',
+    color: '#a5a5a5',
+    fontSize: 16,
+    margin: 10,
+  },
+  buttonContainer: {
+    padding: 20,
+  },
+  buttonText: {
+    color: '#8fbc5a',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
 });

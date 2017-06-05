@@ -1,4 +1,9 @@
-import { StyleSheet } from 'react-native';
+import {
+  Dimensions,
+  StyleSheet
+} from 'react-native';
+
+const { width } = Dimensions.get('window');
 
 export default StyleSheet.create({
   container: {
@@ -26,6 +31,6 @@ export default StyleSheet.create({
     marginVertical: 30,
   },
   popup: {
-    marginHorizontal: 35,
+    width: width * 0.8,
   }
 });
