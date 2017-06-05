@@ -21,7 +21,7 @@
     "android": "cd examples && react-native run-android",
     "ios": "cd examples && react-native run-ios",
     "symlink": "cd examples && rm -rf node_modules/react-native-fingerprint-scanner && npm link ../../react-native-fingerprint-scanner && rm -rf ../package-lock.json",
-    "cleanup": "rm -rf yarn.lock node_modules && cd examples && rm -rf yarn.lock node_modules",
+    "cleanup": "rm -rf android/build ios/build yarn.lock node_modules && cd examples && rm -rf android/build android/app/build ios/build yarn.lock node_modules",
     "cleanup:install": "yarn cleanup && yarn && cd examples && yarn && cd .. && yarn symlink",
     "release:patch": "npm version --force patch && npm publish && git push --follow-tags",
     "release:minor": "npm version --force minor && npm publish && git push --follow-tags",

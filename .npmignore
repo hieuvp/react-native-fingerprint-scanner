@@ -1,3 +1,7 @@
+yarn.lock
+.npmignore
+.gitattributes
+
 .idea/
 node_modules/
 examples/
