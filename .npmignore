@@ -2,3 +2,14 @@
 node_modules/
 examples/
 screenshots/
+
+android/.idea/
+android/.gradle/
+android/build/
+android/gradle/
+android/android.iml
+android/local.properties
+
+ios/.idea/
+ios/ReactNativeFingerprintScanner.xcodeproj/project.xcworkspace
+ios/ReactNativeFingerprintScanner.xcodeproj/xcuserdata
