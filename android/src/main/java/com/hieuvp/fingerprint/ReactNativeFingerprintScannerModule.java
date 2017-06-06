@@ -34,6 +34,16 @@ public class ReactNativeFingerprintScannerModule extends ReactContextBaseJavaMod
     }
 
     @ReactMethod
+    public void authenticate(final Promise promise) {
+
+    }
+
+    @ReactMethod
+    public void release() {
+        getFingerprintIdentify().cancelIdentify();
+    }
+
+    @ReactMethod
     public void isSensorAvailable(final Promise promise) {
         if (!getFingerprintIdentify().isHardwareEnable()) {
             promise.reject("RCTFingerprintScannerNotSupported", "RCTFingerprintScannerNotSupported");
