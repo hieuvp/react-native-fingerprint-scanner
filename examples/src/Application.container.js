@@ -30,7 +30,7 @@ class Application extends Component {
 
   componentDidMount() {
     FingerprintScanner
-      .isSupported()
+      .isSensorAvailable()
       .catch(error => this.setState({ errorMessage: error.message }));
   }
 

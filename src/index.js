@@ -3,9 +3,9 @@ import createError from './createError';
 
 const { ReactNativeFingerprintScanner } = NativeModules;
 
-function isSupported() {
+function isSensorAvailable() {
   return new Promise((resolve, reject) => {
-    ReactNativeFingerprintScanner.isSupported(error => {
+    ReactNativeFingerprintScanner.isSensorAvailable(error => {
       if (error) return reject(createError(error.message));
       resolve(true);
     });
@@ -23,6 +23,6 @@ function authenticate(reason) {
 }
 
 export default {
-  isSupported,
+  isSensorAvailable,
   authenticate,
 };

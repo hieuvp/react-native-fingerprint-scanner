@@ -6,7 +6,7 @@
 
 RCT_EXPORT_MODULE();
 
-RCT_EXPORT_METHOD(isSupported: (RCTResponseSenderBlock)callback)
+RCT_EXPORT_METHOD(isSensorAvailable: (RCTResponseSenderBlock)callback)
 {
     LAContext *context = [[LAContext alloc] init];
     NSError *error;
