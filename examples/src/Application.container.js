@@ -29,7 +29,8 @@ class Application extends Component {
   };
 
   componentDidMount() {
-    FingerprintScanner.isSupported()
+    FingerprintScanner
+      .isSupported()
       .catch(error => this.setState({ errorMessage: error.message }));
   }
 
