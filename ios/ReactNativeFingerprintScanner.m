@@ -13,8 +13,8 @@ RCT_EXPORT_METHOD(isSensorAvailable: (RCTResponseSenderBlock)callback)
     
     if ([context canEvaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics error:&error]) {
         callback(@[[NSNull null], @true]);
-        // Device does not support FingerprintScanner
     } else {
+        // Device does not support FingerprintScanner
         callback(@[RCTMakeError(@"RCTFingerprintScannerNotSupported", nil, nil)]);
         return;
     }
@@ -79,9 +79,9 @@ RCT_EXPORT_METHOD(authenticate: (NSString *)reason
              // Authenticated Successfully
              callback(@[[NSNull null], @"Authenticated with Fingerprint Scanner."]);
          }];
-        
-        // Device does not support FingerprintScanner
+
     } else {
+        // Device does not support FingerprintScanner
         callback(@[RCTMakeError(@"RCTFingerprintScannerNotSupported", nil, nil)]);
         return;
     }
