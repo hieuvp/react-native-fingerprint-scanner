@@ -63,7 +63,7 @@ class Application extends Component {
         {popupShowed && (
           <FingerprintPopup
             style={styles.popup}
-            onBackPressed={this.handleFingerprintDismissed}
+            handlePopupDismissed={this.handleFingerprintDismissed}
           />
         )}
 

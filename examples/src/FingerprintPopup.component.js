@@ -15,7 +15,7 @@ import styles from './FingerprintPopup.component.styles';
 class FingerprintPopup extends Component {
 
   render() {
-    const { style, onBackPressed } = this.props;
+    const { style, handlePopupDismissed } = this.props;
     return (
       <View style={styles.container}>
         <View style={[styles.contentContainer, style]}>
@@ -34,7 +34,7 @@ class FingerprintPopup extends Component {
 
           <TouchableOpacity
             style={styles.buttonContainer}
-            onPress={onBackPressed}
+            onPress={handlePopupDismissed}
           >
             <Text style={styles.buttonText}>
               BACK TO MAIN
@@ -49,7 +49,7 @@ class FingerprintPopup extends Component {
 
 FingerprintPopup.propTypes = {
   style: ViewPropTypes.style,
-  onBackPressed: PropTypes.func
+  handlePopupDismissed: PropTypes.func.isRequired,
 };
 
 export default FingerprintPopup;
