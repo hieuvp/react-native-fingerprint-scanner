@@ -30,6 +30,13 @@ export default StyleSheet.create({
     padding: 20,
     marginVertical: 30,
   },
+  errorMessage: {
+    color: '#ea3d13',
+    fontSize: 16,
+    textAlign: 'center',
+    marginHorizontal: 10,
+    marginTop: 30,
+  },
   popup: {
     width: width * 0.8,
   }

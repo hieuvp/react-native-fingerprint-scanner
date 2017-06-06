@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
+import FingerprintScanner from 'react-native-fingerprint-scanner';
 
 import styles from './Application.container.styles';
 import FingerprintPopup from './FingerprintPopup.component';
@@ -13,7 +14,10 @@ class Application extends Component {
 
   constructor(props) {
     super(props);
-    this.state = { popupShowed: false };
+    this.state = {
+      errorMessage: undefined,
+      popupShowed: false
+    };
   }
 
   handleFingerprintShowed = () => {
@@ -24,8 +28,13 @@ class Application extends Component {
     this.setState({ popupShowed: false });
   };
 
+  componentDidMount() {
+    FingerprintScanner.isSupported()
+      .catch(error => this.setState({ errorMessage: error.message }));
+  }
+
   render() {
-    const { popupShowed } = this.state;
+    const { errorMessage, popupShowed } = this.state;
 
     return (
       <View style={styles.container}>
@@ -40,9 +49,16 @@ class Application extends Component {
         <TouchableOpacity
           style={styles.fingerprint}
           onPress={this.handleFingerprintShowed}
+          disabled={!!errorMessage}
         >
           <Image source={require('./assets/finger_print.png')} />
         </TouchableOpacity>
+
+        {errorMessage && (
+          <Text style={styles.errorMessage}>
+            {errorMessage}
+          </Text>
+        )}
 
         {popupShowed && (
           <FingerprintPopup
