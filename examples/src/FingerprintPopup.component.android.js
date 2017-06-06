@@ -6,10 +6,15 @@ import {
   View,
   ViewPropTypes
 } from 'react-native';
+import FingerprintScanner from 'react-native-fingerprint-scanner';
 
 import styles from './FingerprintPopup.component.styles';
 
 class FingerprintPopup extends Component {
+
+  componentWillUnmount() {
+    FingerprintScanner.release();
+  }
 
   render() {
     const { style, handlePopupDismissed } = this.props;
