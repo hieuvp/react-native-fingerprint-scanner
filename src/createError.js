@@ -1,4 +1,5 @@
 const ERRORS = {
+  LAErrorAuthenticationNotMatch: 'No match.',
   LAErrorAuthenticationFailed: 'Authentication was not successful because the user failed to provide valid credentials.',
   LAErrorUserCancel: 'Authentication was canceled by the user - e.g. the user tapped Cancel in the dialog.',
   LAErrorUserFallback: 'Authentication was canceled because the user tapped the fallback button (Enter Password).',

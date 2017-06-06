@@ -6,8 +6,11 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.wei.android.lib.fingerprintidentify.FingerprintIdentify;
 import com.wei.android.lib.fingerprintidentify.base.BaseFingerprint.FingerprintIdentifyExceptionListener;
+import com.wei.android.lib.fingerprintidentify.base.BaseFingerprint.FingerprintIdentifyListener;
 
 public class ReactNativeFingerprintScannerModule extends ReactContextBaseJavaModule {
+    public static final int MAX_AVAILABLE_TIMES = 3;
+
     private final ReactApplicationContext mReactContext;
     private FingerprintIdentify mFingerprintIdentify;
 
@@ -33,9 +36,42 @@ public class ReactNativeFingerprintScannerModule extends ReactContextBaseJavaMod
         return mFingerprintIdentify;
     }
 
+    private String getErrorMessage() {
+        if (!getFingerprintIdentify().isHardwareEnable()) {
+            return "RCTFingerprintScannerNotSupported";
+        } else if (!getFingerprintIdentify().isRegisteredFingerprint()) {
+            return "LAErrorFingerprintScannerNotEnrolled";
+        } else if (!getFingerprintIdentify().isFingerprintEnable()) {
+            return "LAErrorFingerprintScannerNotAvailable";
+        }
+        return null;
+    }
+
     @ReactMethod
     public void authenticate(final Promise promise) {
+        String errorMessage = getErrorMessage();
+        if (errorMessage != null) {
+            promise.reject(errorMessage, errorMessage);
+            return;
+        }
 
+        getFingerprintIdentify().resumeIdentify();
+        getFingerprintIdentify().startIdentify(MAX_AVAILABLE_TIMES, new FingerprintIdentifyListener() {
+            @Override
+            public void onSucceed() {
+                promise.resolve(true);
+            }
+
+            @Override
+            public void onNotMatch(int availableTimes) {
+                promise.reject("LAErrorAuthenticationNotMatch", "LAErrorAuthenticationNotMatch");
+            }
+
+            @Override
+            public void onFailed() {
+                promise.reject("LAErrorAuthenticationFailed", "LAErrorAuthenticationFailed");
+            }
+        });
     }
 
     @ReactMethod
@@ -45,12 +81,9 @@ public class ReactNativeFingerprintScannerModule extends ReactContextBaseJavaMod
 
     @ReactMethod
     public void isSensorAvailable(final Promise promise) {
-        if (!getFingerprintIdentify().isHardwareEnable()) {
-            promise.reject("RCTFingerprintScannerNotSupported", "RCTFingerprintScannerNotSupported");
-        } else if (!getFingerprintIdentify().isRegisteredFingerprint()) {
-            promise.reject("LAErrorFingerprintScannerNotEnrolled", "LAErrorFingerprintScannerNotEnrolled");
-        } else if (!getFingerprintIdentify().isFingerprintEnable()) {
-            promise.reject("LAErrorFingerprintScannerNotAvailable", "LAErrorFingerprintScannerNotAvailable");
+        String errorMessage = getErrorMessage();
+        if (errorMessage != null) {
+            promise.reject(errorMessage, errorMessage);
         } else {
             promise.resolve(true);
         }
