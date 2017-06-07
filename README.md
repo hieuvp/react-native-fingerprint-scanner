@@ -65,6 +65,8 @@ Samsung and MeiZu's Fingerprint SDK supports most devices which system versions 
 
 ### Extra Steps
 
+1. Make sure the following versions is correct in `android/app/build.gradle`
+
     ```
     android {
         compileSdkVersion 25
@@ -73,7 +75,8 @@ Samsung and MeiZu's Fingerprint SDK supports most devices which system versions 
         defaultConfig {
           targetSdkVersion 25
     ```
-    
+
+2. Add necessary rules to `android/app/proguard-rules.pro`
 
     ```
     # MeiZu Fingerprint
@@ -84,8 +87,6 @@ Samsung and MeiZu's Fingerprint SDK supports most devices which system versions 
 
     -keep class com.samsung.android.sdk.** { *; }
     ```
-
-
 
 ## Example
 ```javascript
