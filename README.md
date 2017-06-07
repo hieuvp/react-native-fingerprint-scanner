@@ -3,6 +3,12 @@
 [![Version](https://img.shields.io/npm/v/react-native-fingerprint-scanner.svg)](https://www.npmjs.com/package/react-native-fingerprint-scanner)
 [![NPM](https://img.shields.io/npm/dm/react-native-fingerprint-scanner.svg)](https://www.npmjs.com/package/react-native-fingerprint-scanner)
 
+[![react-native-fingerprint-scanner-ios-availability](https://github.com/hieuvp/react-native-fingerprint-scanner/raw/master/screenshots/ios-availability.png)]
+[![react-native-fingerprint-scanner-ios-authentication](https://github.com/hieuvp/react-native-fingerprint-scanner/raw/master/screenshots/ios-authentication.gif)]
+
+[![react-native-fingerprint-scanner-android-availability](https://github.com/hieuvp/react-native-fingerprint-scanner/raw/master/screenshots/android-availability.png)]
+[![react-native-fingerprint-scanner-android-authentication](https://github.com/hieuvp/react-native-fingerprint-scanner/raw/master/screenshots/android-authentication.gif)]
+
 ## Getting started
 
 `$ npm install react-native-fingerprint-scanner --save`
