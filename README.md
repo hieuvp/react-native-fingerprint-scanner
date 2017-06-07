@@ -217,11 +217,26 @@ export default FingerprintPopup;
 ## API
 
 | Method | Description | Example |
-|---|---|---|
+|---|---|
 | `isSensorAvailable`</br>(ios, android) | Returns a `Promise`. | `FingerprintScanner.isSensorAvailable()` |
 | `authenticate`</br>(ios) | Returns a `Promise`. | `FingerprintScanner.authenticate({ description })` |
 | `authenticate`</br>(android) | Returns a `Promise`. | `FingerprintScanner.authenticate({ onAttempt })` |
 | `release`</br>(android only) | Stops Fingerprint Scanner listener and optimizes memory. | `FingerprintScanner.release()` |
+
+### Error Type
+
+| Name | Message |
+|---|---|
+| LAErrorAuthenticationNotMatch | No match |
+| LAErrorAuthenticationFailed | Authentication was not successful because the user failed to provide valid credentials |
+| LAErrorUserCancel | Authentication was canceled by the user - e.g. the user tapped Cancel in the dialog |
+| LAErrorUserFallback | Authentication was canceled because the user tapped the fallback button (Enter Password) |
+| LAErrorSystemCancel | Authentication was canceled by system - e.g. if another application came to foreground while the authentication dialog was up |
+| LAErrorPasscodeNotSet | Authentication could not start because the passcode is not set on the device |
+| LAErrorFingerprintScannerNotAvailable | Authentication could not start because Fingerprint Scanner is not available on the device |
+| LAErrorFingerprintScannerNotEnrolled | Authentication could not start because Fingerprint Scanner has no enrolled fingers |
+| RCTFingerprintScannerUnknownError | Could not authenticate for an unknown reason |
+| RCTFingerprintScannerNotSupported | Device does not support Fingerprint Scanner |
 
 ## License
 
