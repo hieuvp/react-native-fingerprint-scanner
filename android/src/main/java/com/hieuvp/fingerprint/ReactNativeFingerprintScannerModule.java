@@ -12,7 +12,7 @@ import com.wei.android.lib.fingerprintidentify.base.BaseFingerprint.FingerprintI
 
 public class ReactNativeFingerprintScannerModule extends ReactContextBaseJavaModule
         implements LifecycleEventListener {
-    public static final int DEFAULT_MAX_AVAILABLE_TIMES = 5;
+    public static final int MAX_AVAILABLE_TIMES = Integer.MAX_VALUE;
 
     private final ReactApplicationContext mReactContext;
     private FingerprintIdentify mFingerprintIdentify;
@@ -20,7 +20,6 @@ public class ReactNativeFingerprintScannerModule extends ReactContextBaseJavaMod
     public ReactNativeFingerprintScannerModule(ReactApplicationContext reactContext) {
         super(reactContext);
         mReactContext = reactContext;
-        mReactContext.addLifecycleEventListener(this);
     }
 
     @Override
@@ -44,10 +43,13 @@ public class ReactNativeFingerprintScannerModule extends ReactContextBaseJavaMod
 
     private FingerprintIdentify getFingerprintIdentify() {
         if (mFingerprintIdentify == null) {
+            mReactContext.addLifecycleEventListener(this);
             mFingerprintIdentify = new FingerprintIdentify(getCurrentActivity(),
                     new FingerprintIdentifyExceptionListener() {
                         @Override
                         public void onCatchException(Throwable exception) {
+                            mReactContext.removeLifecycleEventListener(
+                                    ReactNativeFingerprintScannerModule.this);
                         }
                     });
         }
@@ -70,14 +72,16 @@ public class ReactNativeFingerprintScannerModule extends ReactContextBaseJavaMod
         final String errorMessage = getErrorMessage();
         if (errorMessage != null) {
             promise.reject(errorMessage, errorMessage);
+            ReactNativeFingerprintScannerModule.this.release();
             return;
         }
 
         getFingerprintIdentify().resumeIdentify();
-        getFingerprintIdentify().startIdentify(DEFAULT_MAX_AVAILABLE_TIMES, new FingerprintIdentifyListener() {
+        getFingerprintIdentify().startIdentify(MAX_AVAILABLE_TIMES, new FingerprintIdentifyListener() {
             @Override
             public void onSucceed() {
                 promise.resolve(true);
+                ReactNativeFingerprintScannerModule.this.release();
             }
 
             @Override
@@ -89,6 +93,7 @@ public class ReactNativeFingerprintScannerModule extends ReactContextBaseJavaMod
             @Override
             public void onFailed() {
                 promise.reject("LAErrorAuthenticationFailed", "LAErrorAuthenticationFailed");
+                ReactNativeFingerprintScannerModule.this.release();
             }
         });
     }
@@ -96,6 +101,8 @@ public class ReactNativeFingerprintScannerModule extends ReactContextBaseJavaMod
     @ReactMethod
     public void release() {
         getFingerprintIdentify().cancelIdentify();
+        mFingerprintIdentify = null;
+        mReactContext.removeLifecycleEventListener(this);
     }
 
     @ReactMethod
