@@ -216,7 +216,9 @@ export default FingerprintPopup;
 
 ## API
 
-### `isSensorAvailable()` (Android, iOS)
+### `isSensorAvailable()`: (Android, iOS)
+
+- Returns a `Promise`
 
 ```javascript
 componentDidMount() {
@@ -226,7 +228,10 @@ componentDidMount() {
 }
 ```
 
-### `authenticate({ description })` (iOS)
+### `authenticate({ description })`: (iOS)
+
+- Returns a `Promise`
+- `description: String`
 
 ```javascript
 componentDidMount() {
@@ -243,7 +248,10 @@ componentDidMount() {
 }
 ```
 
-### `authenticate({ onAttempt })` (Android)
+### `authenticate({ onAttempt })`: (Android)
+
+- Returns a `Promise`
+- `onAttempt: Function`
 
 ```javascript
 componentDidMount() {
@@ -260,8 +268,10 @@ componentDidMount() {
 }
 ```
 
-### `release()` (Android)
+### `release()`: (Android)
 Stops fingerprint scanner listener and optimizes memory.
+
+- Returns a `Void`
 
 ```javascript
 componentWillUnmount() {
