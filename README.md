@@ -35,12 +35,11 @@ Samsung and MeiZu's Fingerprint SDK supports most devices which system versions 
 
 `$ npm install react-native-fingerprint-scanner --save`
 
-### Mostly automatic installation
+### Automatically
 
 `$ react-native link react-native-fingerprint-scanner`
 
-### Manual installation
-
+### Manually
 
 #### iOS
 
@@ -63,6 +62,30 @@ Samsung and MeiZu's Fingerprint SDK supports most devices which system versions 
   	```
     compile project(':react-native-fingerprint-scanner')
   	```
+
+### Extra Steps
+
+    ```
+    android {
+        compileSdkVersion 25
+        buildToolsVersion "25.0.3"
+    ...
+        defaultConfig {
+          targetSdkVersion 25
+    ```
+    
+
+    ```
+    # MeiZu Fingerprint
+
+    -keep class com.fingerprints.service.** { *; }
+
+    # Samsung Fingerprint
+
+    -keep class com.samsung.android.sdk.** { *; }
+    ```
+
+
 
 ## Example
 ```javascript
