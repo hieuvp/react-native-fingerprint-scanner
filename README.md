@@ -65,8 +65,7 @@ Samsung and MeiZu's Fingerprint SDK supports most devices which system versions 
 
 ### Extra Steps
 
-1. Make sure the following versions is correct in `android/app/build.gradle`
-
+1. Make sure the following versions are all correct in `android/app/build.gradle`
     ```
     android {
         compileSdkVersion 25
@@ -77,7 +76,6 @@ Samsung and MeiZu's Fingerprint SDK supports most devices which system versions 
     ```
 
 2. Add necessary rules to `android/app/proguard-rules.pro`
-
     ```
     # MeiZu Fingerprint
 
@@ -89,8 +87,130 @@ Samsung and MeiZu's Fingerprint SDK supports most devices which system versions 
     ```
 
 ## Example
+
+** iOS Implementation **
+
 ```javascript
-import ReactNativeFingerprintScanner from 'react-native-fingerprint-scanner';
+import React, { Component, PropTypes } from 'react';
+import { AlertIOS } from 'react-native';
+import FingerprintScanner from 'react-native-fingerprint-scanner';
+
+class FingerprintPopup extends Component {
+
+  componentDidMount() {
+    FingerprintScanner
+      .authenticate({ description: 'Scan your fingerprint on the device scanner to continue' })
+      .then(() => {
+        this.props.handlePopupDismissed();
+        AlertIOS.alert('Authenticated successfully');
+      })
+      .catch((error) => {
+        this.props.handlePopupDismissed();
+        AlertIOS.alert(error.message);
+      });
+  }
+
+  render() {
+    return false;
+  }
+}
+
+FingerprintPopup.propTypes = {
+  handlePopupDismissed: PropTypes.func.isRequired,
+};
+
+export default FingerprintPopup;
+```
+
+**Android Implementation**
+
+```javascript
+import React, { Component, PropTypes } from 'react';
+import {
+  Alert,
+  Image,
+  Text,
+  TouchableOpacity,
+  View,
+  ViewPropTypes
+} from 'react-native';
+import FingerprintScanner from 'react-native-fingerprint-scanner';
+
+import ShakingText from './ShakingText.component';
+import styles from './FingerprintPopup.component.styles';
+
+class FingerprintPopup extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = { errorMessage: undefined };
+  }
+
+  componentDidMount() {
+    FingerprintScanner
+      .authenticate({ onAttempt: this.handleAuthenticationAttempted })
+      .then(() => {
+        this.props.handlePopupDismissed();
+        Alert.alert('Fingerprint Authentication', 'Authenticated successfully');
+      })
+      .catch((error) => {
+        this.setState({ errorMessage: error.message });
+        this.description.shake();
+      });
+  }
+
+  componentWillUnmount() {
+    FingerprintScanner.release();
+  }
+
+  handleAuthenticationAttempted = (error) => {
+    this.setState({ errorMessage: error.message });
+    this.description.shake();
+  };
+
+  render() {
+    const { errorMessage } = this.state;
+    const { style, handlePopupDismissed } = this.props;
+
+    return (
+      <View style={styles.container}>
+        <View style={[styles.contentContainer, style]}>
+
+          <Image
+            style={styles.logo}
+            source={require('./assets/finger_print.png')}
+          />
+
+          <Text style={styles.heading}>
+            Fingerprint{'\n'}Authentication
+          </Text>
+          <ShakingText
+            ref={(instance) => { this.description = instance; }}
+            style={styles.description(!!errorMessage)}>
+            {errorMessage || 'Scan your fingerprint on the\ndevice scanner to continue'}
+          </ShakingText>
+
+          <TouchableOpacity
+            style={styles.buttonContainer}
+            onPress={handlePopupDismissed}
+          >
+            <Text style={styles.buttonText}>
+              BACK TO MAIN
+            </Text>
+          </TouchableOpacity>
+
+        </View>
+      </View>
+    );
+  }
+}
+
+FingerprintPopup.propTypes = {
+  style: ViewPropTypes.style,
+  handlePopupDismissed: PropTypes.func.isRequired,
+};
+
+export default FingerprintPopup;
 ```
 
 ## API
