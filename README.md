@@ -219,7 +219,7 @@ export default FingerprintPopup;
 ### `isSensorAvailable()`: (Android, iOS)
 Checks if Fingerprint Scanner is able to be used by now.
 
-- Returns a `Promise` -
+- Returns a `Promise`
 
 ```javascript
 componentDidMount() {
@@ -233,7 +233,7 @@ componentDidMount() {
 Starts Fingerprint authentication on iOS.
 
 - Returns a `Promise`
-- `description: String`
+- `description: String` - the string to explain the request for user authentication.
 
 ```javascript
 componentDidMount() {
@@ -254,7 +254,7 @@ componentDidMount() {
 Starts Fingerprint authentication on Android.
 
 - Returns a `Promise`
-- `onAttempt: Function`
+- `onAttempt: Function` - a callback function when users are trying to scan their fingerprint but failed.
 
 ```javascript
 componentDidMount() {
@@ -282,7 +282,7 @@ componentWillUnmount() {
 }
 ```
 
-### `Error`
+### `Errors`
 
 | Name | Message |
 |---|---|
