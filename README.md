@@ -214,3 +214,9 @@ export default FingerprintPopup;
 ```
 
 ## API
+
+| Method | Description | Example |
+|---|---|---|
+| `isSensorAvailable` | Authentication was canceled because the user tapped the fallback button (Enter Password). | e.g. |
+| `authenticate` | Authentication was not successful because the user failed to provide valid credentials. | e.g. iOS, Android |
+| `release` | Authentication was canceled by the user—for example, the user tapped Cancel in the dialog. | e.g. |
