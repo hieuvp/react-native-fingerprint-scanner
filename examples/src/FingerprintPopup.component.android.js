@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import {
+  Alert,
   Image,
   Text,
   TouchableOpacity,
@@ -12,8 +13,24 @@ import styles from './FingerprintPopup.component.styles';
 
 class FingerprintPopup extends Component {
 
+  componentDidMount() {
+    FingerprintScanner
+      .authenticate({ onAttempt: this.handleAuthenticationAttempted })
+      .then(() => {
+        this.props.handlePopupDismissed();
+        Alert.alert('Fingerprint Authentication', 'Authenticated successfully');
+      })
+      .catch((error) => {
+        this.props.handlePopupDismissed();
+        Alert.alert('Fingerprint Authentication', error.message);
+      });
+  }
+
   componentWillUnmount() {
     FingerprintScanner.release();
+  }
+
+  handleAuthenticationAttempted(error) {
   }
 
   render() {
