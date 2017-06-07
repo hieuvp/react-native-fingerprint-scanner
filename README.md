@@ -217,7 +217,7 @@ export default FingerprintPopup;
 
 | Method | Description | Example |
 |---|---|---|
-| `isSensorAvailable(ios, android)` | Returns a Promise. | e.g. |
-| `authenticate` (ios) | Returns a Promise. | e.g. iOS, Android |
-| `authenticate` (android) | Returns a Promise. | e.g. iOS, Android |
-| `release` (android only) | Stops Fingerprint Scanner listener and optimizes memory. | e.g. `FingerprintScanner.release();` |
+| `isSensorAvailable` (ios, android) | Returns a Promise. | `FingerprintScanner.isSensorAvailable()` |
+| `authenticate` (ios) | Returns a Promise. | `FingerprintScanner.authenticate({ description })` |
+| `authenticate` (android) | Returns a Promise. | `FingerprintScanner.authenticate({ onAttempt })` |
+| `release` (android only) | Stops Fingerprint Scanner listener and optimizes memory. | `FingerprintScanner.release();` |
