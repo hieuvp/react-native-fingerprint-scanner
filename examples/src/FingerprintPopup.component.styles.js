@@ -1,6 +1,4 @@
-import { StyleSheet } from 'react-native';
-
-export default StyleSheet.create({
+export default {
   container: {
     position: 'absolute',
     top: 0,
@@ -26,18 +24,20 @@ export default StyleSheet.create({
     color: '#00a4de',
     fontSize: 21,
   },
-  subheading: {
+  description: (error) => ({
     textAlign: 'center',
-    color: '#a5a5a5',
-    fontSize: 16,
-    margin: 10,
-  },
+    color: error ? '#ea3d13' : '#a5a5a5',
+    height: 65,
+    fontSize: 18,
+    marginVertical: 10,
+    marginHorizontal: 20,
+  }),
   buttonContainer: {
     padding: 20,
   },
   buttonText: {
     color: '#8fbc5a',
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: 'bold',
   },
-});
+};

@@ -9,9 +9,15 @@ import {
 } from 'react-native';
 import FingerprintScanner from 'react-native-fingerprint-scanner';
 
+import ShakingText from './ShakingText.component';
 import styles from './FingerprintPopup.component.styles';
 
 class FingerprintPopup extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = { errorMessage: undefined };
+  }
 
   componentDidMount() {
     FingerprintScanner
@@ -21,8 +27,8 @@ class FingerprintPopup extends Component {
         Alert.alert('Fingerprint Authentication', 'Authenticated successfully');
       })
       .catch((error) => {
-        this.props.handlePopupDismissed();
-        Alert.alert('Fingerprint Authentication', error.message);
+        this.setState({ errorMessage: error.message });
+        this.description.shake();
       });
   }
 
@@ -30,11 +36,15 @@ class FingerprintPopup extends Component {
     FingerprintScanner.release();
   }
 
-  handleAuthenticationAttempted(error) {
-  }
+  handleAuthenticationAttempted = (error) => {
+    this.setState({ errorMessage: error.message });
+    this.description.shake();
+  };
 
   render() {
+    const { errorMessage } = this.state;
     const { style, handlePopupDismissed } = this.props;
+
     return (
       <View style={styles.container}>
         <View style={[styles.contentContainer, style]}>
@@ -47,9 +57,11 @@ class FingerprintPopup extends Component {
           <Text style={styles.heading}>
             Fingerprint{'\n'}Authentication
           </Text>
-          <Text style={styles.subheading}>
-            Scan your fingerprint on the{'\n'}device scanner to continue
-          </Text>
+          <ShakingText
+            ref={(instance) => { this.description = instance; }}
+            style={styles.description(!!errorMessage)}>
+            {errorMessage || 'Scan your fingerprint on the\ndevice scanner to continue'}
+          </ShakingText>
 
           <TouchableOpacity
             style={styles.buttonContainer}
