@@ -16,7 +16,6 @@ public class ReactNativeFingerprintScannerModule extends ReactContextBaseJavaMod
 
     private final ReactApplicationContext mReactContext;
     private FingerprintIdentify mFingerprintIdentify;
-    private boolean mIsStartIdentifyCalled;
 
     public ReactNativeFingerprintScannerModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -74,12 +73,6 @@ public class ReactNativeFingerprintScannerModule extends ReactContextBaseJavaMod
             return;
         }
 
-        if (mIsStartIdentifyCalled) {
-            mFingerprintIdentify.resumeIdentify();
-            return;
-        }
-
-        mIsStartIdentifyCalled = true;
         getFingerprintIdentify().resumeIdentify();
         getFingerprintIdentify().startIdentify(DEFAULT_MAX_AVAILABLE_TIMES, new FingerprintIdentifyListener() {
             @Override
