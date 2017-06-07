@@ -25,7 +25,13 @@ Samsung and MeiZu's Fingerprint SDK supports most devices which system versions 
 <img src="https://github.com/hieuvp/react-native-fingerprint-scanner/raw/master/screenshots/android-authentication.gif" height="600">
 </div>
 
-## Getting started
+### Table of Contents
+
+- [Installation](#installation)
+- [Example](#example)
+- [API](#api)
+
+## Installation
 
 `$ npm install react-native-fingerprint-scanner --save`
 
