@@ -25,11 +25,12 @@ Samsung and MeiZu's Fingerprint SDK supports most devices which system versions 
 <img src="https://github.com/hieuvp/react-native-fingerprint-scanner/raw/master/screenshots/android-authentication.gif" height="600">
 </div>
 
-### Table of Contents
+## Table of Contents
 
 - [Installation](#installation)
 - [Example](#example)
 - [API](#api)
+- [License](#license)
 
 ## Installation
 
@@ -221,3 +222,9 @@ export default FingerprintPopup;
 | `authenticate`</br>(ios) | Returns a `Promise`. | `FingerprintScanner.authenticate({ description })` |
 | `authenticate`</br>(android) | Returns a `Promise`. | `FingerprintScanner.authenticate({ onAttempt })` |
 | `release`</br>(android only) | Stops Fingerprint Scanner listener and optimizes memory. | `FingerprintScanner.release()` |
+
+## License
+
+MIT
+
+Made with ♥ for [Jenius](https://www.jenius.com/)
