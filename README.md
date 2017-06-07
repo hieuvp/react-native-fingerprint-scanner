@@ -64,8 +64,9 @@ Samsung and MeiZu's Fingerprint SDK supports most devices which system versions 
     compile project(':react-native-fingerprint-scanner')
   	```
 
-
-## Usage
+## Example
 ```javascript
 import ReactNativeFingerprintScanner from 'react-native-fingerprint-scanner';
 ```
+
+## API
