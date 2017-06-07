@@ -88,6 +88,8 @@ Samsung and MeiZu's Fingerprint SDK supports most devices which system versions 
 
 ## Example
 
+[Example Source Code](https://github.com/hieuvp/react-native-fingerprint-scanner/tree/master/examples)
+
 **iOS Implementation**
 ```javascript
 import React, { Component, PropTypes } from 'react';
