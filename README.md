@@ -216,14 +216,60 @@ export default FingerprintPopup;
 
 ## API
 
-| Method | Description | Example |
-|---|---|
-| `isSensorAvailable`</br>(ios, android) | Returns a `Promise`. | `FingerprintScanner.isSensorAvailable()` |
-| `authenticate`</br>(ios) | Returns a `Promise`. | `FingerprintScanner.authenticate({ description })` |
-| `authenticate`</br>(android) | Returns a `Promise`. | `FingerprintScanner.authenticate({ onAttempt })` |
-| `release`</br>(android only) | Stops Fingerprint Scanner listener and optimizes memory. | `FingerprintScanner.release()` |
+### `isSensorAvailable()`: Android, iOS
 
-### Error Type
+```javascript
+componentDidMount() {
+  FingerprintScanner
+    .isSensorAvailable()
+    .catch(error => this.setState({ errorMessage: error.message }));
+}
+```
+
+### `authenticate({ description })`: iOS
+
+```javascript
+componentDidMount() {
+  FingerprintScanner
+    .authenticate({ description: 'Scan your fingerprint on the device scanner to continue' })
+    .then(() => {
+      this.props.handlePopupDismissed();
+      AlertIOS.alert('Authenticated successfully');
+    })
+    .catch((error) => {
+      this.props.handlePopupDismissed();
+      AlertIOS.alert(error.message);
+    });
+}
+```
+
+### `authenticate({ onAttempt })`: Android
+
+```javascript
+componentDidMount() {
+  FingerprintScanner
+    .authenticate({ onAttempt: this.handleAuthenticationAttempted })
+    .then(() => {
+      this.props.handlePopupDismissed();
+      Alert.alert('Fingerprint Authentication', 'Authenticated successfully');
+    })
+    .catch((error) => {
+      this.setState({ errorMessage: error.message });
+      this.description.shake();
+    });
+}
+```
+
+### `release()`: Android
+Stops fingerprint scanner listener and optimizes memory.
+
+```javascript
+componentWillUnmount() {
+  FingerprintScanner.release();
+}
+```
+
+#### Error Type
 
 | Name | Message |
 |---|---|
