@@ -33,7 +33,6 @@ public class ReactNativeFingerprintScannerModule extends ReactContextBaseJavaMod
 
     @Override
     public void onHostPause() {
-        this.release();
     }
 
     @Override

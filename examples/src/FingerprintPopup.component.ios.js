@@ -6,7 +6,7 @@ class FingerprintPopup extends Component {
 
   componentDidMount() {
     FingerprintScanner
-      .authenticate('Scan your fingerprint on the device scanner to continue')
+      .authenticate({ description: 'Scan your fingerprint on the device scanner to continue' })
       .then(() => {
         this.props.handlePopupDismissed();
         AlertIOS.alert('Authenticated successfully');
