@@ -12,6 +12,7 @@ android/.gradle/
 android/build/
 android/gradle/
 android/android.iml
+android/react-native-fingerprint-scanner.iml
 android/local.properties
 
 ios/.idea/
