@@ -301,4 +301,3 @@ componentWillUnmount() {
 
 MIT
 
-Made with ♥ for [Jenius](https://www.jenius.com/)
