@@ -1,5 +1,11 @@
 #import "ReactNativeFingerprintScanner.h"
+
+#if __has_include(<React/RCTUtils.h>)
 #import <React/RCTUtils.h>
+#else // back compatibility for RN version < 0.40
+#import "RCTUtils.h"
+#endif
+
 #import <LocalAuthentication/LocalAuthentication.h>
 
 @implementation ReactNativeFingerprintScanner
@@ -10,7 +16,7 @@ RCT_EXPORT_METHOD(isSensorAvailable: (RCTResponseSenderBlock)callback)
 {
     LAContext *context = [[LAContext alloc] init];
     NSError *error;
-    
+
     if ([context canEvaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics error:&error]) {
         callback(@[[NSNull null], @true]);
     } else {
@@ -25,7 +31,7 @@ RCT_EXPORT_METHOD(authenticate: (NSString *)reason
 {
     LAContext *context = [[LAContext alloc] init];
     NSError *error;
-    
+
     // Device has FingerprintScanner
     if ([context canEvaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics error:&error]) {
         // Attempt Authentication
@@ -36,46 +42,46 @@ RCT_EXPORT_METHOD(authenticate: (NSString *)reason
              // Failed Authentication
              if (error) {
                  NSString *errorReason;
-                 
+
                  switch (error.code) {
                      case LAErrorAuthenticationFailed:
                          errorReason = @"LAErrorAuthenticationFailed";
                          break;
-                         
+
                      case LAErrorUserCancel:
                          errorReason = @"LAErrorUserCancel";
                          break;
-                         
+
                      case LAErrorUserFallback:
                          errorReason = @"LAErrorUserFallback";
                          break;
-                         
+
                      case LAErrorSystemCancel:
                          errorReason = @"LAErrorSystemCancel";
                          break;
-                         
+
                      case LAErrorPasscodeNotSet:
                          errorReason = @"LAErrorPasscodeNotSet";
                          break;
-                         
+
                      case LAErrorTouchIDNotAvailable:
                          errorReason = @"LAErrorFingerprintScannerNotAvailable";
                          break;
-                         
+
                      case LAErrorTouchIDNotEnrolled:
                          errorReason = @"LAErrorFingerprintScannerNotEnrolled";
                          break;
-                         
+
                      default:
                          errorReason = @"RCTFingerprintScannerUnknownError";
                          break;
                  }
-                 
+
                  NSLog(@"Authentication failed: %@", errorReason);
                  callback(@[RCTMakeError(errorReason, nil, nil)]);
                  return;
              }
-             
+
              // Authenticated Successfully
              callback(@[[NSNull null], @"Authenticated with Fingerprint Scanner."]);
          }];
