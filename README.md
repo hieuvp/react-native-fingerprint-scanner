@@ -300,4 +300,3 @@ componentWillUnmount() {
 ## License
 
 MIT
-
