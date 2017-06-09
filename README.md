@@ -230,11 +230,12 @@ componentDidMount() {
 }
 ```
 
-### `authenticate({ description })`: (iOS)
+### `authenticate({ description, fallbackEnabled })`: (iOS)
 Starts Fingerprint authentication on iOS.
 
 - Returns a `Promise`
 - `description: String` - the string to explain the request for user authentication.
+- `fallbackEnabled: Boolean` - display the fallback (Enter Password) button
 
 ```javascript
 componentDidMount() {
