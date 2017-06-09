@@ -57,11 +57,11 @@ public class ReactNativeFingerprintScannerModule extends ReactContextBaseJavaMod
 
     private String getErrorMessage() {
         if (!getFingerprintIdentify().isHardwareEnable()) {
-            return "RCTFingerprintScannerNotSupported";
+            return "FingerprintScannerNotSupported";
         } else if (!getFingerprintIdentify().isRegisteredFingerprint()) {
-            return "LAErrorFingerprintScannerNotEnrolled";
+            return "FingerprintScannerNotEnrolled";
         } else if (!getFingerprintIdentify().isFingerprintEnable()) {
-            return "LAErrorFingerprintScannerNotAvailable";
+            return "FingerprintScannerNotAvailable";
         }
         return null;
     }
@@ -86,12 +86,12 @@ public class ReactNativeFingerprintScannerModule extends ReactContextBaseJavaMod
             @Override
             public void onNotMatch(int availableTimes) {
                 mReactContext.getJSModule(RCTDeviceEventEmitter.class)
-                        .emit("FINGERPRINT_SCANNER_AUTHENTICATION", "LAErrorAuthenticationNotMatch");
+                        .emit("FINGERPRINT_SCANNER_AUTHENTICATION", "AuthenticationNotMatch");
             }
 
             @Override
             public void onFailed() {
-                promise.reject("LAErrorAuthenticationFailed", "LAErrorAuthenticationFailed");
+                promise.reject("AuthenticationFailed", "AuthenticationFailed");
                 ReactNativeFingerprintScannerModule.this.release();
             }
         });

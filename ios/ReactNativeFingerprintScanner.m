@@ -21,7 +21,7 @@ RCT_EXPORT_METHOD(isSensorAvailable: (RCTResponseSenderBlock)callback)
         callback(@[[NSNull null], @true]);
     } else {
         // Device does not support FingerprintScanner
-        callback(@[RCTMakeError(@"RCTFingerprintScannerNotSupported", nil, nil)]);
+        callback(@[RCTMakeError(@"FingerprintScannerNotSupported", nil, nil)]);
         return;
     }
 }
@@ -45,35 +45,35 @@ RCT_EXPORT_METHOD(authenticate: (NSString *)reason
 
                  switch (error.code) {
                      case LAErrorAuthenticationFailed:
-                         errorReason = @"LAErrorAuthenticationFailed";
+                         errorReason = @"AuthenticationFailed";
                          break;
 
                      case LAErrorUserCancel:
-                         errorReason = @"LAErrorUserCancel";
+                         errorReason = @"UserCancel";
                          break;
 
                      case LAErrorUserFallback:
-                         errorReason = @"LAErrorUserFallback";
+                         errorReason = @"UserFallback";
                          break;
 
                      case LAErrorSystemCancel:
-                         errorReason = @"LAErrorSystemCancel";
+                         errorReason = @"SystemCancel";
                          break;
 
                      case LAErrorPasscodeNotSet:
-                         errorReason = @"LAErrorPasscodeNotSet";
+                         errorReason = @"PasscodeNotSet";
                          break;
 
                      case LAErrorTouchIDNotAvailable:
-                         errorReason = @"LAErrorFingerprintScannerNotAvailable";
+                         errorReason = @"FingerprintScannerNotAvailable";
                          break;
 
                      case LAErrorTouchIDNotEnrolled:
-                         errorReason = @"LAErrorFingerprintScannerNotEnrolled";
+                         errorReason = @"FingerprintScannerNotEnrolled";
                          break;
 
                      default:
-                         errorReason = @"RCTFingerprintScannerUnknownError";
+                         errorReason = @"FingerprintScannerUnknownError";
                          break;
                  }
 
@@ -88,7 +88,7 @@ RCT_EXPORT_METHOD(authenticate: (NSString *)reason
 
     } else {
         // Device does not support FingerprintScanner
-        callback(@[RCTMakeError(@"RCTFingerprintScannerNotSupported", nil, nil)]);
+        callback(@[RCTMakeError(@"FingerprintScannerNotSupported", nil, nil)]);
         return;
     }
 }
