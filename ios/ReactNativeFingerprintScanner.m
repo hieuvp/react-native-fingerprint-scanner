@@ -1,8 +1,8 @@
 #import "ReactNativeFingerprintScanner.h"
 
-#if __has_include(<React/RCTUtils.h>)
+#if __has_include(<React/RCTUtils.h>) // React Native >= 0.40
 #import <React/RCTUtils.h>
-#else // back compatibility for RN version < 0.40
+#else // React Native < 0.40
 #import "RCTUtils.h"
 #endif
 
