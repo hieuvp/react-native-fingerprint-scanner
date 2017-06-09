@@ -9,10 +9,14 @@
     "react-component",
     "react",
     "native",
+    "touch",
     "touchid",
     "touch-id",
     "fingerprint",
-    "fingerprint-scanner"
+    "fingerprint-scanner",
+    "authentication",
+    "authenticate",
+    "auth"
   ],
   "repository": "https://github.com/hieuvp/react-native-fingerprint-scanner.git",
   "author": "Hieu Van (https://github.com/hieuvp)",
