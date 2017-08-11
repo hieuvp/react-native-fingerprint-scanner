@@ -28,6 +28,7 @@ RCT_EXPORT_METHOD(isSensorAvailable: (RCTResponseSenderBlock)callback)
 
 RCT_EXPORT_METHOD(authenticate: (NSString *)reason
                   fallback: (BOOL)fallbackEnabled
+                  fallbackText: (NSString *)fallbackTitle
                   callback: (RCTResponseSenderBlock)callback)
 {
     LAContext *context = [[LAContext alloc] init];
@@ -36,6 +37,11 @@ RCT_EXPORT_METHOD(authenticate: (NSString *)reason
     // Toggle fallback button
     if (!fallbackEnabled) {
         context.localizedFallbackTitle = @"";
+    } else {
+        // Use the user defined fallbackTitle if provided
+        if (fallbackText.length != 0) {
+            context.localizedFallbackTitle = fallbackTitle;
+        }
     }
 
     // Device has FingerprintScanner
