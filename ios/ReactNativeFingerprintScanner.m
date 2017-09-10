@@ -17,7 +17,7 @@ RCT_EXPORT_METHOD(isSensorAvailable: (RCTResponseSenderBlock)callback)
     LAContext *context = [[LAContext alloc] init];
     NSError *error;
 
-    if ([context canEvaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics error:&error]) {
+    if ([context canEvaluatePolicy:LAPolicyDeviceOwnerAuthentication error:&error]) {
         callback(@[[NSNull null], @true]);
     } else {
         // Device does not support FingerprintScanner
@@ -28,6 +28,7 @@ RCT_EXPORT_METHOD(isSensorAvailable: (RCTResponseSenderBlock)callback)
 
 RCT_EXPORT_METHOD(authenticate: (NSString *)reason
                   fallback: (BOOL)fallbackEnabled
+                  fallbackText: (NSString *)fallbackTitle
                   callback: (RCTResponseSenderBlock)callback)
 {
     LAContext *context = [[LAContext alloc] init];
@@ -36,12 +37,17 @@ RCT_EXPORT_METHOD(authenticate: (NSString *)reason
     // Toggle fallback button
     if (!fallbackEnabled) {
         context.localizedFallbackTitle = @"";
+    } else {
+        // Use the user defined fallbackTitle if provided
+        if (fallbackText.length != 0) {
+            context.localizedFallbackTitle = fallbackTitle;
+        }
     }
 
     // Device has FingerprintScanner
-    if ([context canEvaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics error:&error]) {
+    if ([context canEvaluatePolicy:LAPolicyDeviceOwnerAuthentication error:&error]) {
         // Attempt Authentication
-        [context evaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics
+        [context evaluatePolicy:LAPolicyDeviceOwnerAuthentication
                 localizedReason:reason
                           reply:^(BOOL success, NSError *error)
          {
@@ -89,7 +95,7 @@ RCT_EXPORT_METHOD(authenticate: (NSString *)reason
              }
 
              // Authenticated Successfully
-             callback(@[[NSNull null], @"Authenticated with Fingerprint Scanner."]);
+             callback(@[[NSNull null], @"Authenticated with Local Authentication."]);
          }];
 
     } else {
