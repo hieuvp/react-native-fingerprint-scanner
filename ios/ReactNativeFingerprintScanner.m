@@ -82,9 +82,11 @@ RCT_EXPORT_METHOD(authenticate: (NSString *)reason
                          errorReason = @"FingerprintScannerUnknownError";
                          break;
                  }
-
-                 NSLog(@"Authentication failed: %@", errorReason);
-                 callback(@[RCTMakeError(errorReason, nil, nil)]);
+                 
+                 
+                 // Try again
+                 [self authenticate:reason fallback:fallbackEnabled callback:callback];
+                 
                  return;
              }
 
@@ -93,8 +95,20 @@ RCT_EXPORT_METHOD(authenticate: (NSString *)reason
          }];
 
     } else {
-        // Device does not support FingerprintScanner
-        callback(@[RCTMakeError(@"FingerprintScannerNotSupported", nil, nil)]);
+        // This clause is reached if the user has attempted an invalid fingerprint too many times,
+        // or if Touch ID is not enabled
+        
+        LAContext *context = [[LAContext alloc] init];
+        [context evaluatePolicy:LAPolicyDeviceOwnerAuthentication localizedReason:reason reply:^(BOOL success, NSError * _Nullable error) {
+            if(error) {
+                NSString *errorReason = @"AuthenticationFailed";
+                NSLog(@"Authentication failed: %@", errorReason);
+                callback(@[RCTMakeError(errorReason, nil, nil)]);
+            } else {
+             callback(@[[NSNull null], @"Authenticated with Fingerprint Scanner."]);
+            }
+        }];
+        
         return;
     }
 }
