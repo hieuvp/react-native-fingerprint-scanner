@@ -99,17 +99,23 @@ RCT_EXPORT_METHOD(authenticate: (NSString *)reason
         // or if Touch ID is not enabled
         
         LAContext *context = [[LAContext alloc] init];
-        [context evaluatePolicy:LAPolicyDeviceOwnerAuthentication localizedReason:reason reply:^(BOOL success, NSError * _Nullable error) {
-            if(error) {
-                NSString *errorReason = @"AuthenticationFailed";
-                NSLog(@"Authentication failed: %@", errorReason);
-                callback(@[RCTMakeError(errorReason, nil, nil)]);
-            } else {
-             callback(@[[NSNull null], @"Authenticated with Fingerprint Scanner."]);
-            }
-        }];
+        if ([context canEvaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics error:&error]) {
+            [context evaluatePolicy:LAPolicyDeviceOwnerAuthentication localizedReason:reason reply:^(BOOL success, NSError * _Nullable error) {
+                if(error) {
+                    NSString *errorReason = @"AuthenticationFailed";
+                    NSLog(@"Authentication failed: %@", errorReason);
+                    callback(@[RCTMakeError(errorReason, nil, nil)]);
+                } else {
+                    callback(@[[NSNull null], @"Authenticated with Fingerprint Scanner."]);
+                }
+            }];
+        } else {
+            NSString *errorReason = @"AuthenticationFailed";
+            NSLog(@"Authentication failed: %@", errorReason);
+            callback(@[RCTMakeError(errorReason, nil, nil)]);
+        }
         
-        return;
+        
     }
 }
 
