@@ -99,7 +99,7 @@ RCT_EXPORT_METHOD(authenticate: (NSString *)reason
         // or if Touch ID is not enabled
         
         LAContext *context = [[LAContext alloc] init];
-        if ([context canEvaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics error:&error]) {
+        if ([context canEvaluatePolicy:LAPolicyDeviceOwnerAuthentication error:&error]) {
             [context evaluatePolicy:LAPolicyDeviceOwnerAuthentication localizedReason:reason reply:^(BOOL success, NSError * _Nullable error) {
                 if(error) {
                     NSString *errorReason = @"AuthenticationFailed";
