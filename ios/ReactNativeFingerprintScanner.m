@@ -88,8 +88,13 @@ RCT_EXPORT_METHOD(authenticate: (NSString *)reason
                  return;
              }
 
-             // Authenticated Successfully
-             callback(@[[NSNull null], @"Authenticated with Fingerprint Scanner."]);
+             if (success) {
+                 // Authenticated Successfully
+                 callback(@[[NSNull null], @"Authenticated with Fingerprint Scanner."]);
+                 return;
+             }
+
+             callback(@[RCTMakeError(@"AuthenticationFailed", nil, nil)]);
          }];
 
     } else {
