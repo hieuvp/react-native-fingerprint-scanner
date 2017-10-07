@@ -37,6 +37,26 @@ RCT_EXPORT_METHOD(authenticate: (NSString *)reason
     if (!fallbackEnabled) {
         context.localizedFallbackTitle = @"";
     }
+    
+    void (^fallbackBlock)() = ^(){
+        NSError *error;
+        LAContext *context = [[LAContext alloc] init];
+        if ([context canEvaluatePolicy:LAPolicyDeviceOwnerAuthentication error:&error]) {
+            [context evaluatePolicy:LAPolicyDeviceOwnerAuthentication localizedReason:reason reply:^(BOOL success, NSError * _Nullable error) {
+                if(error) {
+                    NSString *errorReason = @"AuthenticationFailed";
+                    NSLog(@"Authentication failed: %@", errorReason);
+                    callback(@[RCTMakeError(errorReason, nil, nil)]);
+                } else {
+                    callback(@[[NSNull null], @"Authenticated with Fingerprint Scanner."]);
+                }
+            }];
+        } else {
+            NSString *errorReason = @"AuthenticationFailed";
+            NSLog(@"Authentication failed: %@", errorReason);
+            callback(@[RCTMakeError(errorReason, nil, nil)]);
+        }
+    };
 
     // Device has FingerprintScanner
     if ([context canEvaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics error:&error]) {
@@ -47,8 +67,13 @@ RCT_EXPORT_METHOD(authenticate: (NSString *)reason
          {
              // Failed Authentication
              if (error) {
+                 
+                 if(error.code == LAErrorUserFallback) {
+                     fallbackBlock();
+                     return;
+                 }
+                 
                  NSString *errorReason;
-
                  switch (error.code) {
                      case LAErrorAuthenticationFailed:
                          errorReason = @"AuthenticationFailed";
@@ -56,10 +81,6 @@ RCT_EXPORT_METHOD(authenticate: (NSString *)reason
 
                      case LAErrorUserCancel:
                          errorReason = @"UserCancel";
-                         break;
-
-                     case LAErrorUserFallback:
-                         errorReason = @"UserFallback";
                          break;
 
                      case LAErrorSystemCancel:
@@ -84,9 +105,8 @@ RCT_EXPORT_METHOD(authenticate: (NSString *)reason
                  }
                  
                  
-                 // Try again
-                 [self authenticate:reason fallback:fallbackEnabled callback:callback];
-                 
+                 NSLog(@"Authentication failed: %@", errorReason);
+                 callback(@[RCTMakeError(errorReason, nil, nil)]);
                  return;
              }
 
@@ -97,25 +117,7 @@ RCT_EXPORT_METHOD(authenticate: (NSString *)reason
     } else {
         // This clause is reached if the user has attempted an invalid fingerprint too many times,
         // or if Touch ID is not enabled
-        
-        LAContext *context = [[LAContext alloc] init];
-        if ([context canEvaluatePolicy:LAPolicyDeviceOwnerAuthentication error:&error]) {
-            [context evaluatePolicy:LAPolicyDeviceOwnerAuthentication localizedReason:reason reply:^(BOOL success, NSError * _Nullable error) {
-                if(error) {
-                    NSString *errorReason = @"AuthenticationFailed";
-                    NSLog(@"Authentication failed: %@", errorReason);
-                    callback(@[RCTMakeError(errorReason, nil, nil)]);
-                } else {
-                    callback(@[[NSNull null], @"Authenticated with Fingerprint Scanner."]);
-                }
-            }];
-        } else {
-            NSString *errorReason = @"AuthenticationFailed";
-            NSLog(@"Authentication failed: %@", errorReason);
-            callback(@[RCTMakeError(errorReason, nil, nil)]);
-        }
-        
-        
+        fallbackBlock();
     }
 }
 
