@@ -110,7 +110,7 @@ public class ReactNativeFingerprintScannerModule extends ReactContextBaseJavaMod
         if (errorMessage != null) {
             promise.reject(errorMessage, errorMessage);
         } else {
-            promise.resolve(true);
+            promise.resolve("Fingerprint");
         }
     }
 }
