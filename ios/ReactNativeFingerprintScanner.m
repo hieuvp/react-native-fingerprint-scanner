@@ -28,7 +28,7 @@ RCT_EXPORT_METHOD(isSensorAvailable: (RCTResponseSenderBlock)callback)
 
 RCT_EXPORT_METHOD(authenticate: (NSString *)reason
                   fallback: (BOOL)fallbackEnabled
-                  fallbackText: (NSString *)fallbackTitle
+				  fallbackText: (NSString *)fallbackTitle
                   callback: (RCTResponseSenderBlock)callback)
 {
     LAContext *context = [[LAContext alloc] init];
@@ -38,11 +38,11 @@ RCT_EXPORT_METHOD(authenticate: (NSString *)reason
     if (!fallbackEnabled) {
         context.localizedFallbackTitle = @"";
     } else {
-        // Use the user defined fallbackTitle if provided
-        if (fallbackText.length != 0) {
-            context.localizedFallbackTitle = fallbackTitle;
-        }
-    }
+		// Use the user defined fallbackTitle if provided
+		if (fallbackTitle.length != 0) {
+			context.localizedFallbackTitle = fallbackTitle;
+		}
+	}
 
     // Device has FingerprintScanner
     if ([context canEvaluatePolicy:LAPolicyDeviceOwnerAuthentication error:&error]) {
@@ -95,7 +95,7 @@ RCT_EXPORT_METHOD(authenticate: (NSString *)reason
              }
 
              // Authenticated Successfully
-             callback(@[[NSNull null], @"Authenticated with Local Authentication."]);
+             callback(@[[NSNull null], @"Authenticated with Fingerprint Scanner."]);
          }];
 
     } else {

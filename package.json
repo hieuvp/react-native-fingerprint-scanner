@@ -1,8 +1,68 @@
 {
-  "name": "react-native-fingerprint-scanner",
-  "version": "2.1.3",
+  "_args": [
+    [
+      {
+        "raw": "react-native-fingerprint-scanner@2.1.3",
+        "scope": null,
+        "escapedName": "react-native-fingerprint-scanner",
+        "name": "react-native-fingerprint-scanner",
+        "rawSpec": "2.1.3",
+        "spec": "2.1.3",
+        "type": "version"
+      },
+      "C:\\SVNViews\\mobile"
+    ]
+  ],
+  "_from": "react-native-fingerprint-scanner@2.1.3",
+  "_id": "react-native-fingerprint-scanner@2.1.3",
+  "_inCache": true,
+  "_location": "/react-native-fingerprint-scanner",
+  "_nodeVersion": "8.1.0",
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/react-native-fingerprint-scanner-2.1.3.tgz_1497001316217_0.5443257696460932"
+  },
+  "_npmUser": {
+    "name": "hieu.van",
+    "email": "hieuvanphu91@gmail.com"
+  },
+  "_npmVersion": "5.0.3",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "react-native-fingerprint-scanner@2.1.3",
+    "scope": null,
+    "escapedName": "react-native-fingerprint-scanner",
+    "name": "react-native-fingerprint-scanner",
+    "rawSpec": "2.1.3",
+    "spec": "2.1.3",
+    "type": "version"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/react-native-fingerprint-scanner/-/react-native-fingerprint-scanner-2.1.3.tgz",
+  "_shasum": "a21c3238fe1c8e7eec40456322aea132492c5d50",
+  "_shrinkwrap": null,
+  "_spec": "react-native-fingerprint-scanner@2.1.3",
+  "_where": "C:\\SVNViews\\mobile",
+  "author": {
+    "name": "Hieu Van",
+    "url": "https://github.com/hieuvp"
+  },
+  "bugs": {
+    "url": "https://github.com/hieuvp/react-native-fingerprint-scanner/issues"
+  },
+  "dependencies": {},
   "description": "React Native Fingerprint Scanner for Android and iOS",
-  "main": "index.js",
+  "devDependencies": {},
+  "directories": {},
+  "dist": {
+    "integrity": "sha512-0G7nBnRd2FdupUlHkQBVwXz9yDGL8zsmvAlpOssnB8Wqx5k45GKBuzRUD2DTHGyKf5tnuOJtqbD3pdE5z5VGNQ==",
+    "shasum": "a21c3238fe1c8e7eec40456322aea132492c5d50",
+    "tarball": "https://registry.npmjs.org/react-native-fingerprint-scanner/-/react-native-fingerprint-scanner-2.1.3.tgz"
+  },
+  "gitHead": "ce77867e45fc9dc7cf1528adaeff17b08d27b44a",
+  "homepage": "https://github.com/hieuvp/react-native-fingerprint-scanner#readme",
   "keywords": [
     "react-native",
     "react-native-component",
@@ -18,18 +78,31 @@
     "authenticate",
     "auth"
   ],
-  "repository": "https://github.com/hieuvp/react-native-fingerprint-scanner.git",
-  "author": "Hieu Van (https://github.com/hieuvp)",
   "license": "MIT",
+  "main": "index.js",
+  "maintainers": [
+    {
+      "name": "hieu.van",
+      "email": "hieuvanphu91@gmail.com"
+    }
+  ],
+  "name": "react-native-fingerprint-scanner",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hieuvp/react-native-fingerprint-scanner.git"
+  },
   "scripts": {
     "android": "cd examples && react-native run-android",
-    "ios": "cd examples && react-native run-ios",
-    "symlink": "cd examples && rm -rf node_modules/react-native-fingerprint-scanner && npm link ../../react-native-fingerprint-scanner && rm -rf ../package-lock.json",
     "cleanup": "rm -rf android/build ios/build yarn.lock node_modules && cd examples && rm -rf android/build android/app/build ios/build yarn.lock node_modules",
     "cleanup:android": "cd examples/android && ./gradlew clean",
     "cleanup:install": "yarn cleanup && yarn && cd examples && yarn && cd .. && yarn symlink && yarn cleanup:android",
-    "release:patch": "npm version --force patch && npm publish && git push --follow-tags",
+    "ios": "cd examples && react-native run-ios",
+    "release:major": "npm version --force major && npm publish && git push --follow-tags",
     "release:minor": "npm version --force minor && npm publish && git push --follow-tags",
-    "release:major": "npm version --force major && npm publish && git push --follow-tags"
-  }
+    "release:patch": "npm version --force patch && npm publish && git push --follow-tags",
+    "symlink": "cd examples && rm -rf node_modules/react-native-fingerprint-scanner && npm link ../../react-native-fingerprint-scanner && rm -rf ../package-lock.json"
+  },
+  "version": "2.1.3"
 }
