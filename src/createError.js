@@ -9,6 +9,9 @@ const ERRORS = {
   FingerprintScannerNotEnrolled: 'Authentication could not start because Fingerprint Scanner has no enrolled fingers.',
   FingerprintScannerUnknownError: 'Could not authenticate for an unknown reason.',
   FingerprintScannerNotSupported: 'Device does not support Fingerprint Scanner.',
+  InvalidContext: 'Device has Invalid Context',
+  NotInteractive: 'Device is Not Interactive',
+  FingerprintScannerLockout: 'Device is currently Locked Out'
 };
 
 class FingerprintScannerError extends Error {
