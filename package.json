@@ -53,7 +53,7 @@
     "url": "https://github.com/hieuvp/react-native-fingerprint-scanner/issues"
   },
   "dependencies": {},
-  "description": "React Native Fingerprint Scanner for Android and iOS",
+  "description": "React Native Local Authentication Package for Android and iOS",
   "devDependencies": {},
   "directories": {},
   "dist": {
