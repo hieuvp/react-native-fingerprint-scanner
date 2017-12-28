@@ -3,7 +3,9 @@ import {
   Image,
   Text,
   TouchableOpacity,
-  View
+  View,
+  TextInput,
+  Button
 } from 'react-native';
 import FingerprintScanner from 'react-native-fingerprint-scanner';
 
@@ -34,6 +36,12 @@ class Application extends Component {
       .catch(error => this.setState({ errorMessage: error.message }));
   }
 
+  _setKey = () => {
+    FingerprintScanner.addWithKey('pin', this.state.text).then((res) => {
+      this.setState({ text: res });
+    }, (e) => console.log(e));
+  }
+
   render() {
     const { errorMessage, popupShowed } = this.state;
 
@@ -46,7 +54,17 @@ class Application extends Component {
         <Text style={styles.subheading}>
           https://github.com/hieuvp/react-native-fingerprint-scanner
         </Text>
-
+        <TextInput
+          style={styles.input}
+          onChangeText={(text) => this.setState({text})}
+          value={this.state.text}
+        />
+        <Button
+          onPress={this._setKey}
+          title="Init"
+          color="#841584"
+          accessibilityLabel="Init"
+        />
         <TouchableOpacity
           style={styles.fingerprint}
           onPress={this.handleFingerprintShowed}

@@ -21,10 +21,10 @@ class FingerprintPopup extends Component {
 
   componentDidMount() {
     FingerprintScanner
-      .authenticate({ onAttempt: this.handleAuthenticationAttempted })
-      .then(() => {
+      .authenticate({ onAttempt: this.handleAuthenticationAttempted, key:'pin' })
+      .then((res) => {
         this.props.handlePopupDismissed();
-        Alert.alert('Fingerprint Authentication', 'Authenticated successfully');
+        Alert.alert('Fingerprint Authentication', 'Authenticated successfully ' + JSON.stringify(res));
       })
       .catch((error) => {
         this.setState({ errorMessage: error.message });

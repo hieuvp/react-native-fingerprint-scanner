@@ -10,16 +10,31 @@ import com.wei.android.lib.fingerprintidentify.FingerprintIdentify;
 import com.wei.android.lib.fingerprintidentify.base.BaseFingerprint.FingerprintIdentifyExceptionListener;
 import com.wei.android.lib.fingerprintidentify.base.BaseFingerprint.FingerprintIdentifyListener;
 
+import main.java.com.hieuvp.keystorehelper.DeCryptor;
+import main.java.com.hieuvp.keystorehelper.EnCryptor;
+
 public class ReactNativeFingerprintScannerModule extends ReactContextBaseJavaModule
         implements LifecycleEventListener {
     public static final int MAX_AVAILABLE_TIMES = Integer.MAX_VALUE;
 
+    // public static final KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
+
     private final ReactApplicationContext mReactContext;
     private FingerprintIdentify mFingerprintIdentify;
+
+    private EnCryptor encryptor;
+    private DeCryptor decryptor;
 
     public ReactNativeFingerprintScannerModule(ReactApplicationContext reactContext) {
         super(reactContext);
         mReactContext = reactContext;
+        encryptor = new EnCryptor();
+
+        try {
+            decryptor = new DeCryptor();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -80,6 +95,54 @@ public class ReactNativeFingerprintScannerModule extends ReactContextBaseJavaMod
             @Override
             public void onSucceed() {
                 promise.resolve(true);
+                ReactNativeFingerprintScannerModule.this.release();
+            }
+
+            @Override
+            public void onNotMatch(int availableTimes) {
+                mReactContext.getJSModule(RCTDeviceEventEmitter.class)
+                        .emit("FINGERPRINT_SCANNER_AUTHENTICATION", "AuthenticationNotMatch");
+            }
+
+            @Override
+            public void onFailed() {
+                promise.reject("AuthenticationFailed", "AuthenticationFailed");
+                ReactNativeFingerprintScannerModule.this.release();
+            }
+        });
+    }
+
+    @ReactMethod
+    public void addWithKey(final String key, final String value, final Promise promise) {
+        byte[] encryptedText;
+        try {
+            encryptedText = encryptor.encryptText(key, value);
+            promise.resolve(new String(encryptedText, "UTF-8"));
+        }   catch (Exception e) {
+            promise.reject(e);
+        }
+    }
+
+    @ReactMethod
+    public void readWithKey(final String key, final Promise promise) {
+        final String errorMessage = getErrorMessage();
+        if (errorMessage != null) {
+            promise.reject(errorMessage, errorMessage);
+            ReactNativeFingerprintScannerModule.this.release();
+            return;
+        }
+
+        getFingerprintIdentify().resumeIdentify();
+        getFingerprintIdentify().startIdentify(MAX_AVAILABLE_TIMES, new FingerprintIdentifyListener() {
+            @Override
+            public void onSucceed() {
+                try {
+                    final String decryptedText = decryptor
+                    .decryptData(key, encryptor.getEncryption(), encryptor.getIv());
+                    promise.resolve(decryptedText);
+                } catch (Exception e) {
+                    promise.reject(e);
+                }
                 ReactNativeFingerprintScannerModule.this.release();
             }
 

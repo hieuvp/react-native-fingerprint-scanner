@@ -36,5 +36,9 @@ export default StyleSheet.create({
   },
   popup: {
     width: width * 0.8,
+  },
+  input: {
+    borderColor: 'gray',
+    borderWidth: 1
   }
 });
