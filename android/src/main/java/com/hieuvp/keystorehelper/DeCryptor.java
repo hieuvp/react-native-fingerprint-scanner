@@ -40,14 +40,21 @@ public class DeCryptor {
       keyStore.load(null);
   }
 
-  public String decryptData(final String alias, final byte[] encryptedData, final byte[] encryptionIv)
+  public Cipher getCipher(final String alias, final byte[] encryptionIv) {
+    try {
+        final Cipher cipher = Cipher.getInstance(TRANSFORMATION);
+        final GCMParameterSpec spec = new GCMParameterSpec(128, encryptionIv);
+        cipher.init(Cipher.DECRYPT_MODE, getSecretKey(alias), spec);
+        return cipher;
+    } catch (Throwable e) {
+        return null;
+    }
+  }
+
+  public String decryptData(final Cipher cipher, final byte[] encryptedData)
           throws UnrecoverableEntryException, NoSuchAlgorithmException, KeyStoreException,
           NoSuchProviderException, NoSuchPaddingException, InvalidKeyException, IOException,
           BadPaddingException, IllegalBlockSizeException, InvalidAlgorithmParameterException {
-
-      final Cipher cipher = Cipher.getInstance(TRANSFORMATION);
-      final GCMParameterSpec spec = new GCMParameterSpec(128, encryptionIv);
-      cipher.init(Cipher.DECRYPT_MODE, getSecretKey(alias), spec);
 
       return new String(cipher.doFinal(encryptedData), "UTF-8");
   }

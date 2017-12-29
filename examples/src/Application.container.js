@@ -5,7 +5,8 @@ import {
   TouchableOpacity,
   View,
   TextInput,
-  Button
+  Button,
+  Alert
 } from 'react-native';
 import FingerprintScanner from 'react-native-fingerprint-scanner';
 
@@ -26,8 +27,12 @@ class Application extends Component {
     this.setState({ popupShowed: true });
   };
 
-  handleFingerprintDismissed = () => {
-    this.setState({ popupShowed: false });
+  handleFingerprintDismissed = ({res}) => {
+    this.setState({ popupShowed: false }, () => {
+      if (res) {
+        console.log(res);
+      };
+    });
   };
 
   componentDidMount() {
@@ -59,12 +64,6 @@ class Application extends Component {
           onChangeText={(text) => this.setState({text})}
           value={this.state.text}
         />
-        <Button
-          onPress={this._setKey}
-          title="Init"
-          color="#841584"
-          accessibilityLabel="Init"
-        />
         <TouchableOpacity
           style={styles.fingerprint}
           onPress={this.handleFingerprintShowed}
@@ -79,12 +78,13 @@ class Application extends Component {
           </Text>
         )}
 
-        {popupShowed && (
-          <FingerprintPopup
-            style={styles.popup}
-            handlePopupDismissed={this.handleFingerprintDismissed}
-          />
-        )}
+        <FingerprintPopup
+          popupShowed={popupShowed}
+          style={styles.popup}
+          pin="pin"
+          value={this.state.text}
+          handlePopupDismissed={this.handleFingerprintDismissed}
+        />
 
       </View>
     );
