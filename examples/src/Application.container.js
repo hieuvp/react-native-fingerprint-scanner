@@ -3,7 +3,10 @@ import {
   Image,
   Text,
   TouchableOpacity,
-  View
+  View,
+  TextInput,
+  Button,
+  Alert
 } from 'react-native';
 import FingerprintScanner from 'react-native-fingerprint-scanner';
 
@@ -24,14 +27,24 @@ class Application extends Component {
     this.setState({ popupShowed: true });
   };
 
-  handleFingerprintDismissed = () => {
-    this.setState({ popupShowed: false });
+  handleFingerprintDismissed = ({res}) => {
+    this.setState({ popupShowed: false }, () => {
+      if (res) {
+        console.log(res);
+      };
+    });
   };
 
   componentDidMount() {
     FingerprintScanner
       .isSensorAvailable()
       .catch(error => this.setState({ errorMessage: error.message }));
+  }
+
+  _setKey = () => {
+    FingerprintScanner.addWithKey('pin', this.state.text).then((res) => {
+      this.setState({ text: res });
+    }, (e) => console.log(e));
   }
 
   render() {
@@ -46,7 +59,11 @@ class Application extends Component {
         <Text style={styles.subheading}>
           https://github.com/hieuvp/react-native-fingerprint-scanner
         </Text>
-
+        <TextInput
+          style={styles.input}
+          onChangeText={(text) => this.setState({text})}
+          value={this.state.text}
+        />
         <TouchableOpacity
           style={styles.fingerprint}
           onPress={this.handleFingerprintShowed}
@@ -61,12 +78,13 @@ class Application extends Component {
           </Text>
         )}
 
-        {popupShowed && (
-          <FingerprintPopup
-            style={styles.popup}
-            handlePopupDismissed={this.handleFingerprintDismissed}
-          />
-        )}
+        <FingerprintPopup
+          popupShowed={popupShowed}
+          style={styles.popup}
+          pin="pin"
+          value={this.state.text}
+          handlePopupDismissed={this.handleFingerprintDismissed}
+        />
 
       </View>
     );

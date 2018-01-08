@@ -19,17 +19,31 @@ class FingerprintPopup extends Component {
     this.state = { errorMessage: undefined };
   }
 
-  componentDidMount() {
-    FingerprintScanner
-      .authenticate({ onAttempt: this.handleAuthenticationAttempted })
-      .then(() => {
-        this.props.handlePopupDismissed();
-        Alert.alert('Fingerprint Authentication', 'Authenticated successfully');
-      })
-      .catch((error) => {
-        this.setState({ errorMessage: error.message });
-        this.description.shake();
-      });
+  componentWillReceiveProps(nextProps) {
+    const { pin,  value, popupShowed } = nextProps;
+    if (popupShowed==true && this.props.popupShowed==false) {
+      this.setState({errorMessage: ''});
+      if (value) {
+        FingerprintScanner
+          .addWithKey(pin, value)
+          .then((res) => {
+            this.props.handlePopupDismissed({res});
+          })
+          .catch((error) => {
+            this.setState({ errorMessage: JSON.stringify(error) });
+          });
+      }
+      else {
+        FingerprintScanner
+          .readWithKey(pin)
+          .then((res) => {
+            this.props.handlePopupDismissed({res});
+          })
+          .catch((error) => {
+            this.setState({ errorMessage: JSON.stringify(error) });
+          });
+        }
+    }
   }
 
   componentWillUnmount() {
@@ -43,8 +57,8 @@ class FingerprintPopup extends Component {
 
   render() {
     const { errorMessage } = this.state;
-    const { style, handlePopupDismissed } = this.props;
-
+    const { style, handlePopupDismissed, popupShowed } = this.props;
+    if (!popupShowed) return null;
     return (
       <View style={styles.container}>
         <View style={[styles.contentContainer, style]}>
@@ -56,12 +70,8 @@ class FingerprintPopup extends Component {
 
           <Text style={styles.heading}>
             Fingerprint{'\n'}Authentication
+            {errorMessage}
           </Text>
-          <ShakingText
-            ref={(instance) => { this.description = instance; }}
-            style={styles.description(!!errorMessage)}>
-            {errorMessage || 'Scan your fingerprint on the\ndevice scanner to continue'}
-          </ShakingText>
 
           <TouchableOpacity
             style={styles.buttonContainer}

@@ -3,18 +3,19 @@ import createError from './createError';
 
 const { ReactNativeFingerprintScanner } = NativeModules;
 
-export default ({ onAttempt }) => {
+export default ({ onAttempt, key }) => {
   return new Promise((resolve, reject) => {
     DeviceEventEmitter.addListener('FINGERPRINT_SCANNER_AUTHENTICATION', (message) => {
       if (message === 'AuthenticationNotMatch' && typeof onAttempt === 'function') {
         onAttempt(createError(message));
       }
     });
-
-    ReactNativeFingerprintScanner.authenticate()
-      .then(() => {
+    const auth = key ? ReactNativeFingerprintScanner.readWithKey : ReactNativeFingerprintScanner.authenticate;
+    
+    auth(key)
+      .then((res) => {
         DeviceEventEmitter.removeAllListeners('FINGERPRINT_SCANNER_AUTHENTICATION');
-        resolve(true);
+        resolve(res);
       })
       .catch((error) => {
         DeviceEventEmitter.removeAllListeners('FINGERPRINT_SCANNER_AUTHENTICATION');
