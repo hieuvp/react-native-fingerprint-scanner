@@ -16,9 +16,16 @@ RCT_EXPORT_METHOD(isSensorAvailable: (RCTResponseSenderBlock)callback)
 {
     LAContext *context = [[LAContext alloc] init];
     NSError *error;
+    
 
     if ([context canEvaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics error:&error]) {
-        callback(@[[NSNull null], @true]);
+        NSString *type = @"touch";
+        if(@available(iOS 11.0, *)) {
+            if(context.biometryType == LABiometryTypeFaceID) {
+                type = @"face";
+            }
+        }
+        callback(@[[NSNull null], type]);
     } else {
         // Device does not support FingerprintScanner
         callback(@[RCTMakeError(@"FingerprintScannerNotSupported", nil, nil)]);
