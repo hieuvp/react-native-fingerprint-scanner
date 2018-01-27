@@ -20,8 +20,22 @@ RCT_EXPORT_METHOD(isSensorAvailable: (RCTResponseSenderBlock)callback)
     if ([context canEvaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics error:&error]) {
         callback(@[[NSNull null], @true]);
     } else {
-        // Device does not support FingerprintScanner
-        callback(@[RCTMakeError(@"FingerprintScannerNotSupported", nil, nil)]);
+        NSString *errorReason;
+
+        switch (error.code) {
+            case LAErrorTouchIDNotAvailable:
+                errorReason = @"FingerprintScannerNotAvailable";
+                break;
+
+            case LAErrorTouchIDNotEnrolled:
+                errorReason = @"FingerprintScannerNotEnrolled";
+                break;
+
+            default:
+                errorReason = @"FingerprintScannerNotSupported";
+                break;
+        }
+        callback(@[RCTMakeError(errorReason, nil, nil)]);
         return;
     }
 }
