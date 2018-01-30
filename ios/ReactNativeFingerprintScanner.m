@@ -50,7 +50,7 @@ RCT_EXPORT_METHOD(authenticate: (NSString *)reason
         LAContext *context = [[LAContext alloc] init];
         if ([context canEvaluatePolicy:LAPolicyDeviceOwnerAuthentication error:&error]) {
             [context evaluatePolicy:LAPolicyDeviceOwnerAuthentication localizedReason:reason reply:^(BOOL success, NSError * _Nullable error) {
-                if(error) {
+                if(error || !success) {
                     NSString *errorReason = @"AuthenticationFailed";
                     NSLog(@"Authentication failed: %@", errorReason);
                     callback(@[RCTMakeError(errorReason, nil, nil)]);
@@ -117,8 +117,13 @@ RCT_EXPORT_METHOD(authenticate: (NSString *)reason
                  return;
              }
 
-             // Authenticated Successfully
-             callback(@[[NSNull null], @"Authenticated with Fingerprint Scanner."]);
+             if (success) {
+                 // Authenticated Successfully
+                 callback(@[[NSNull null], @"Authenticated with Fingerprint Scanner."]);
+                 return;
+             }
+             
+             callback(@[RCTMakeError(@"AuthenticationFailed", nil, nil)]);
          }];
 
     } else {

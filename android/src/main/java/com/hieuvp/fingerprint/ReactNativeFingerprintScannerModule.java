@@ -90,7 +90,14 @@ public class ReactNativeFingerprintScannerModule extends ReactContextBaseJavaMod
             }
 
             @Override
-            public void onFailed() {
+            public void onFailed(boolean isDeviceLocked) {
+                promise.reject("AuthenticationFailed", "AuthenticationFailed");
+                ReactNativeFingerprintScannerModule.this.release();
+            }
+
+            @Override
+            public void onStartFailedByDeviceLocked() {
+                // the first start failed because the device was locked temporarily
                 promise.reject("AuthenticationFailed", "AuthenticationFailed");
                 ReactNativeFingerprintScannerModule.this.release();
             }
