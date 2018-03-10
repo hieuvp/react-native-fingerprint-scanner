@@ -3,7 +3,8 @@ import {
   Image,
   Text,
   TouchableOpacity,
-  View
+  View,
+  Platform
 } from 'react-native';
 import FingerprintScanner from 'react-native-fingerprint-scanner';
 
@@ -16,7 +17,8 @@ class Application extends Component {
     super(props);
     this.state = {
       errorMessage: undefined,
-      popupShowed: false
+      popupShowed: false,
+      sensorType: "unknown"
     };
   }
 
@@ -29,13 +31,26 @@ class Application extends Component {
   };
 
   componentDidMount() {
-    FingerprintScanner
-      .isSensorAvailable()
-      .catch(error => this.setState({ errorMessage: error.message }));
+
+    if (Platform.OS == 'ios') {
+
+      FingerprintScanner
+        .getSensorType()
+        .then((sensorType) => {
+          this.setState({ sensorType: sensorType })
+        })
+        // .isSensorAvailable()
+        .catch(error => this.setState({ errorMessage: error.message }));
+    }
+    else {
+      FingerprintScanner
+        .isSensorAvailable()
+        .catch(error => this.setState({ errorMessage: error.message }));
+    }
   }
 
   render() {
-    const { errorMessage, popupShowed } = this.state;
+    const { errorMessage, popupShowed, sensorType } = this.state;
 
     return (
       <View style={styles.container}>
@@ -52,7 +67,12 @@ class Application extends Component {
           onPress={this.handleFingerprintShowed}
           disabled={!!errorMessage}
         >
-          <Image source={require('./assets/finger_print.png')} />
+          {sensorType == "FaceID" ?
+            <Image source={require('./assets/faceId.png')} />
+            :
+            <Image source={require('./assets/finger_print.png')} />
+          }
+
         </TouchableOpacity>
 
         {errorMessage && (

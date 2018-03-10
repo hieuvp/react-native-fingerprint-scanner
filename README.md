@@ -219,6 +219,21 @@ export default FingerprintPopup;
 
 ## API
 
+
+### `getSensorType()`: (iOS)
+Checks if Fingerprint Scanner is able to be used by now and returns its type ("FaceID" or "TouchID")
+
+- Returns a `Promise`
+
+```javascript
+componentDidMount() {
+  FingerprintScanner
+    .getSensorType()
+    .then((sensorType) => { this.setState({sensorType : sensorType})})
+    .catch(error => this.setState({ errorMessage: error.message }));
+}
+```
+
 ### `isSensorAvailable()`: (Android, iOS)
 Checks if Fingerprint Scanner is able to be used by now.
 
