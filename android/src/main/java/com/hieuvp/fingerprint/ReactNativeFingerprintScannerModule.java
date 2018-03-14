@@ -15,6 +15,7 @@ import com.wei.android.lib.fingerprintidentify.base.BaseFingerprint.FingerprintI
 public class ReactNativeFingerprintScannerModule extends ReactContextBaseJavaModule
         implements LifecycleEventListener {
     public static final int MAX_AVAILABLE_TIMES = Integer.MAX_VALUE;
+    public static final String TYPE_FINGERPRINT = "Fingerprint";
 
     private final ReactApplicationContext mReactContext;
     private FingerprintIdentify mFingerprintIdentify;
@@ -73,7 +74,7 @@ public class ReactNativeFingerprintScannerModule extends ReactContextBaseJavaMod
     public void authenticate(final Promise promise) {
         final String errorMessage = getErrorMessage();
         if (errorMessage != null) {
-            promise.reject(errorMessage, errorMessage);
+            promise.reject(errorMessage, TYPE_FINGERPRINT);
             ReactNativeFingerprintScannerModule.this.release();
             return;
         }
@@ -97,7 +98,7 @@ public class ReactNativeFingerprintScannerModule extends ReactContextBaseJavaMod
                 if(isDeviceLocked){
                     promise.reject("AuthenticationFailed", "DeviceLocked");
                 } else {
-                    promise.reject("AuthenticationFailed", "AuthenticationFailed");
+                    promise.reject("AuthenticationFailed", TYPE_FINGERPRINT);
                 }
                 ReactNativeFingerprintScannerModule.this.release();
             }
@@ -121,9 +122,9 @@ public class ReactNativeFingerprintScannerModule extends ReactContextBaseJavaMod
     public void isSensorAvailable(final Promise promise) {
         String errorMessage = getErrorMessage();
         if (errorMessage != null) {
-            promise.reject(errorMessage, errorMessage);
+            promise.reject(errorMessage, TYPE_FINGERPRINT);
         } else {
-            promise.resolve("Fingerprint");
+            promise.resolve(TYPE_FINGERPRINT);
         }
     }
 }

@@ -244,7 +244,7 @@ Checks if Fingerprint Scanner is able to be used by now.
 
 - Returns a `Promise<string>`
 - `biometryType: String` - The type of biometric authentication supported by the device.
-- `error: FingerprintScannerError { name, message }` - The reason of failure.
+- `error: FingerprintScannerError { name, message, biometric }` - The name and message of failure and the biometric type in use.
 
 ```javascript
 componentDidMount() {
