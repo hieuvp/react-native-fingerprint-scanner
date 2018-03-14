@@ -17,6 +17,7 @@ class Application extends Component {
     super(props);
     this.state = {
       errorMessage: undefined,
+      biometric: undefined,
       popupShowed: false
     };
   }
@@ -42,7 +43,7 @@ class Application extends Component {
   detectFingerprintAvailable = () => {
     FingerprintScanner
       .isSensorAvailable()
-      .catch(error => this.setState({ errorMessage: error.message }));
+      .catch(error => this.setState({ errorMessage: error.message, biometric: error.biometric }));
   }
 
   handleAppStateChange = (nextAppState) => {
@@ -54,7 +55,7 @@ class Application extends Component {
   }
 
   render() {
-    const { errorMessage, popupShowed } = this.state;
+    const { errorMessage, biometric, popupShowed } = this.state;
 
     return (
       <View style={styles.container}>
@@ -76,7 +77,7 @@ class Application extends Component {
 
         {errorMessage && (
           <Text style={styles.errorMessage}>
-            {errorMessage}
+            {errorMessage} {biometric}
           </Text>
         )}
 

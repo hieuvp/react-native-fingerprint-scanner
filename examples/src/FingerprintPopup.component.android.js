@@ -17,7 +17,7 @@ class FingerprintPopup extends Component {
 
   constructor(props) {
     super(props);
-    this.state = { errorMessage: undefined };
+    this.state = { errorMessage: undefined, biometric: undefined };
   }
 
   componentDidMount() {
@@ -28,7 +28,7 @@ class FingerprintPopup extends Component {
         Alert.alert('Fingerprint Authentication', 'Authenticated successfully');
       })
       .catch((error) => {
-        this.setState({ errorMessage: error.message });
+        this.setState({ errorMessage: error.message, biometric: error.biometric });
         this.description.shake();
       });
   }
@@ -43,7 +43,7 @@ class FingerprintPopup extends Component {
   };
 
   render() {
-    const { errorMessage } = this.state;
+    const { errorMessage, biometric } = this.state;
     const { style, handlePopupDismissed } = this.props;
 
     return (
@@ -56,12 +56,12 @@ class FingerprintPopup extends Component {
           />
 
           <Text style={styles.heading}>
-            Fingerprint{'\n'}Authentication
+            Biometric{'\n'}Authentication
           </Text>
           <ShakingText
             ref={(instance) => { this.description = instance; }}
             style={styles.description(!!errorMessage)}>
-            {errorMessage || 'Scan your fingerprint on the\ndevice scanner to continue'}
+            {errorMessage || `Scan your ${biometric} on the\ndevice scanner to continue`}
           </ShakingText>
 
           <TouchableOpacity

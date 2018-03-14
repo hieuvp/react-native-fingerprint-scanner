@@ -18,22 +18,27 @@ RCT_EXPORT_METHOD(isSensorAvailable: (RCTResponseSenderBlock)callback)
     if ([context canEvaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics error:&error]) {
         callback(@[[NSNull null], [self getBiometryType:context]]);
     } else {
-        NSString *errorReason;
+        NSString *code;
+        NSString *message;
 
         switch (error.code) {
             case LAErrorTouchIDNotAvailable:
-                errorReason = @"FingerprintScannerNotAvailable";
+                code = @"FingerprintScannerNotAvailable";
+                message = [self getBiometryType:context];
                 break;
 
             case LAErrorTouchIDNotEnrolled:
-                errorReason = @"FingerprintScannerNotEnrolled";
+                code = @"FingerprintScannerNotEnrolled";
+                message = [self getBiometryType:context];
                 break;
 
             default:
-                errorReason = @"FingerprintScannerNotSupported";
+                code = @"FingerprintScannerNotSupported";
+                message = nil;
                 break;
         }
-        callback(@[RCTMakeError(errorReason, nil, nil)]);
+
+        callback(@[RCTJSErrorFromCodeMessageAndNSError(code, message, nil)]);
         return;
     }
 }
@@ -96,7 +101,7 @@ RCT_EXPORT_METHOD(authenticate: (NSString *)reason
                  }
 
                  NSLog(@"Authentication failed: %@", errorReason);
-                 callback(@[RCTMakeError(errorReason, nil, nil)]);
+                 callback(@[RCTJSErrorFromCodeMessageAndNSError(errorReason, errorReason, nil)]);
                  return;
              }
 
@@ -106,12 +111,12 @@ RCT_EXPORT_METHOD(authenticate: (NSString *)reason
                  return;
              }
 
-             callback(@[RCTMakeError(@"AuthenticationFailed", nil, nil)]);
+             callback(@[RCTJSErrorFromCodeMessageAndNSError(@"AuthenticationFailed", @"AuthenticationFailed", nil)]);
          }];
 
     } else {
         // Device does not support FingerprintScanner
-        callback(@[RCTMakeError(@"FingerprintScannerNotSupported", nil, nil)]);
+        callback(@[RCTJSErrorFromCodeMessageAndNSError(@"FingerprintScannerNotSupported", @"FingerprintScannerNotSupported", nil)]);
         return;
     }
 }
