@@ -64,7 +64,7 @@ Samsung and MeiZu's Fingerprint SDK supports most devices which system versions 
   	```
     compile project(':react-native-fingerprint-scanner')
   	```
-    
+
 ### App Permissions
 
 Add the following permissions to their respective files:
@@ -113,7 +113,8 @@ In your `Info.plist`:
 
 **iOS Implementation**
 ```javascript
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { AlertIOS } from 'react-native';
 import FingerprintScanner from 'react-native-fingerprint-scanner';
 
@@ -146,7 +147,9 @@ export default FingerprintPopup;
 
 **Android Implementation**
 ```javascript
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
 import {
   Alert,
   Image,
