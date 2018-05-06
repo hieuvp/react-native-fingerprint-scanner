@@ -29,6 +29,7 @@
   "author": "Hieu Van (https://github.com/hieuvp)",
   "license": "MIT",
   "scripts": {
+    "develop": "wml stop && watchman watch-del-all && rm -rf examples/node_modules/react-native-fingerprint-scanner && wml start",
     "android": "cd examples && react-native run-android",
     "ios": "cd examples && react-native run-ios",
     "clean:node": "rm -rf node_modules package-lock.json examples/node_modules examples/package-lock.json",
