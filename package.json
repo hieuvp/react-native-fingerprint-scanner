@@ -9,9 +9,16 @@
     "react-component",
     "react",
     "native",
+    "android",
+    "meizu",
+    "samsung",
+    "ios",
     "touch",
     "touchid",
     "touch-id",
+    "face",
+    "faceid",
+    "face-id",
     "fingerprint",
     "fingerprint-scanner",
     "authentication",
@@ -24,10 +31,10 @@
   "scripts": {
     "android": "cd examples && react-native run-android",
     "ios": "cd examples && react-native run-ios",
-    "symlink": "cd examples && rm -rf node_modules/react-native-fingerprint-scanner && npm link ../../react-native-fingerprint-scanner && rm -rf ../package-lock.json",
-    "cleanup": "rm -rf android/build ios/build yarn.lock node_modules && cd examples && rm -rf android/build android/app/build ios/build yarn.lock node_modules",
-    "cleanup:android": "cd examples/android && ./gradlew clean",
-    "cleanup:install": "yarn cleanup && yarn && cd examples && yarn && cd .. && yarn symlink && yarn cleanup:android"
+    "clean:node": "rm -rf node_modules package-lock.json examples/node_modules examples/package-lock.json",
+    "clean:android": "rm -rf android/.gradle android/build examples/android/.gradle examples/android/build examples/android/app/build",
     "clean:android:gradle": "cd android && ./gradlew clean && cd .. && cd examples/android && ./gradlew clean",
+    "clean:ios": "rm -rf ios/build examples/ios/build",
+    "clean:install": "npm run clean:node && npm run clean:android && npm run clean:ios && npm install && cd examples && npm install && cd .. && npm run clean:android:gradle"
   }
 }
