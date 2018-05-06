@@ -15,6 +15,7 @@ class Application extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      biometryType: undefined,
       errorMessage: undefined,
       popupShowed: false
     };
@@ -31,11 +32,12 @@ class Application extends Component {
   componentDidMount() {
     FingerprintScanner
       .isSensorAvailable()
+      .then(biometryType => this.setState({ biometryType }))
       .catch(error => this.setState({ errorMessage: error.message }));
   }
 
   render() {
-    const { errorMessage, popupShowed } = this.state;
+    const { biometryType, errorMessage, popupShowed } = this.state;
 
     return (
       <View style={styles.container}>
@@ -54,6 +56,12 @@ class Application extends Component {
         >
           <Image source={require('./assets/finger_print.png')} />
         </TouchableOpacity>
+
+        {biometryType && (
+          <Text style={styles.biometryType}>
+            Type of biometric authentication: {biometryType}.
+          </Text>
+        )}
 
         {errorMessage && (
           <Text style={styles.errorMessage}>
