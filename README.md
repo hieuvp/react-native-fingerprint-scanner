@@ -222,12 +222,15 @@ export default FingerprintPopup;
 ### `isSensorAvailable()`: (Android, iOS)
 Checks if Fingerprint Scanner is able to be used by now.
 
-- Returns a `Promise`
+- Returns a `Promise<string>`
+- `biometryType: String` - The type of biometric authentication supported by the device.
+- `error: FingerprintScannerError { name, message }` - The reason of failure.
 
 ```javascript
 componentDidMount() {
   FingerprintScanner
     .isSensorAvailable()
+    .then(biometryType => this.setState({ biometryType }))
     .catch(error => this.setState({ errorMessage: error.message }));
 }
 ```
@@ -285,6 +288,14 @@ componentWillUnmount() {
   FingerprintScanner.release();
 }
 ```
+
+### `Types of Biometrics`
+
+| Value | OS |
+|---|---|
+| Touch ID | iOS |
+| Face ID | iOS |
+| Fingerprint | Android |
 
 ### `Errors`
 
