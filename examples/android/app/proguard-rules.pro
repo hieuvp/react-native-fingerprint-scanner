@@ -72,7 +72,9 @@
 # MeiZu Fingerprint
 
 -keep class com.fingerprints.service.** { *; }
+-dontwarn com.fingerprints.service.**
 
 # Samsung Fingerprint
 
 -keep class com.samsung.android.sdk.** { *; }
+-dontwarn com.samsung.android.sdk.**
