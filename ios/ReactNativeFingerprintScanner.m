@@ -12,29 +12,32 @@
 
 RCT_EXPORT_MODULE();
 
+RCT_EXPORT_METHOD(getSensorType: (RCTResponseSenderBlock)callback)
+{
+    LAContext *context = [[LAContext alloc] init];
+    NSError *error;
+    
+    if ([context canEvaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics error:&error]) {
+        callback(@[[NSNull null],[self getBiometryType:context]]);
+    }
+    else
+    {
+        NSString * errorReason = [self getErrorType:error forAvailabilityCheck:true];
+        callback(@[RCTMakeError(errorReason, nil, nil)]);
+        return;
+    }
+    
+}
+
 RCT_EXPORT_METHOD(isSensorAvailable: (RCTResponseSenderBlock)callback)
 {
     LAContext *context = [[LAContext alloc] init];
     NSError *error;
 
     if ([context canEvaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics error:&error]) {
-        callback(@[[NSNull null], @true]);
+        callback(@[[NSNull null],@true]);
     } else {
-        NSString *errorReason;
-
-        switch (error.code) {
-            case LAErrorTouchIDNotAvailable:
-                errorReason = @"FingerprintScannerNotAvailable";
-                break;
-
-            case LAErrorTouchIDNotEnrolled:
-                errorReason = @"FingerprintScannerNotEnrolled";
-                break;
-
-            default:
-                errorReason = @"FingerprintScannerNotSupported";
-                break;
-        }
+        NSString * errorReason = [self getErrorType:error forAvailabilityCheck:true];
         callback(@[RCTMakeError(errorReason, nil, nil)]);
         return;
     }
@@ -61,42 +64,9 @@ RCT_EXPORT_METHOD(authenticate: (NSString *)reason
          {
              // Failed Authentication
              if (error) {
-                 NSString *errorReason;
-
-                 switch (error.code) {
-                     case LAErrorAuthenticationFailed:
-                         errorReason = @"AuthenticationFailed";
-                         break;
-
-                     case LAErrorUserCancel:
-                         errorReason = @"UserCancel";
-                         break;
-
-                     case LAErrorUserFallback:
-                         errorReason = @"UserFallback";
-                         break;
-
-                     case LAErrorSystemCancel:
-                         errorReason = @"SystemCancel";
-                         break;
-
-                     case LAErrorPasscodeNotSet:
-                         errorReason = @"PasscodeNotSet";
-                         break;
-
-                     case LAErrorTouchIDNotAvailable:
-                         errorReason = @"FingerprintScannerNotAvailable";
-                         break;
-
-                     case LAErrorTouchIDNotEnrolled:
-                         errorReason = @"FingerprintScannerNotEnrolled";
-                         break;
-
-                     default:
-                         errorReason = @"FingerprintScannerUnknownError";
-                         break;
-                 }
-
+                 
+                 NSString * errorReason = [self getErrorType:error];
+             
                  NSLog(@"Authentication failed: %@", errorReason);
                  callback(@[RCTMakeError(errorReason, nil, nil)]);
                  return;
@@ -116,6 +86,61 @@ RCT_EXPORT_METHOD(authenticate: (NSString *)reason
         callback(@[RCTMakeError(@"FingerprintScannerNotSupported", nil, nil)]);
         return;
     }
+}
+
+- (NSString *)getBiometryType:(LAContext *)context
+{
+    if (@available(iOS 11, *)) {
+        return (context.biometryType == LABiometryTypeFaceID) ? @"FaceID" : @"TouchID";
+    }
+    
+    return @"TouchID";
+}
+
+- (NSString *)getErrorType:(NSError *)error
+{
+    return [self getErrorType:error forAvailabilityCheck:false];
+}
+- (NSString *)getErrorType:(NSError *)error forAvailabilityCheck:(Boolean)availabilityCheck
+{
+    NSString *errorReason;
+    
+    switch (error.code) {
+        case LAErrorAuthenticationFailed:
+            errorReason = @"AuthenticationFailed";
+            break;
+            
+        case LAErrorUserCancel:
+            errorReason = @"UserCancel";
+            break;
+            
+        case LAErrorUserFallback:
+            errorReason = @"UserFallback";
+            break;
+            
+        case LAErrorSystemCancel:
+            errorReason = @"SystemCancel";
+            break;
+            
+        case LAErrorPasscodeNotSet:
+            errorReason = @"PasscodeNotSet";
+            break;
+
+        case LAErrorTouchIDNotAvailable:
+            errorReason = @"FingerprintScannerNotAvailable";
+            break;
+            
+        case LAErrorTouchIDNotEnrolled:
+            errorReason = @"FingerprintScannerNotEnrolled";
+
+            break;
+            
+        default:
+            errorReason = availabilityCheck ? @"FingerprintScannerNotSupported" :  @"FingerprintScannerUnknownError" ;
+            break;
+    }
+            
+    return errorReason;
 }
 
 @end
