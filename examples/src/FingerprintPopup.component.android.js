@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import {
   Alert,
   Image,
@@ -9,8 +10,8 @@ import {
 } from 'react-native';
 import FingerprintScanner from 'react-native-fingerprint-scanner';
 
-import ShakingText from './ShakingText.component';
 import styles from './FingerprintPopup.component.styles';
+import ShakingText from './ShakingText.component';
 
 class FingerprintPopup extends Component {
 

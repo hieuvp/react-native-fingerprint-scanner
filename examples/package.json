@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
+    "prop-types": "15.6.1",
     "react": "16.3.1",
     "react-native": "0.55.3",
     "react-native-fingerprint-scanner": "file:../"
