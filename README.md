@@ -223,8 +223,8 @@ export default FingerprintPopup;
 Checks if Fingerprint Scanner is able to be used by now.
 
 - Returns a `Promise<string>`
-- `biometryType: String` - The type of biometric authentication supported by the device.
-- `error: FingerprintScannerError { name, message }` - The reason of failure.
+- `biometryType: String` - the type of biometric authentication supported by the device.
+- `error: FingerprintScannerError { name, message }` - the reason of failure.
 
 ```javascript
 componentDidMount() {
@@ -301,16 +301,17 @@ componentWillUnmount() {
 
 | Name | Message |
 |---|---|
-| AuthenticationNotMatch | No match |
 | AuthenticationFailed | Authentication was not successful because the user failed to provide valid credentials |
-| UserCancel | Authentication was canceled by the user - e.g. the user tapped Cancel in the dialog |
-| UserFallback | Authentication was canceled because the user tapped the fallback button (Enter Password) |
-| SystemCancel | Authentication was canceled by system - e.g. if another application came to foreground while the authentication dialog was up |
-| PasscodeNotSet | Authentication could not start because the passcode is not set on the device |
+| AuthenticationNotMatch | No match |
+| DeviceLocked | The device is locked temporarily |
 | FingerprintScannerNotAvailable | Authentication could not start because Fingerprint Scanner is not available on the device |
 | FingerprintScannerNotEnrolled | Authentication could not start because Fingerprint Scanner has no enrolled fingers |
-| FingerprintScannerUnknownError | Could not authenticate for an unknown reason |
 | FingerprintScannerNotSupported | Device does not support Fingerprint Scanner |
+| FingerprintScannerUnknownError | Could not authenticate for an unknown reason |
+| PasscodeNotSet | Authentication could not start because the passcode is not set on the device |
+| SystemCancel | Authentication was canceled by system - e.g. if another application came to foreground while the authentication dialog was up |
+| UserCancel | Authentication was canceled by the user - e.g. the user tapped Cancel in the dialog |
+| UserFallback | Authentication was canceled because the user tapped the fallback button (Enter Password) |
 
 ## MIT License
 
