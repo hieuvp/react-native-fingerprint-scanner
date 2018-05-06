@@ -28,5 +28,6 @@
     "cleanup": "rm -rf android/build ios/build yarn.lock node_modules && cd examples && rm -rf android/build android/app/build ios/build yarn.lock node_modules",
     "cleanup:android": "cd examples/android && ./gradlew clean",
     "cleanup:install": "yarn cleanup && yarn && cd examples && yarn && cd .. && yarn symlink && yarn cleanup:android"
+    "clean:android:gradle": "cd android && ./gradlew clean && cd .. && cd examples/android && ./gradlew clean",
   }
 }
