@@ -1,4 +1,5 @@
 const ERRORS = {
+  AuthenticationLockout: 'Authentication lockout',
   AuthenticationNotMatch: 'No match.',
   AuthenticationFailed: 'Authentication was not successful because the user failed to provide valid credentials.',
   UserCancel: 'Authentication was canceled by the user - e.g. the user tapped Cancel in the dialog.',

@@ -31,6 +31,10 @@ RCT_EXPORT_METHOD(isSensorAvailable: (RCTResponseSenderBlock)callback)
                 errorReason = @"FingerprintScannerNotEnrolled";
                 break;
 
+            case LAErrorTouchIDLockout:
+                errorReason = @"AuthenticationLockout";
+                break;
+                
             default:
                 errorReason = @"FingerprintScannerNotSupported";
                 break;
