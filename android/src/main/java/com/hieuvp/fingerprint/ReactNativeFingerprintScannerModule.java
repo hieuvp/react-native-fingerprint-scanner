@@ -86,8 +86,13 @@ public class ReactNativeFingerprintScannerModule extends ReactContextBaseJavaMod
 
             @Override
             public void onNotMatch(int availableTimes) {
-                mReactContext.getJSModule(RCTDeviceEventEmitter.class)
+                if( availableTimes <= 0 ){
+                    mReactContext.getJSModule(RCTDeviceEventEmitter.class)
+                        .emit("FINGERPRINT_SCANNER_AUTHENTICATION", "AuthenticationLockout");
+                }else{
+                    mReactContext.getJSModule(RCTDeviceEventEmitter.class)
                         .emit("FINGERPRINT_SCANNER_AUTHENTICATION", "AuthenticationNotMatch");
+                }
             }
 
             @Override
@@ -103,6 +108,34 @@ public class ReactNativeFingerprintScannerModule extends ReactContextBaseJavaMod
         getFingerprintIdentify().cancelIdentify();
         mFingerprintIdentify = null;
         mReactContext.removeLifecycleEventListener(this);
+    }
+
+    @ReactMethod
+    public void restartFingerprint(final Promise promise) {
+         getFingerprintIdentify().startIdentify(MAX_AVAILABLE_TIMES, new FingerprintIdentifyListener() {
+            @Override
+            public void onSucceed() {
+                promise.resolve(true);
+                ReactNativeFingerprintScannerModule.this.release();
+            }
+
+            @Override
+            public void onNotMatch(int availableTimes) {
+                if( availableTimes <= 0 ){
+                    mReactContext.getJSModule(RCTDeviceEventEmitter.class)
+                        .emit("FINGERPRINT_SCANNER_AUTHENTICATION", "AuthenticationLockout");
+                }else{
+                    mReactContext.getJSModule(RCTDeviceEventEmitter.class)
+                        .emit("FINGERPRINT_SCANNER_AUTHENTICATION", "AuthenticationNotMatch");
+                }
+            }
+
+            @Override
+            public void onFailed() {
+                promise.reject("AuthenticationFailed", "AuthenticationFailed");
+                ReactNativeFingerprintScannerModule.this.release();
+            }
+        });
     }
 
     @ReactMethod
