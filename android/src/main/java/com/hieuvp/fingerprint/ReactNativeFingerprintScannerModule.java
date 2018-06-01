@@ -89,6 +89,7 @@ public class ReactNativeFingerprintScannerModule extends ReactContextBaseJavaMod
                 if( availableTimes <= 0 ){
                     mReactContext.getJSModule(RCTDeviceEventEmitter.class)
                         .emit("FINGERPRINT_SCANNER_AUTHENTICATION", "AuthenticationLockout");
+                    ReactNativeFingerprintScannerModule.this.release();
                 }else{
                     mReactContext.getJSModule(RCTDeviceEventEmitter.class)
                         .emit("FINGERPRINT_SCANNER_AUTHENTICATION", "AuthenticationNotMatch");
@@ -98,11 +99,11 @@ public class ReactNativeFingerprintScannerModule extends ReactContextBaseJavaMod
             @Override
             public void onFailed(boolean isDeviceLocked) {
                 if(isDeviceLocked){
-                     promise.reject("AuthenticationLockout", "AuthenticationLockout");
+                    promise.reject("AuthenticationLockout", "AuthenticationLockout");
+                    ReactNativeFingerprintScannerModule.this.release();
                 }else{
-                     promise.reject("AuthenticationFailed", "AuthenticationFailed");
+                    promise.reject("AuthenticationFailed", "AuthenticationFailed");
                 }
-                ReactNativeFingerprintScannerModule.this.release();
             }
 
             @Override
@@ -133,6 +134,7 @@ public class ReactNativeFingerprintScannerModule extends ReactContextBaseJavaMod
                 if( availableTimes <= 0 ){
                     mReactContext.getJSModule(RCTDeviceEventEmitter.class)
                         .emit("FINGERPRINT_SCANNER_AUTHENTICATION", "AuthenticationLockout");
+                    ReactNativeFingerprintScannerModule.this.release();
                 }else{
                     mReactContext.getJSModule(RCTDeviceEventEmitter.class)
                         .emit("FINGERPRINT_SCANNER_AUTHENTICATION", "AuthenticationNotMatch");
@@ -143,10 +145,10 @@ public class ReactNativeFingerprintScannerModule extends ReactContextBaseJavaMod
             public void onFailed(boolean isDeviceLocked) {
                 if(isDeviceLocked){
                     promise.reject("AuthenticationLockout", "AuthenticationLockout");
+                    ReactNativeFingerprintScannerModule.this.release();
                 }else{
                     promise.reject("AuthenticationFailed", "AuthenticationFailed");
                 }
-                ReactNativeFingerprintScannerModule.this.release();
             }
 
              @Override
