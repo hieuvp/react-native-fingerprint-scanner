@@ -1,10 +1,9 @@
 import authenticate from './authenticate';
 import isSensorAvailable from './isSensorAvailable';
-import release, { restartFingerprint } from './release';
+import release from './release';
 
 export default {
   authenticate,
   release,
-  isSensorAvailable,
-  restartFingerprint,
+  isSensorAvailable
 };
