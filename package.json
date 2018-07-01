@@ -29,13 +29,18 @@
   "author": "Hieu Van (https://github.com/hieuvp)",
   "license": "MIT",
   "scripts": {
-    "develop": "wml stop && watchman watch-del-all && rm -rf examples/node_modules/react-native-fingerprint-scanner && wml start",
-    "android": "cd examples && react-native run-android",
-    "ios": "cd examples && react-native run-ios",
+    "start": "ttab -w npm run start:wml && ttab -w npm run start:examples",
+    "start:wml": "watchman watch-del-all && rm -rf examples/node_modules/react-native-fingerprint-scanner && wml start",
+    "start:examples": "cd examples && npm run start",
+    "develop:android": "cd examples && react-native run-android",
+    "develop:ios": "cd examples && react-native run-ios",
+    "clean": "npm run clean:node && npm run clean:android && npm run clean:ios",
     "clean:node": "rm -rf node_modules package-lock.json examples/node_modules examples/package-lock.json",
     "clean:android": "rm -rf android/.gradle android/build examples/android/.gradle examples/android/build examples/android/app/build",
     "clean:android:gradle": "cd android && ./gradlew clean && cd .. && cd examples/android && ./gradlew clean",
     "clean:ios": "rm -rf ios/build examples/ios/build",
-    "clean:install": "npm run clean:node && npm run clean:android && npm run clean:ios && npm install && cd examples && npm install && cd .. && npm run clean:android:gradle"
+    "preinstall": "npm run clean",
+    "install": "cd examples && npm install",
+    "postinstall": "npm run clean:android:gradle"
   }
 }
