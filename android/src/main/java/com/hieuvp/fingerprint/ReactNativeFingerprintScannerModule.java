@@ -45,14 +45,12 @@ public class ReactNativeFingerprintScannerModule extends ReactContextBaseJavaMod
             return mFingerprintIdentify;
         }
         mReactContext.addLifecycleEventListener(this);
-        mFingerprintIdentify = new FingerprintIdentify(getCurrentActivity(),
-                new FingerprintIdentifyExceptionListener() {
-                    @Override
-                    public void onCatchException(Throwable exception) {
-                        mReactContext.removeLifecycleEventListener(
-                                ReactNativeFingerprintScannerModule.this);
-                    }
-                });
+        mFingerprintIdentify = new FingerprintIdentify(getCurrentActivity(), new FingerprintIdentifyExceptionListener() {
+            @Override
+            public void onCatchException(Throwable exception) {
+                mReactContext.removeLifecycleEventListener(ReactNativeFingerprintScannerModule.this);
+            }
+        });
         return mFingerprintIdentify;
     }
 
@@ -91,9 +89,16 @@ public class ReactNativeFingerprintScannerModule extends ReactContextBaseJavaMod
             }
 
             @Override
-            public void onFailed() {
+            public void onFailed(boolean isDeviceLocked) {
+                // failed, release hardware automatically
+                // isDeviceLocked: is device locked temporarily
                 promise.reject("AuthenticationFailed", "AuthenticationFailed");
                 ReactNativeFingerprintScannerModule.this.release();
+            }
+
+            @Override
+            public void onStartFailedByDeviceLocked() {
+                // the first start failed because the device was locked temporarily
             }
         });
     }
@@ -111,7 +116,7 @@ public class ReactNativeFingerprintScannerModule extends ReactContextBaseJavaMod
         if (errorMessage != null) {
             promise.reject(errorMessage, errorMessage);
         } else {
-            promise.resolve('Fingerprint');
+            promise.resolve("FINGERPRINT");
         }
     }
 }
