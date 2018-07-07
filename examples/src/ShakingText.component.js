@@ -1,9 +1,5 @@
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import {
-  Animated,
-  Text
-} from 'react-native';
+import React, { Component, PropTypes } from 'react';
+import { Animated, Text } from 'react-native';
 
 class ShakingText extends Component {
 

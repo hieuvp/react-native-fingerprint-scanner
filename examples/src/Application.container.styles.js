@@ -1,7 +1,4 @@
-import {
-  Dimensions,
-  StyleSheet
-} from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
 
 const { width } = Dimensions.get('window');
 
@@ -29,13 +26,6 @@ export default StyleSheet.create({
   fingerprint: {
     padding: 20,
     marginVertical: 30,
-  },
-  biometryType: {
-    color: '#006400',
-    fontSize: 16,
-    textAlign: 'center',
-    marginHorizontal: 10,
-    marginTop: 30,
   },
   errorMessage: {
     color: '#ea3d13',

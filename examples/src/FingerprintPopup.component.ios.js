@@ -1,5 +1,4 @@
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { AlertIOS } from 'react-native';
 import FingerprintScanner from 'react-native-fingerprint-scanner';
 
