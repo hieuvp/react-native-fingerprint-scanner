@@ -1,0 +1,9 @@
+{
+  "ignore_dirs": [
+    ".idea",
+    "android/.idea",
+    ".git",
+    "node_modules",
+    "examples"
+  ]
+}

@@ -4,10 +4,10 @@
 [![Version](https://img.shields.io/npm/v/react-native-fingerprint-scanner.svg)](https://www.npmjs.com/package/react-native-fingerprint-scanner)
 [![NPM](https://img.shields.io/npm/dm/react-native-fingerprint-scanner.svg)](https://www.npmjs.com/package/react-native-fingerprint-scanner)
 
-React Native Fingerprint Scanner is a [React Native](http://facebook.github.io/react-native/) library for authenticating users with Fingerprint (TouchID).
+React Native Fingerprint Scanner is a [React Native](http://facebook.github.io/react-native/) library for authenticating users with Fingerprint, Touch ID and Face ID.
 
 ### iOS Version
-The usage of the TouchID is based on a framework, named **Local Authentication**.
+The usage of the TouchID and FaceID is based on a framework, named **Local Authentication**.
 
 It provides a **Default View** that prompts the user to place a finger to the iPhone’s button for scanning.
 
@@ -222,12 +222,15 @@ export default FingerprintPopup;
 ### `isSensorAvailable()`: (Android, iOS)
 Checks if Fingerprint Scanner is able to be used by now.
 
-- Returns a `Promise`
+- Returns a `Promise<string>`
+- `biometryType: String` - the type of biometric authentication supported by the device.
+- `error: FingerprintScannerError { name, message }` - the reason of failure.
 
 ```javascript
 componentDidMount() {
   FingerprintScanner
     .isSensorAvailable()
+    .then(biometryType => this.setState({ biometryType }))
     .catch(error => this.setState({ errorMessage: error.message }));
 }
 ```
@@ -286,21 +289,35 @@ componentWillUnmount() {
 }
 ```
 
+### `Types of Biometrics`
+
+| Value |
+|---|
+| FINGERPRINT |
+| FACE |
+
 ### `Errors`
 
 | Name | Message |
 |---|---|
-| AuthenticationNotMatch | No match |
 | AuthenticationFailed | Authentication was not successful because the user failed to provide valid credentials |
-| UserCancel | Authentication was canceled by the user - e.g. the user tapped Cancel in the dialog |
-| UserFallback | Authentication was canceled because the user tapped the fallback button (Enter Password) |
-| SystemCancel | Authentication was canceled by system - e.g. if another application came to foreground while the authentication dialog was up |
-| PasscodeNotSet | Authentication could not start because the passcode is not set on the device |
+| AuthenticationNotMatch | No match |
+| DeviceLocked | The device is locked temporarily |
 | FingerprintScannerNotAvailable | Authentication could not start because Fingerprint Scanner is not available on the device |
 | FingerprintScannerNotEnrolled | Authentication could not start because Fingerprint Scanner has no enrolled fingers |
-| FingerprintScannerUnknownError | Could not authenticate for an unknown reason |
 | FingerprintScannerNotSupported | Device does not support Fingerprint Scanner |
+| FingerprintScannerUnknownError | Could not authenticate for an unknown reason |
+| PasscodeNotSet | Authentication could not start because the passcode is not set on the device |
+| SystemCancel | Authentication was canceled by system - e.g. if another application came to foreground while the authentication dialog was up |
+| UserCancel | Authentication was canceled by the user - e.g. the user tapped Cancel in the dialog |
+| UserFallback | Authentication was canceled because the user tapped the fallback button (Enter Password) |
 
-## License
+## MIT License
 
-MIT
+Copyright (C) 2017 Van Phu Hieu
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

@@ -6,8 +6,6 @@
 #import "RCTUtils.h"
 #endif
 
-#import <LocalAuthentication/LocalAuthentication.h>
-
 @implementation ReactNativeFingerprintScanner
 
 RCT_EXPORT_MODULE();
@@ -18,7 +16,7 @@ RCT_EXPORT_METHOD(isSensorAvailable: (RCTResponseSenderBlock)callback)
     NSError *error;
 
     if ([context canEvaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics error:&error]) {
-        callback(@[[NSNull null], @true]);
+        callback(@[[NSNull null], [self getBiometryType:context]]);
     } else {
         NSString *errorReason;
 
@@ -116,6 +114,15 @@ RCT_EXPORT_METHOD(authenticate: (NSString *)reason
         callback(@[RCTMakeError(@"FingerprintScannerNotSupported", nil, nil)]);
         return;
     }
+}
+
+- (NSString *)getBiometryType:(LAContext *)context
+{
+    if (@available(iOS 11, *)) {
+        return context.biometryType == LABiometryTypeFaceID ? @"Face ID" : @"Touch ID";
+    }
+
+    return @"Touch ID";
 }
 
 @end
