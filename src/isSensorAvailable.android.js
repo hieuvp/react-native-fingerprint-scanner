@@ -6,7 +6,7 @@ const { ReactNativeFingerprintScanner } = NativeModules;
 export default () => {
   return new Promise((resolve, reject) => {
     ReactNativeFingerprintScanner.isSensorAvailable()
-      .then(() => resolve(true))
+      .then((biometryType) => resolve(biometryType))
       .catch(error => reject(createError(error.message)));
   });
 }
