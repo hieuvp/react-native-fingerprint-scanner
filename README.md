@@ -311,6 +311,7 @@ componentWillUnmount() {
 | FingerprintScannerNotEnrolled | Authentication could not start because Fingerprint Scanner has no enrolled fingers |
 | FingerprintScannerUnknownError | Could not authenticate for an unknown reason |
 | FingerprintScannerNotSupported | Device does not support Fingerprint Scanner |
+| DeviceLocked | Authentication was not successful, the device currently in a lockout of 30 seconds |
 
 ## License
 
