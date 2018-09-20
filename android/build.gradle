@@ -31,5 +31,5 @@ repositories {
 
 dependencies {
     compile 'com.facebook.react:react-native:+'
-    compile 'com.wei.android.lib:fingerprintidentify:1.1.4'
+    compile 'com.wei.android.lib:fingerprintidentify:1.2.1'
 }
