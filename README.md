@@ -90,6 +90,14 @@ Samsung and MeiZu's Fingerprint SDK supports most devices which system versions 
     -dontwarn com.samsung.android.sdk.**
     ```
 
+3. Add `NSFaceIDUsageDescription` to your Info.plist to describe the reason your app uses Face ID. (see [Documentation](https://developer.apple.com/library/content/documentation/General/Reference/InfoPlistKeyReference/Articles/CocoaKeys.html#//apple_ref/doc/uid/TP40009251-SW75)). Otherwise the App will crash when you start a Face ID authentication on iOS 11.3+. For example,
+
+```xml
+<key>NSFaceIDUsageDescription</key>
+<string>$(PRODUCT_NAME) Authentication</string>
+```
+
+
 ## Example
 
 [Example Source Code](https://github.com/hieuvp/react-native-fingerprint-scanner/tree/master/examples)
