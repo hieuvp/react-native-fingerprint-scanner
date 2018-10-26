@@ -64,6 +64,23 @@ Samsung and MeiZu's Fingerprint SDK supports most devices which system versions 
   	```
     compile project(':react-native-fingerprint-scanner')
   	```
+    
+### App Permissions
+
+Add the following permissions to their respective files:
+
+In your `AndroidManifest.xml`:
+
+```xml
+<uses-permission android:name="android.permission.USE_FINGERPRINT" />
+```
+
+In your `Info.plist`:
+
+```xml
+<key>NSFaceIDUsageDescription</key>
+<string>$(PRODUCT_NAME) requires FaceID access to allows you quick and secure access.</string>
+```
 
 ### Extra Configuration
 
@@ -89,14 +106,6 @@ Samsung and MeiZu's Fingerprint SDK supports most devices which system versions 
     -keep class com.samsung.android.sdk.** { *; }
     -dontwarn com.samsung.android.sdk.**
     ```
-
-3. Add `NSFaceIDUsageDescription` to your Info.plist to describe the reason your app uses Face ID. (see [Documentation](https://developer.apple.com/library/content/documentation/General/Reference/InfoPlistKeyReference/Articles/CocoaKeys.html#//apple_ref/doc/uid/TP40009251-SW75)). Otherwise the App will crash when you start a Face ID authentication on iOS 11.3+. For example,
-
-```xml
-<key>NSFaceIDUsageDescription</key>
-<string>$(PRODUCT_NAME) Authentication</string>
-```
-
 
 ## Example
 
