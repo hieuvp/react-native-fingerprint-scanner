@@ -105,7 +105,7 @@ In your `Info.plist`:
 
     -keep class com.samsung.android.sdk.** { *; }
     -dontwarn com.samsung.android.sdk.**
-
+    ```
 
 ## Example
 
