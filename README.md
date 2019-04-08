@@ -1,3 +1,5 @@
+# [iBer对本库的修改请看这里](./CHANGELOG_IBER.md)
+
 # React Native Fingerprint Scanner
 
 [![React Native Version](https://img.shields.io/badge/react--native-latest-blue.svg?style=flat-square)](http://facebook.github.io/react-native/releases)
