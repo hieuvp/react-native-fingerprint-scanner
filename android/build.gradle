@@ -36,5 +36,5 @@ repositories {
 
 dependencies {
     compile 'com.facebook.react:react-native:+'
-    compile "com.wei.android.lib:fingerprintidentify:${safeExtGet("fingerprintidentify", "1.2.1")}"
+    compile "com.wei.android.lib:fingerprintidentify:${safeExtGet("fingerprintidentify", "1.2.6")}"
 }
