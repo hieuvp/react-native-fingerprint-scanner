@@ -2,10 +2,17 @@
   "name": "examples",
   "version": "0.0.1",
   "private": true,
+  "scripts": {
+    "start": "node node_modules/react-native/local-cli/cli.js start"
+  },
+  "main": "src/Application.container",
   "dependencies": {
     "prop-types": "15.6.1",
-    "react": "16.3.1",
-    "react-native": "0.55.3",
+    "react": "^16.8.3",
+    "react-native": "^0.59.9",
     "react-native-fingerprint-scanner": "file:../"
+  },
+  "devDependencies": {
+    "metro-react-native-babel-preset": "^0.54.1"
   }
 }
