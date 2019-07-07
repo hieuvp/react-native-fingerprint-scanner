@@ -94,7 +94,7 @@ In your `Info.plist`:
           targetSdkVersion 25
     ```
 
-2. Add necessary rules to `android/app/proguard-rules.pro`
+2. Add necessary rules to `android/app/proguard-rules.pro` if you are using proguard:
     ```
     # MeiZu Fingerprint
 

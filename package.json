@@ -18,6 +18,9 @@
     "authenticate",
     "auth"
   ],
+  "peerDependencies": {
+    "react-native": ">=0.44 <0.60.0"
+  },
   "repository": "https://github.com/hieuvp/react-native-fingerprint-scanner.git",
   "author": "Hieu Van (https://github.com/hieuvp)",
   "license": "MIT",
