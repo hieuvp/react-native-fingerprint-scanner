@@ -6,6 +6,14 @@
 
 React Native Fingerprint Scanner is a [React Native](http://facebook.github.io/react-native/) library for authenticating users with Fingerprint (TouchID).
 
+## Table of Contents
+
+- [Installation](#installation)
+- [Compatibility](#compatibility)
+- [Example](#example)
+- [API](#api)
+- [License](#license)
+
 ### iOS Version
 The usage of the TouchID is based on a framework, named **Local Authentication**.
 
@@ -25,13 +33,6 @@ Samsung and MeiZu's Fingerprint SDK supports most devices which system versions 
 <img src="https://github.com/hieuvp/react-native-fingerprint-scanner/raw/master/screenshots/android-availability.png" height="600">
 <img src="https://github.com/hieuvp/react-native-fingerprint-scanner/raw/master/screenshots/android-authentication.gif" height="600">
 </div>
-
-## Table of Contents
-
-- [Installation](#installation)
-- [Example](#example)
-- [API](#api)
-- [License](#license)
 
 ## Installation
 
@@ -106,6 +107,12 @@ In your `Info.plist`:
     -keep class com.samsung.android.sdk.** { *; }
     -dontwarn com.samsung.android.sdk.**
     ```
+
+## Compatibility
+
+* For Gradle < 3 you MUST install react-native-fingerprint-scanner at version <= 2.5.0
+* For RN >= 0.57 and/or Gradle >= 3 you MUST install react-native-fingerprint-scanner at version >= 2.6.0
+* For RN >= 0.60 you MUST install react-native-fingerprint-scanner at version >= 3.0.0
 
 ## Example
 

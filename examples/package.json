@@ -3,13 +3,13 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node node_modules/react-native/local-cli/cli.js start"
+    "start": "react-native start"
   },
   "main": "src/Application.container",
   "dependencies": {
     "prop-types": "15.6.1",
-    "react": "^16.8.3",
-    "react-native": "^0.59.9",
+    "react": "16.8.6",
+    "react-native": "0.60.0",
     "react-native-fingerprint-scanner": "file:../"
   },
   "devDependencies": {

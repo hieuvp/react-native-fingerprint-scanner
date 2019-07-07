@@ -4,18 +4,18 @@ def safeExtGet(prop, fallback) {
 
 buildscript {
     repositories {
+        google()
         jcenter()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.3.1'
+        classpath("com.android.tools.build:gradle:3.4.1")
     }
 }
 
 apply plugin: 'com.android.library'
 
 android {
-
     compileSdkVersion safeExtGet('compileSdkVersion', 25)
     buildToolsVersion safeExtGet('buildToolsVersion', '25.0.3')
 
@@ -32,12 +32,13 @@ android {
 
 repositories {
     mavenCentral()
+    jcenter()
 }
 
 dependencies {
     compile 'com.facebook.react:react-native:+'
-    // 1.2.1 is the last version compatible with non-androidx.
+    // 1.2.3 is the minimum version compatible with androidx.
     // See https://github.com/uccmawei/FingerprintIdentify/issues/74
     // (translation https://translate.google.com/translate?sl=zh-CN&tl=en&u=https://github.com/uccmawei/FingerprintIdentify/issues/74)
-    compile "com.wei.android.lib:fingerprintidentify:${safeExtGet("fingerprintidentify", "1.2.1")}"
+    compile "com.wei.android.lib:fingerprintidentify:${safeExtGet("fingerprintidentify", "1.2.6")}"
 }
