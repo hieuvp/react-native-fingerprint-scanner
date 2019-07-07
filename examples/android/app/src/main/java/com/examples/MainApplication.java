@@ -2,6 +2,7 @@ package com.examples;
 
 import android.app.Application;
 
+import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -22,10 +23,9 @@ public class MainApplication extends Application implements ReactApplication {
 
         @Override
         protected List<ReactPackage> getPackages() {
-            return Arrays.asList(
-                    new MainReactPackage(),
-                    new ReactNativeFingerprintScannerPackage()
-            );
+            List<ReactPackage> packages = new PackageList(this).getPackages();
+            // packages.add(new ReactNativeFingerprintScannerPackage());
+            return packages;
         }
 
         @Override

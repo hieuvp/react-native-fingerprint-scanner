@@ -19,15 +19,15 @@
     "auth"
   ],
   "peerDependencies": {
-    "react-native": ">=0.44 <0.60.0"
+    "react-native": ">=0.60 <1.0.0"
   },
+  "homepage": "https://github.com/hieuvp/react-native-fingerprint-scanner#readme",
   "repository": "https://github.com/hieuvp/react-native-fingerprint-scanner.git",
   "author": "Hieu Van (https://github.com/hieuvp)",
   "license": "MIT",
   "scripts": {
     "android": "cd examples && react-native run-android",
     "ios": "cd examples && react-native run-ios",
-    "symlink": "cd examples && rm -rf node_modules/react-native-fingerprint-scanner && npm link ../../react-native-fingerprint-scanner && rm -rf ../package-lock.json",
     "cleanup": "rm -rf android/build ios/build yarn.lock node_modules && cd examples && rm -rf android/build android/app/build ios/build yarn.lock node_modules",
     "cleanup:android": "cd examples/android && ./gradlew clean",
     "cleanup:install": "yarn cleanup && yarn && cd examples && yarn && cd .. && yarn symlink && yarn cleanup:android"
