@@ -48,7 +48,7 @@ public class ReactNativeFingerprintScannerModule extends ReactContextBaseJavaMod
             return mFingerprintIdentify;
         }
         mReactContext.addLifecycleEventListener(this);
-        mFingerprintIdentify = new FingerprintIdentify(getCurrentActivity());
+        mFingerprintIdentify = new FingerprintIdentify(mReactContext);
         mFingerprintIdentify.setSupportAndroidL(true);
         mFingerprintIdentify.setExceptionListener(
             new ExceptionListener() {
