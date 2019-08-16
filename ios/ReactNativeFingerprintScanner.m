@@ -44,12 +44,17 @@ RCT_EXPORT_METHOD(isSensorAvailable: (RCTResponseSenderBlock)callback)
 }
 
 RCT_EXPORT_METHOD(authenticate: (NSString *)reason
+                  cancelTitle: (NSString *)cancelTitle
                   fallback: (BOOL)fallbackEnabled
                   callback: (RCTResponseSenderBlock)callback)
 {
     LAContext *context = [[LAContext alloc] init];
     NSError *error;
 
+    if (cancelTitle.length > 0) {
+        context.localizedCancelTitle = cancelTitle;
+    }
+    
     // Toggle fallback button
     if (!fallbackEnabled) {
         context.localizedFallbackTitle = @"";

@@ -3,9 +3,9 @@ import createError from './createError';
 
 const { ReactNativeFingerprintScanner } = NativeModules;
 
-export default ({ description = ' ', fallbackEnabled = true }) => {
+export default ({ description = ' ', cancelTitle = '', fallbackEnabled = true }) => {
   return new Promise((resolve, reject) => {
-    ReactNativeFingerprintScanner.authenticate(description, fallbackEnabled, error => {
+    ReactNativeFingerprintScanner.authenticate(description, cancelTitle, fallbackEnabled, error => {
       if (error) {
         return reject(createError(error.code, error.message))
       }
