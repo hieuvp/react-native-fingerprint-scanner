@@ -138,6 +138,6 @@ export interface FingerPrintProps {
   ) => Promise<void>;
 }
 
-declare const FingerPrint: FingerPrintProps;
+declare const FingerprintScanner: FingerPrintProps;
 
-export default FingerPrint;
+export default FingerprintScanner;
