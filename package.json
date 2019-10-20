@@ -1,6 +1,6 @@
 {
   "name": "react-native-fingerprint-scanner",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "React Native Fingerprint Scanner for Android and iOS",
   "main": "index.js",
   "keywords": [
@@ -25,6 +25,7 @@
   "repository": "https://github.com/hieuvp/react-native-fingerprint-scanner.git",
   "author": "Hieu Van (https://github.com/hieuvp)",
   "license": "MIT",
+  "types": "index.d.ts",
   "scripts": {
     "android": "cd examples && react-native run-android",
     "ios": "cd examples && react-native run-ios",
