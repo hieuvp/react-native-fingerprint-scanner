@@ -71,7 +71,7 @@ export interface FingerPrintProps {
   /**
         ### isSensorAvailable(): (Android, iOS)
         Checks if Fingerprint Scanner is able to be used by now.
-        -  Returns a `Promise<string>`
+        -  Returns a `Promise<Biometrics>`
         - `biometryType`: *String* - The type of biometric authentication supported by the device.
         - `error: FingerprintScannerError { name, message, biometric }` - The name and message of failure and the biometric type in use.
         
