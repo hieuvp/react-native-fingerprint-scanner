@@ -2,7 +2,7 @@ export type AuthenticateIOS = {
   description: string;
   fallbackEnabled: boolean;
 };
-export type AuthenticateAndroid = { onAttempt: () => void };
+export type AuthenticateAndroid = { onAttempt: (error: FingerprintScannerError) => void };
 
 export type Biometrics = 'Touch ID' | 'Face ID' | 'Fingerprint';
 
@@ -71,7 +71,7 @@ export interface FingerPrintProps {
   /**
         ### isSensorAvailable(): (Android, iOS)
         Checks if Fingerprint Scanner is able to be used by now.
-        -  Returns a `Promise<string>`
+        -  Returns a `Promise<Biometrics>`
         - `biometryType`: *String* - The type of biometric authentication supported by the device.
         - `error: FingerprintScannerError { name, message, biometric }` - The name and message of failure and the biometric type in use.
         
@@ -87,7 +87,7 @@ export interface FingerPrintProps {
 
         ------------
       */
-  isSensorAvailable: () => Promise<string>;
+  isSensorAvailable: () => Promise<Biometrics>;
 
   /**
       ### authenticate({ description, fallbackEnabled }): (iOS) 
