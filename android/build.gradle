@@ -3,13 +3,18 @@ def safeExtGet(prop, fallback) {
 }
 
 buildscript {
-    repositories {
-        google()
-        jcenter()
-    }
+    // The Android Gradle plugin is only required when opening the android folder stand-alone.
+    // This avoids unnecessary downloads and potential conflicts when the library is included as a
+    // module dependency in an application project.
+    if (project == rootProject) {
+        repositories {
+            google()
+            jcenter()
+        }
 
-    dependencies {
-        classpath("com.android.tools.build:gradle:3.4.1")
+        dependencies {
+            classpath("com.android.tools.build:gradle:3.5.1")
+        }
     }
 }
 
@@ -36,9 +41,9 @@ repositories {
 }
 
 dependencies {
-    compile 'com.facebook.react:react-native:+'
+    implementation 'com.facebook.react:react-native:+'
     // 1.2.3 is the minimum version compatible with androidx.
     // See https://github.com/uccmawei/FingerprintIdentify/issues/74
     // (translation https://translate.google.com/translate?sl=zh-CN&tl=en&u=https://github.com/uccmawei/FingerprintIdentify/issues/74)
-    compile "com.wei.android.lib:fingerprintidentify:${safeExtGet("fingerprintidentify", "1.2.6")}"
+    implementation "com.wei.android.lib:fingerprintidentify:${safeExtGet("fingerprintidentify", "1.2.6")}"
 }
