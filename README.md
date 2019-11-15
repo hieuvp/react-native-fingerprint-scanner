@@ -83,12 +83,19 @@ $ react-native link react-native-fingerprint-scanner
 
 Add the following permissions to their respective files:
 
+#### Android
 In your `AndroidManifest.xml`:
 
+API level 28+ ([Reference](https://developer.android.com/reference/android/Manifest.permission#USE_BIOMETRIC))
+```xml
+<uses-permission android:name="android.permission.USE_BIOMETRIC" />
+```
+
+API level <28 ([Reference](https://developer.android.com/reference/android/Manifest.permission#USE_FINGERPRINT))
 ```xml
 <uses-permission android:name="android.permission.USE_FINGERPRINT" />
 ```
-
+#### iOS
 In your `Info.plist`:
 
 ```xml
