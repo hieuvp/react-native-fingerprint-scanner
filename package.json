@@ -18,7 +18,11 @@
     "authenticate",
     "auth"
   ],
-  "repository": "https://github.com/hieuvp/react-native-fingerprint-scanner.git",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hieuvp/react-native-fingerprint-scanner.git"
+  },
+  "homepage": "https://github.com/hieuvp/react-native-fingerprint-scanner",
   "author": "Hieu Van (https://github.com/hieuvp)",
   "license": "MIT",
   "scripts": {
