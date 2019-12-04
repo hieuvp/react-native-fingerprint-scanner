@@ -1,0 +1,39 @@
+env:
+  - NODE_ENV='test'
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+matrix:
+  include:
+    - language: objective-c
+      os: osx
+      xcode_sdk: iphonesimulator12.2
+      osx_image: xcode10.2
+      sudo: true
+      before_install:
+        - brew install node@10
+        - cd examples && make install # install node modules to get podfiles
+      install:
+        - cd ios && pod install && cd ..
+      script:
+        - make test-ios
+    - language: android
+      android:
+        components:
+          - tools
+          - platform-tools
+          - build-tools-28.0.3
+          - android-28
+      sudo: true
+      before_install:
+        - nvm install --lts
+      install: true
+      script:
+        - cd examples && make test-android
+    - language: node_js
+      node_js: lts/*
+      sudo: false
+      install:
+        - cd examples && npm ci
+      script: react-native bundle --entry-file index.js --bundle-output main.jsbundle

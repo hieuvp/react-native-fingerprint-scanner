@@ -9,13 +9,15 @@ const ERRORS = {
   FingerprintScannerNotEnrolled: 'Authentication could not start because Fingerprint Scanner has no enrolled fingers.',
   FingerprintScannerUnknownError: 'Could not authenticate for an unknown reason.',
   FingerprintScannerNotSupported: 'Device does not support Fingerprint Scanner.',
+  DeviceLocked: 'Authentication was not successful, the device currently in a lockout of 30 seconds'
 };
 
 class FingerprintScannerError extends Error {
 
-  constructor({ name, message }) {
+  constructor({ name, message, biometric }) {
     super(message);
     this.name = name || this.constructor.name;
+    this.biometric = biometric;
     if (typeof Error.captureStackTrace === 'function') {
       Error.captureStackTrace(this, this.constructor);
     } else {
@@ -24,4 +26,4 @@ class FingerprintScannerError extends Error {
   }
 }
 
-export default (name) => new FingerprintScannerError({ name, message: ERRORS[name] });
+export default (name, biometric) => new FingerprintScannerError({ name, message: ERRORS[name], biometric });
