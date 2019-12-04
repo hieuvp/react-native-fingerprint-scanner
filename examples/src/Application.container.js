@@ -3,7 +3,8 @@ import {
   Image,
   Text,
   TouchableOpacity,
-  View
+  View,
+  AppState
 } from 'react-native';
 import FingerprintScanner from 'react-native-fingerprint-scanner';
 
@@ -16,6 +17,7 @@ class Application extends Component {
     super(props);
     this.state = {
       errorMessage: undefined,
+      biometric: undefined,
       popupShowed: false
     };
   }
@@ -29,13 +31,31 @@ class Application extends Component {
   };
 
   componentDidMount() {
+    AppState.addEventListener('change', this.handleAppStateChange);
+    // Get initial fingerprint enrolled
+    this.detectFingerprintAvailable();
+  }
+
+  componentWillUnmount() {
+    AppState.removeEventListener('change', this.handleAppStateChange);
+  }
+
+  detectFingerprintAvailable = () => {
     FingerprintScanner
       .isSensorAvailable()
-      .catch(error => this.setState({ errorMessage: error.message }));
+      .catch(error => this.setState({ errorMessage: error.message, biometric: error.biometric }));
+  }
+
+  handleAppStateChange = (nextAppState) => {
+    if (this.state.appState && this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
+      FingerprintScanner.release();
+      this.detectFingerprintAvailable();
+    }
+    this.setState({ appState: nextAppState });
   }
 
   render() {
-    const { errorMessage, popupShowed } = this.state;
+    const { errorMessage, biometric, popupShowed } = this.state;
 
     return (
       <View style={styles.container}>
@@ -57,7 +77,7 @@ class Application extends Component {
 
         {errorMessage && (
           <Text style={styles.errorMessage}>
-            {errorMessage}
+            {errorMessage} {biometric}
           </Text>
         )}
 

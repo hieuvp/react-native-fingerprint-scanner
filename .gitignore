@@ -3,13 +3,11 @@
 .DS_Store
 build/
 
-
 # node.js
 #
 node_modules/
 npm-debug.log
 yarn-error.log
-  
 
 # Xcode
 #
@@ -29,7 +27,6 @@ DerivedData
 *.ipa
 *.xcuserstate
 project.xcworkspace
-      
 
 # Android/IntelliJ
 #
@@ -38,7 +35,6 @@ project.xcworkspace
 gradle/
 local.properties
 *.iml
-
 
 # BUCK
 buck-out/

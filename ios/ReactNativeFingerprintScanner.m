@@ -6,8 +6,6 @@
 #import "RCTUtils.h"
 #endif
 
-#import <LocalAuthentication/LocalAuthentication.h>
-
 @implementation ReactNativeFingerprintScanner
 
 RCT_EXPORT_MODULE();
@@ -16,19 +14,32 @@ RCT_EXPORT_METHOD(isSensorAvailable: (RCTResponseSenderBlock)callback)
 {
     LAContext *context = [[LAContext alloc] init];
     NSError *error;
-    
+
 
     if ([context canEvaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics error:&error]) {
-        NSString *type = @"touch";
-        if(@available(iOS 11.0, *)) {
-            if(context.biometryType == LABiometryTypeFaceID) {
-                type = @"face";
-            }
-        }
-        callback(@[[NSNull null], type]);
+        callback(@[[NSNull null], [self getBiometryType:context]]);
     } else {
-        // Device does not support FingerprintScanner
-        callback(@[RCTMakeError(@"FingerprintScannerNotSupported", nil, nil)]);
+        NSString *code;
+        NSString *message;
+
+        switch (error.code) {
+            case LAErrorTouchIDNotAvailable:
+                code = @"FingerprintScannerNotAvailable";
+                message = [self getBiometryType:context];
+                break;
+
+            case LAErrorTouchIDNotEnrolled:
+                code = @"FingerprintScannerNotEnrolled";
+                message = [self getBiometryType:context];
+                break;
+
+            default:
+                code = @"FingerprintScannerNotSupported";
+                message = nil;
+                break;
+        }
+
+        callback(@[RCTJSErrorFromCodeMessageAndNSError(code, message, nil)]);
         return;
     }
 }
@@ -44,7 +55,7 @@ RCT_EXPORT_METHOD(authenticate: (NSString *)reason
     if (!fallbackEnabled) {
         context.localizedFallbackTitle = @"";
     }
-    
+
     void (^fallbackBlock)() = ^(){
         NSError *error;
         LAContext *context = [[LAContext alloc] init];
@@ -74,12 +85,12 @@ RCT_EXPORT_METHOD(authenticate: (NSString *)reason
          {
              // Failed Authentication
              if (error) {
-                 
+
                  if(error.code == LAErrorUserFallback) {
                      fallbackBlock();
                      return;
                  }
-                 
+
                  NSString *errorReason;
                  switch (error.code) {
                      case LAErrorAuthenticationFailed:
@@ -110,10 +121,10 @@ RCT_EXPORT_METHOD(authenticate: (NSString *)reason
                          errorReason = @"FingerprintScannerUnknownError";
                          break;
                  }
-                 
-                 
+
+
                  NSLog(@"Authentication failed: %@", errorReason);
-                 callback(@[RCTMakeError(errorReason, nil, nil)]);
+                 callback(@[RCTJSErrorFromCodeMessageAndNSError(errorReason, errorReason, nil)]);
                  return;
              }
 
@@ -122,15 +133,28 @@ RCT_EXPORT_METHOD(authenticate: (NSString *)reason
                  callback(@[[NSNull null], @"Authenticated with Fingerprint Scanner."]);
                  return;
              }
-             
-             callback(@[RCTMakeError(@"AuthenticationFailed", nil, nil)]);
+
+             callback(@[RCTJSErrorFromCodeMessageAndNSError(@"AuthenticationFailed", @"AuthenticationFailed", nil)]);
          }];
 
     } else {
         // This clause is reached if the user has attempted an invalid fingerprint too many times,
         // or if Touch ID is not enabled
         fallbackBlock();
+
+        // Device does not support FingerprintScanner
+        callback(@[RCTJSErrorFromCodeMessageAndNSError(@"FingerprintScannerNotSupported", @"FingerprintScannerNotSupported", nil)]);
+        return;
     }
+}
+
+- (NSString *)getBiometryType:(LAContext *)context
+{
+    if (@available(iOS 11, *)) {
+        return context.biometryType == LABiometryTypeFaceID ? @"Face ID" : @"Touch ID";
+    }
+
+    return @"Touch ID";
 }
 
 @end
