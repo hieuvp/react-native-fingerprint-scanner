@@ -1,5 +1,7 @@
 package com.hieuvp.fingerprint;
 
+import android.os.Build;
+
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -43,6 +45,14 @@ public class ReactNativeFingerprintScannerModule extends ReactContextBaseJavaMod
         this.release();
     }
 
+    private boolean supportsFaceId() {
+        return Build.SDK_INT >= 28;   // BiometricPrompt supported on P and up
+    }
+
+    private BiometricPrompt getBiometricPrompt() {
+        // TODO
+    }
+
     private FingerprintIdentify getFingerprintIdentify() {
         if (mFingerprintIdentify != null) {
             return mFingerprintIdentify;
@@ -64,6 +74,18 @@ public class ReactNativeFingerprintScannerModule extends ReactContextBaseJavaMod
     }
 
     private String getErrorMessage() {
+        if (supportsFaceId()) {
+            return getErrorMessageBiometric();
+        }
+
+        return getErrorMessageFingerprint();
+    }
+
+    private getErrorMessageBiometric() {
+        // TODO
+    }
+
+    private String getErrorMessageFingerprint() {
         if (!getFingerprintIdentify().isHardwareEnable()) {
             return "FingerprintScannerNotSupported";
         } else if (!getFingerprintIdentify().isRegisteredFingerprint()) {
@@ -83,6 +105,14 @@ public class ReactNativeFingerprintScannerModule extends ReactContextBaseJavaMod
             return;
         }
 
+        if (supportsFaceId()) {
+            authenticateBiometric(promise);
+        }
+
+        authenticateFingerprint(promise);
+    }
+
+    private void authenticateFingerprint(final Promise promise) {
         getFingerprintIdentify().resumeIdentify();
         getFingerprintIdentify().startIdentify(MAX_AVAILABLE_TIMES, new IdentifyListener() {
             @Override
@@ -115,10 +145,18 @@ public class ReactNativeFingerprintScannerModule extends ReactContextBaseJavaMod
         });
     }
 
+    private void authenticateBiometric(final Promise promise) {
+        // TODO
+    }
+
     @ReactMethod
     public void release() {
-        getFingerprintIdentify().cancelIdentify();
-        mFingerprintIdentify = null;
+        if (supportsFaceId()) {
+            // TODO
+        } else {
+            getFingerprintIdentify().cancelIdentify();
+            mFingerprintIdentify = null;
+        }
         mReactContext.removeLifecycleEventListener(this);
     }
 
