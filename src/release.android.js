@@ -6,3 +6,4 @@ export default () => {
   DeviceEventEmitter.removeAllListeners('FINGERPRINT_SCANNER_AUTHENTICATION');
   ReactNativeFingerprintScanner.release();
 }
+export default () => null;
