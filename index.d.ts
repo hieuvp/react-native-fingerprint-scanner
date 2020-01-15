@@ -4,7 +4,7 @@ export type AuthenticateIOS = {
 };
 export type AuthenticateAndroid = { onAttempt: (error: FingerprintScannerError) => void };
 
-export type Biometrics = 'Touch ID' | 'Face ID' | 'Fingerprint';
+export type Biometrics = 'Touch ID' | 'Face ID' | 'Biometrics';
 
 export type Errors =
   | { name: 'AuthenticationNotMatch'; message: 'No match' }
