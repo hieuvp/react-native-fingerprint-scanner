@@ -13,7 +13,6 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.module.annotations.ReactModule;
-import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEmitter;
 
 @ReactModule(name="ReactNativeFingerprintScanner")
 public class ReactNativeFingerprintScannerModule
@@ -110,6 +109,38 @@ public class ReactNativeFingerprintScannerModule
             });
     }
 
+    private String errString(int errCode) {
+        switch (errCode) {
+            case BiometricPrompt.ERROR_CANCELED:
+                return "SystemCancel";
+            case BiometricPrompt.ERROR_HW_NOT_PRESENT:
+                return "FingerprintScannerNotSupported";
+            case BiometricPrompt.ERROR_HW_UNAVAILABLE:
+                return "FingerprintScannerNotAvailable";
+            case BiometricPrompt.ERROR_LOCKOUT:
+                return "DeviceLocked";
+            case BiometricPrompt.ERROR_LOCKOUT_PERMANENT:
+                return "DeviceLocked";
+            case BiometricPrompt.ERROR_NEGATIVE_BUTTON:
+                return "UserCancel";
+            case BiometricPrompt.ERROR_NO_BIOMETRICS:
+                return "FingerprintScannerNotEnrolled";
+            case BiometricPrompt.ERROR_NO_DEVICE_CREDENTIAL:
+                return "PasscodeNotSet";
+            case BiometricPrompt.ERROR_NO_SPACE:
+                return "DeviceOutOfMemory";
+            case BiometricPrompt.ERROR_TIMEOUT:
+                return "AuthenticationTimeout";
+            case BiometricPrompt.ERROR_UNABLE_TO_PROCESS:
+                return "AuthenticationProcessFailed";
+            case BiometricPrompt.ERROR_USER_CANCELED:  // actually 'user elected another auth method'
+                return "UserFallback";
+            case BiometricPrompt.ERROR_VENDOR:
+                // hardware-specific error codes
+                return "HardwareError";
+        }
+    }
+
     // TODO: use biometrioc manager to eval
     private String getErrorMessage() {
         if (!getFingerprintIdentify().isHardwareEnable()) {
@@ -131,7 +162,7 @@ public class ReactNativeFingerprintScannerModule
             return;
         }
 
-        biometricAuthenticate("Log in", promise);
+        biometricAuthenticate("Log In", promise);
     }
 
     @ReactMethod
