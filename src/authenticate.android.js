@@ -1,4 +1,4 @@
-import { DeviceEventEmitter, NativeModules } from 'react-native';
+import { NativeModules } from 'react-native';
 
 const { ReactNativeFingerprintScanner } = NativeModules;
 
