@@ -1,6 +1,7 @@
 package com.hieuvp.fingerprint;
 
 import android.os.Build;
+import androidx.annotation.NonNull;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
@@ -15,8 +16,10 @@ import com.facebook.react.module.annotations.ReactModule;
 import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEmitter;
 
 @ReactModule(name="ReactNativeFingerprintScanner")
-public class ReactNativeFingerprintScannerModule extends ReactContextBaseJavaModule
-        implements LifecycleEventListener {
+public class ReactNativeFingerprintScannerModule
+        extends ReactContextBaseJavaModule
+        implements LifecycleEventListener
+{
     public static final int MAX_AVAILABLE_TIMES = Integer.MAX_VALUE;
     public static final String TYPE_FINGERPRINT = "Fingerprint";
 
@@ -57,7 +60,7 @@ public class ReactNativeFingerprintScannerModule extends ReactContextBaseJavaMod
         @Override
         public void onAuthenticationError(int errorCode, @NonNull CharSequence errString) {
             super.onAuthenticationError(errorCode, errString);
-            this.promise.reject("Error authenticating biometrics" , "Error authenticating biometrics");
+            this.promise.reject(errorCode, errString);
         }
 
         @Override
@@ -67,13 +70,15 @@ public class ReactNativeFingerprintScannerModule extends ReactContextBaseJavaMod
         }
     }
 
-    public BiometricPrompt getBiometricPrompt() {
+    public BiometricPrompt getBiometricPrompt(Promise promise) {
+        // memoize so can be accessed to cancel
         if (biometricPrompt != null) {
             return biometricPrompt;
         }
 
-        // create and memoize if DNE
-        mReactContext.addLifecycleEventListener(this);  // TODO: need this?
+        // listen for onHost* methods
+        mReactContext.addLifecycleEventListener(this);
+
         AuthenticationCallback authCallback = new AuthCallback(promise);
         FragmentActivity fragmentActivity = (FragmentActivity) getCurrentActivity();
         Executor executor = Executors.newSingleThreadExecutor();
@@ -91,9 +96,9 @@ public class ReactNativeFingerprintScannerModule extends ReactContextBaseJavaMod
             new Runnable() {
                 @Override
                 public void run() {
-                    bioPrompt = getBiometricPrompt();
+                    bioPrompt = getBiometricPrompt(promise);
 
-                    PromptInfo promptInfo = new PromptInfo.Builder()
+                    PromptInfo promptInfo = new BiometricPrompt.PromptInfo.Builder()
                         .setDeviceCredentialAllowed(false)
                         .setConfirmationRequired(false)
                         .setNegativeButtonText("Cancel")
@@ -126,12 +131,14 @@ public class ReactNativeFingerprintScannerModule extends ReactContextBaseJavaMod
             return;
         }
 
-        biometricAuthenticate();
+        biometricAuthenticate("Log in", promise);
     }
 
     @ReactMethod
     public void release() {
-        getBiometricPrompt().cancelAuthentication();  // if release called from eg React
+        if (biometricPrompt != null) {
+            biometricPrompt.cancelAuthentication();  // if release called from eg React
+        }
         biometricPrompt = null;
         mReactContext.removeLifecycleEventListener(this);
     }
