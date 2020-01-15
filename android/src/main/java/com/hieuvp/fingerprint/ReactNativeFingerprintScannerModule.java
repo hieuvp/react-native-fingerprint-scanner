@@ -20,7 +20,7 @@ public class ReactNativeFingerprintScannerModule
         implements LifecycleEventListener
 {
     public static final int MAX_AVAILABLE_TIMES = Integer.MAX_VALUE;
-    public static final String TYPE_FINGERPRINT = "Fingerprint";
+    public static final String TYPE_BIOMETRICS = "Biometrics";
 
     private final ReactApplicationContext mReactContext;
     private BiometricPrompt biometricPrompt;
@@ -142,27 +142,33 @@ public class ReactNativeFingerprintScannerModule
     }
 
     // TODO: use biometrioc manager to eval
-    private String getErrorMessage() {
-        if (!getFingerprintIdentify().isHardwareEnable()) {
+    private String getSensorError() {
+        BiometricManager biometricManager = BiometricManager.from(mReactContext);
+        int authResult = biometricManager.canAuthenticate();
+
+        if (authResult == BiometricManager.BIOMETRIC_SUCCESS) {
+            return null;
+        }
+        if (authResult == BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE) {
             return "FingerprintScannerNotSupported";
-        } else if (!getFingerprintIdentify().isRegisteredFingerprint()) {
+        } else if (authResult == BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED) {
             return "FingerprintScannerNotEnrolled";
-        } else if (!getFingerprintIdentify().isFingerprintEnable()) {
+        } else if (authResult == BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE) {
             return "FingerprintScannerNotAvailable";
         }
         return null;
     }
 
     @ReactMethod
-    public void authenticate(final Promise promise) {
-        final String errorMessage = getErrorMessage();
-        if (errorMessage != null) {
-            promise.reject(errorMessage, TYPE_FINGERPRINT);
+    public void authenticate(final Promise promise, String titleText) {
+        final String errorName = getSensorError();
+        if (errorName != null) {
+            promise.reject(errorName, TYPE_BIOMETRICS);
             ReactNativeFingerprintScannerModule.this.release();
             return;
         }
 
-        biometricAuthenticate("Log In", promise);
+        biometricAuthenticate(titleText, promise);
     }
 
     @ReactMethod
@@ -176,11 +182,11 @@ public class ReactNativeFingerprintScannerModule
 
     @ReactMethod
     public void isSensorAvailable(final Promise promise) {
-        String errorMessage = getErrorMessage();
-        if (errorMessage != null) {
-            promise.reject(errorMessage, TYPE_FINGERPRINT);
+        String errorName = getSensorError();
+        if (errorName != null) {
+            promise.reject(errorName, TYPE_BIOMETRICS);
         } else {
-            promise.resolve(TYPE_FINGERPRINT);
+            promise.resolve(TYPE_BIOMETRICS);
         }
     }
 }

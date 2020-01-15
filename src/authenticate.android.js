@@ -1,11 +1,10 @@
 import { DeviceEventEmitter, NativeModules } from 'react-native';
-import createError from './createError';
 
 const { ReactNativeFingerprintScanner } = NativeModules;
 
-export default ({ onAttempt }) => {
+export default ({ titleText="Log In" }) => {
   return new Promise((resolve, reject) => {
-    ReactNativeFingerprintScanner.authenticate()
+    ReactNativeFingerprintScanner.authenticate(titleText)
       .then(() => {
         resolve(true);
       })
