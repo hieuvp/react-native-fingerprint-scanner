@@ -5,4 +5,3 @@ const { ReactNativeFingerprintScanner } = NativeModules;
 export default () => {
   ReactNativeFingerprintScanner.release();
 }
-export default () => null;

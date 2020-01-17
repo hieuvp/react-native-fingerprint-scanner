@@ -2,6 +2,11 @@ package com.hieuvp.fingerprint;
 
 import android.os.Build;
 import androidx.annotation.NonNull;
+import androidx.biometric.BiometricPrompt;
+import androidx.biometric.BiometricManager;
+import androidx.biometric.BiometricPrompt.AuthenticationCallback;
+import androidx.biometric.BiometricPrompt.PromptInfo;
+import androidx.fragment.app.FragmentActivity;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
@@ -13,6 +18,8 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.module.annotations.ReactModule;
+import com.facebook.react.bridge.UiThreadUtil;
+
 
 @ReactModule(name="ReactNativeFingerprintScanner")
 public class ReactNativeFingerprintScannerModule
@@ -51,7 +58,7 @@ public class ReactNativeFingerprintScannerModule
     public class AuthCallback extends BiometricPrompt.AuthenticationCallback {
         private Promise promise;
 
-        public AuthCallback(Promise promise) {
+        public AuthCallback(final Promise promise) {
             super();
             this.promise = promise;
         }
@@ -59,7 +66,7 @@ public class ReactNativeFingerprintScannerModule
         @Override
         public void onAuthenticationError(int errorCode, @NonNull CharSequence errString) {
             super.onAuthenticationError(errorCode, errString);
-            this.promise.reject(errorCode, errString);
+            this.promise.reject(biometricPromptErrName(errorCode), TYPE_BIOMETRICS);
         }
 
         @Override
@@ -69,7 +76,7 @@ public class ReactNativeFingerprintScannerModule
         }
     }
 
-    public BiometricPrompt getBiometricPrompt(Promise promise) {
+    public BiometricPrompt getBiometricPrompt(final Promise promise) {
         // memoize so can be accessed to cancel
         if (biometricPrompt != null) {
             return biometricPrompt;
@@ -78,7 +85,7 @@ public class ReactNativeFingerprintScannerModule
         // listen for onHost* methods
         mReactContext.addLifecycleEventListener(this);
 
-        AuthenticationCallback authCallback = new AuthCallback(promise);
+        AuthCallback authCallback = new AuthCallback(promise);
         FragmentActivity fragmentActivity = (FragmentActivity) getCurrentActivity();
         Executor executor = Executors.newSingleThreadExecutor();
         biometricPrompt = new BiometricPrompt(
@@ -90,12 +97,12 @@ public class ReactNativeFingerprintScannerModule
         return biometricPrompt;
     }
 
-    private void biometricAuthenticate(String titleText, Promise promise) {
+    private void biometricAuthenticate(final String titleText, final Promise promise) {
         UiThreadUtil.runOnUiThread(
             new Runnable() {
                 @Override
                 public void run() {
-                    bioPrompt = getBiometricPrompt(promise);
+                    BiometricPrompt bioPrompt = getBiometricPrompt(promise);
 
                     PromptInfo promptInfo = new BiometricPrompt.PromptInfo.Builder()
                         .setDeviceCredentialAllowed(false)
@@ -109,7 +116,8 @@ public class ReactNativeFingerprintScannerModule
             });
     }
 
-    private String errString(int errCode) {
+    // the below constants are consistent across BiometricPrompt and BiometricManager
+    private String biometricPromptErrName(int errCode) {
         switch (errCode) {
             case BiometricPrompt.ERROR_CANCELED:
                 return "SystemCancel";
@@ -138,10 +146,11 @@ public class ReactNativeFingerprintScannerModule
             case BiometricPrompt.ERROR_VENDOR:
                 // hardware-specific error codes
                 return "HardwareError";
+            default:
+                return "FingerprintScannerUnknownError";
         }
     }
 
-    // TODO: use biometrioc manager to eval
     private String getSensorError() {
         BiometricManager biometricManager = BiometricManager.from(mReactContext);
         int authResult = biometricManager.canAuthenticate();
@@ -156,6 +165,7 @@ public class ReactNativeFingerprintScannerModule
         } else if (authResult == BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE) {
             return "FingerprintScannerNotAvailable";
         }
+
         return null;
     }
 
