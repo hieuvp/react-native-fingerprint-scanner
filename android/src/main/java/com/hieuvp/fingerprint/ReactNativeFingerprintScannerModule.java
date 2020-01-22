@@ -170,7 +170,7 @@ public class ReactNativeFingerprintScannerModule
     }
 
     @ReactMethod
-    public void authenticate(final Promise promise, String titleText) {
+    public void authenticate(String titleText, final Promise promise) {
         final String errorName = getSensorError();
         if (errorName != null) {
             promise.reject(errorName, TYPE_BIOMETRICS);
