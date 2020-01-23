@@ -70,7 +70,7 @@ public class ReactNativeFingerprintScannerModule
     }
 
     private boolean requiresLegacyAuthentication() {
-        return currentAndroidVersion < 23;
+        return currentAndroidVersion() < 23;
     }
 
     public class AuthCallback extends BiometricPrompt.AuthenticationCallback {
@@ -269,6 +269,8 @@ public class ReactNativeFingerprintScannerModule
         } else if (!getFingerprintIdentify().isFingerprintEnable()) {
             return "FingerprintScannerNotAvailable";
         }
+
+        return null;
     }
 
 
@@ -299,7 +301,7 @@ public class ReactNativeFingerprintScannerModule
                 if(isDeviceLocked){
                     promise.reject("AuthenticationFailed", "DeviceLocked");
                 } else {
-                    promise.reject("AuthenticationFailed", TYPE_FINGERPRINT);
+                    promise.reject("AuthenticationFailed", TYPE_FINGERPRINT_LEGACY);
                 }
                 ReactNativeFingerprintScannerModule.this.release();
             }
