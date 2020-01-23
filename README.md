@@ -25,6 +25,10 @@ It provides a **Default View** that prompts the user to place a finger to the iP
 </div>
 
 ### Android Version
+4.0.0 Prefers the new native Android BiometricPrompt lib on any Android >= v23 (M)
+4.0.0 also DEPRECATES support for the legacy library that provides support for Samsung & MeiZu phones
+
+3.0.2 and below: 
 Using an expandable Android Fingerprint API library, which combines [Samsung](http://developer.samsung.com/galaxy/pass#) and [MeiZu](http://open-wiki.flyme.cn/index.php?title=%E6%8C%87%E7%BA%B9%E8%AF%86%E5%88%ABAPI)'s official Fingerprint API.
 
 Samsung and MeiZu's Fingerprint SDK supports most devices which system versions less than Android 6.0.
