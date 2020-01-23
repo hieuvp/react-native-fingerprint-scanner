@@ -129,19 +129,23 @@ export interface FingerPrintProps {
           this.props.handlePopupDismissed();
           AlertIOS.alert(error.message);
         });
-      ```     
+      ```
       -----------------
-      
-      ### authenticate({ titleText: 'Log in with Biometrics' }): (Android)
+
+      ### authenticate({ titleText: 'Log in with Biometrics', onAttempt: () => (null) }): (Android)
 
       - Returns a `Promise`
       - `titleText: String` - the title text to appear on the native Android prompt
+      - `onAttempt: Function` - a callback function when users are trying to scan their fingerprint but failed.
 
       -----------------
       - Example:
       ```
       FingerprintScanner
-        .authenticate({ titleText: 'Log in with Biometrics' })
+        .authenticate({
+          titleText: 'Log in with Biometrics',
+          onAttempt: this.handleAuthenticationAttempted,
+        })
         .then(() => {
           this.props.handlePopupDismissed();
           Alert.alert('Fingerprint Authentication', 'Authenticated successfully');

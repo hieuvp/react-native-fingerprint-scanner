@@ -76,7 +76,7 @@ $ react-native link react-native-fingerprint-scanner
   	```
 3. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
   	```
-    compile project(':react-native-fingerprint-scanner')
+    implementation project(':react-native-fingerprint-scanner')
   	```
 
 ### App Permissions
@@ -86,12 +86,18 @@ Add the following permissions to their respective files:
 #### Android
 In your `AndroidManifest.xml`:
 
-API level 28+ ([Reference](https://developer.android.com/reference/android/Manifest.permission#USE_BIOMETRIC))
+API level 28+ (Uses Android native BiometricPrompt) ([Reference](https://developer.android.com/reference/android/Manifest.permission#USE_BIOMETRIC))
 ```xml
 <uses-permission android:name="android.permission.USE_BIOMETRIC" />
 ```
 
-API level <28 ([Reference](https://developer.android.com/reference/android/Manifest.permission#USE_FINGERPRINT))
+API level 23-28 (Uses Android native FingerprintCompat) [Reference](https://developer.android.com/reference/android/Manifest.permission#USE_FINGERPRINT)) 
+```xml
+<uses-permission android:name="android.permission.USE_FINGERPRINT" />
+```
+
+// DEPRECATED in 4.0.0
+API level <23 (Uses device-specific native fingerprinting, if available - Samsung & MeiZu only) [Reference](https://developer.android.com/reference/android/Manifest.permission#USE_FINGERPRINT)) 
 ```xml
 <uses-permission android:name="android.permission.USE_FINGERPRINT" />
 ```
@@ -120,13 +126,13 @@ In your `Info.plist`:
     ```
     # MeiZu Fingerprint
 
-    // REMOVED in 4.0.0
+    // DEPRECATED in 4.0.0
     -keep class com.fingerprints.service.** { *; }
     -dontwarn com.fingerprints.service.**
 
     # Samsung Fingerprint
 
-    // REMOVED in 4.0.0
+    // DEPRECATED in 4.0.0
     -keep class com.samsung.android.sdk.** { *; }
     -dontwarn com.samsung.android.sdk.**
     ```
@@ -136,6 +142,7 @@ In your `Info.plist`:
 * For Gradle < 3 you MUST install react-native-fingerprint-scanner at version <= 2.5.0
 * For RN >= 0.57 and/or Gradle >= 3 you MUST install react-native-fingerprint-scanner at version >= 2.6.0
 * For RN >= 0.60 you MUST install react-native-fingerprint-scanner at version >= 3.0.0
+* For Android native Face Unlock, MUST use >= 4.0.0
 
 ## Example
 
@@ -177,55 +184,135 @@ export default FingerprintPopup;
 
 **Android Implementation**
 ```javascript
+
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-
 import {
   Alert,
+  Image,
+  Text,
+  TouchableOpacity,
+  View,
+  ViewPropTypes,
+  Platform,
 } from 'react-native';
+
 import FingerprintScanner from 'react-native-fingerprint-scanner';
-
-import ShakingText from './ShakingText.component';
 import styles from './FingerprintPopup.component.styles';
+import ShakingText from './ShakingText.component';
 
-class FingerprintPopup extends Component {
 
+// - this example component supports both the
+//   legacy device-specific (Android < v23) and
+//   current (Android >= 23) biometric APIs
+// - your lib and implementation may not need both
+class BiometricPopup extends Component {
   constructor(props) {
     super(props);
-    this.state = { errorMessage: undefined };
+    this.state = {
+      errorMessageLegacy: undefined,
+      biometricLegacy: undefined
+    };
+
+    this.description = null;
   }
 
   componentDidMount() {
+    if (requiresLegacyAuthentication()) {
+      authLegacy();
+    } else {
+      authCurrent();
+    }
+  }
+
+  componentWillUnmount = () => {
+    FingerprintScanner.release();
+  }
+
+  requiresLegacyAuthentication() {
+    return Platform.Version < 23;
+  }
+
+  authCurrent() {
     FingerprintScanner
-      .authenticate({ titleText: "Log in with Biometrics"})
+      .authenticate({ titleText: 'Log in with Biometrics' })
       .then(() => {
-        this.props.handlePopupDismissed();
+        this.props.onAuthenticate();
+      });
+  }
+
+  authLegacy() {
+    FingerprintScanner
+      .authenticate({ onAttempt: this.handleAuthenticationAttemptedLegacy })
+      .then(() => {
+        this.props.handlePopupDismissedLegacy();
         Alert.alert('Fingerprint Authentication', 'Authenticated successfully');
       })
       .catch((error) => {
-        this.setState({ errorMessage: error.message });
+        this.setState({ errorMessageLegacy: error.message, biometricLegacy: error.biometric });
         this.description.shake();
       });
   }
 
-  componentWillUnmount() {
-    FingerprintScanner.release();
+  handleAuthenticationAttemptedLegacy = (error) => {
+    this.setState({ errorMessageLegacy: error.message });
+    this.description.shake();
+  };
+
+  renderLegacy() {
+    const { errorMessageLegacy, biometricLegacy } = this.state;
+    const { style, handlePopupDismissedLegacy } = this.props;
+
+    return (
+      <View style={styles.container}>
+        <View style={[styles.contentContainer, style]}>
+
+          <Image
+            style={styles.logo}
+            source={require('./assets/finger_print.png')}
+          />
+
+          <Text style={styles.heading}>
+            Biometric{'\n'}Authentication
+          </Text>
+          <ShakingText
+            ref={(instance) => { this.description = instance; }}
+            style={styles.description(!!errorMessageLegacy)}>
+            {errorMessageLegacy || `Scan your ${biometricLegacy} on the\ndevice scanner to continue`}
+          </ShakingText>
+
+          <TouchableOpacity
+            style={styles.buttonContainer}
+            onPress={handlePopupDismissedLegacy}
+          >
+            <Text style={styles.buttonText}>
+              BACK TO MAIN
+            </Text>
+          </TouchableOpacity>
+
+        </View>
+      </View>
+    );
   }
 
-  render() {
-    const { errorMessage } = this.state;
-    const { handlePopupDismissed } = this.props;
 
-    // as of 4.0.0, Android provides a native prompt via BiometricPrompt
+  render = () => {
+    if (this.requiresLegacyAuthentication()) {
+      return this.renderLegacy();
+    }
+
+    // current API UI provided by native BiometricPrompt
     return null;
   }
 }
 
-FingerprintPopup.propTypes = {
-  handlePopupDismissed: PropTypes.func.isRequired,
+BiometricPopup.propTypes = {
+  onAuthenticate: PropTypes.func.isRequired,
+  handlePopupDismissedLegacy: PropTypes.func,
+  style: ViewPropTypes.style,
 };
 
-export default FingerprintPopup;
+export default BiometricPopup;
 ```
 
 ## API
@@ -270,25 +357,55 @@ componentDidMount() {
 }
 ```
 
-### `authenticate({ onAttempt })`: (Android)
+### `authenticate({ titleText="Log In", onAttempt=() => (null) })`: (Android)
 Starts Fingerprint authentication on Android.
 
 - Returns a `Promise`
 - `titleText: String` the title text to display in the native Android popup
+- `onAttempt: Function` - a callback function when users are trying to scan their fingerprint but failed.
 
 ```javascript
 componentDidMount() {
+  if (requiresLegacyAuthentication()) {
+    authLegacy();
+  } else {
+    authCurrent();
+  }
+}
+
+componentWillUnmount = () => {
+  FingerprintScanner.release();
+}
+
+requiresLegacyAuthentication() {
+  return Platform.Version < 23;
+}
+
+authCurrent() {
   FingerprintScanner
-    .authenticate({ titleText: "Log in with Biometrics" })
+    .authenticate({ titleText: 'Log in with Biometrics' })
     .then(() => {
-      this.props.handlePopupDismissed();
+      this.props.onAuthenticate();
+    });
+}
+
+authLegacy() {
+  FingerprintScanner
+    .authenticate({ onAttempt: this.handleAuthenticationAttemptedLegacy })
+    .then(() => {
+      this.props.handlePopupDismissedLegacy();
       Alert.alert('Fingerprint Authentication', 'Authenticated successfully');
     })
     .catch((error) => {
-      this.setState({ errorMessage: error.message });
+      this.setState({ errorMessageLegacy: error.message, biometricLegacy: error.biometric });
       this.description.shake();
     });
 }
+
+handleAuthenticationAttemptedLegacy = (error) => {
+  this.setState({ errorMessageLegacy: error.message });
+  this.description.shake();
+};
 ```
 
 ### `release()`: (Android)
