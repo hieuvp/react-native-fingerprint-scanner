@@ -41,7 +41,13 @@ repositories {
 }
 
 dependencies {
-    compile 'com.facebook.react:react-native:+'
+    implementation 'com.facebook.react:react-native:+'
     // androidx:biometric now supports fingerprint back to Android v23
     implementation "androidx.biometric:biometric:1.0.1"
+
+    // retain fingerprintScanner lib for compat with Android v16-23 device-specific drivers (Samsung & MeiZu)
+    // 1.2.3 is the minimum version compatible with androidx.
+    // See https://github.com/uccmawei/FingerprintIdentify/issues/74
+    // (translation https://translate.google.com/translate?sl=zh-CN&tl=en&u=https://github.com/uccmawei/FingerprintIdentify/issues/74)
+    implementation "com.wei.android.lib:fingerprintidentify:${safeExtGet("fingerprintidentify", "1.2.6")}"
 }
