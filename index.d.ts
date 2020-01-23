@@ -132,10 +132,10 @@ export interface FingerPrintProps {
       ```
       -----------------
 
-      ### authenticate({ titleText: 'Log in with Biometrics', onAttempt: () => (null) }): (Android)
+      ### authenticate({ description: 'Log in with Biometrics', onAttempt: () => (null) }): (Android)
 
       - Returns a `Promise`
-      - `titleText: String` - the title text to appear on the native Android prompt
+      - `description: String` - the title text to appear on the native Android prompt
       - `onAttempt: Function` - a callback function when users are trying to scan their fingerprint but failed.
 
       -----------------
@@ -143,7 +143,7 @@ export interface FingerPrintProps {
       ```
       FingerprintScanner
         .authenticate({
-          titleText: 'Log in with Biometrics',
+          description: 'Log in with Biometrics',
           onAttempt: this.handleAuthenticationAttempted,
         })
         .then(() => {

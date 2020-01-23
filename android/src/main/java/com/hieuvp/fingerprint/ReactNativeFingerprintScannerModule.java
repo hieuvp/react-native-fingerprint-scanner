@@ -115,7 +115,7 @@ public class ReactNativeFingerprintScannerModule
         return biometricPrompt;
     }
 
-    private void biometricAuthenticate(final String titleText, final Promise promise) {
+    private void biometricAuthenticate(final String description, final Promise promise) {
         UiThreadUtil.runOnUiThread(
             new Runnable() {
                 @Override
@@ -126,7 +126,7 @@ public class ReactNativeFingerprintScannerModule
                         .setDeviceCredentialAllowed(false)
                         .setConfirmationRequired(false)
                         .setNegativeButtonText("Cancel")
-                        .setTitle(titleText)
+                        .setTitle(description)
                         .build();
 
                     bioPrompt.authenticate(promptInfo);
@@ -188,7 +188,7 @@ public class ReactNativeFingerprintScannerModule
     }
 
     @ReactMethod
-    public void authenticate(String titleText, final Promise promise) {
+    public void authenticate(String description, final Promise promise) {
         if (requiresLegacyAuthentication()) {
             legacyAuthenticate(promise);
         }
@@ -200,7 +200,7 @@ public class ReactNativeFingerprintScannerModule
                 return;
             }
 
-            biometricAuthenticate(titleText, promise);
+            biometricAuthenticate(description, promise);
         }
     }
 

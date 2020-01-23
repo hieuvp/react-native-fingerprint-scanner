@@ -49,7 +49,7 @@ class BiometricPopup extends Component {
 
   authCurrent() {
     FingerprintScanner
-      .authenticate({ titleText: this.props.titleText || 'Log in with Biometrics' })
+      .authenticate({ description: this.props.description || 'Log in with Biometrics' })
       .then(() => {
         this.props.onAuthenticate();
       });
@@ -121,7 +121,7 @@ class BiometricPopup extends Component {
 }
 
 BiometricPopup.propTypes = {
-  titleText: PropTypes.string,
+  description: PropTypes.string,
   onAuthenticate: PropTypes.func.isRequired,
   handlePopupDismissedLegacy: PropTypes.func,
   style: ViewPropTypes.style,
