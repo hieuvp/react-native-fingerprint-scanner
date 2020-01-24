@@ -23,8 +23,8 @@ matrix:
         components:
           - tools
           - platform-tools
-          - build-tools-28.0.3
-          - android-28
+          - build-tools-29.0.2
+          - android-29
       sudo: true
       before_install:
         - nvm install --lts

@@ -1,7 +1,7 @@
 {
   "name": "react-native-fingerprint-scanner",
-  "version": "3.0.2",
-  "description": "React Native Fingerprint Scanner for Android and iOS",
+  "version": "4.0.0",
+  "description": "React Native Biometrics Scanner for Android and iOS",
   "main": "index.js",
   "keywords": [
     "react-native",
@@ -16,7 +16,10 @@
     "fingerprint-scanner",
     "authentication",
     "authenticate",
-    "auth"
+    "auth",
+    "face-id",
+    "faceid",
+    "biometrics"
   ],
   "peerDependencies": {
     "react-native": ">=0.60 <1.0.0"

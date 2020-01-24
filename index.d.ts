@@ -4,13 +4,21 @@ export type AuthenticateIOS = {
 };
 export type AuthenticateAndroid = { onAttempt: (error: FingerprintScannerError) => void };
 
-export type Biometrics = 'Touch ID' | 'Face ID' | 'Fingerprint';
+export type Biometrics = 'Touch ID' | 'Face ID' | 'Biometrics';
 
 export type Errors =
   | { name: 'AuthenticationNotMatch'; message: 'No match' }
   | {
       name: 'AuthenticationFailed';
       message: 'Authentication was not successful because the user failed to provide valid credentials';
+    }
+  | {
+      name: 'AuthenticationTimeout';
+      message: 'Authentication was not successful because the operation timed out.';
+    }
+  | {
+      name: 'AuthenticationProcessFailed';
+      message: 'Sensor was unable to process the image. Please try again.';
     }
   | {
       name: 'UserCancel';
@@ -47,6 +55,18 @@ export type Errors =
   | {
       name: 'DeviceLocked';
       message: 'Authentication was not successful, the device currently in a lockout of 30 seconds';
+    }
+  | {
+      name: 'DeviceLockedPermanent';
+      message: 'Authentication was not successful, device must be unlocked via password.';
+    }
+  | {
+      name: 'DeviceOutOfMemory';
+      message: 'Authentication could not proceed because there is not enough free memory on the device.';
+    }
+  | {
+      name: 'HardwareError';
+      message: 'A hardware error occurred.';
     };
 
 export type FingerprintScannerError = { biometric: Biometrics } & Errors;
@@ -109,19 +129,23 @@ export interface FingerPrintProps {
           this.props.handlePopupDismissed();
           AlertIOS.alert(error.message);
         });
-      ```     
+      ```
       -----------------
-      
-      ### authenticate({ onAttempt }): (Android)
+
+      ### authenticate({ description: 'Log in with Biometrics', onAttempt: () => (null) }): (Android)
 
       - Returns a `Promise`
+      - `description: String` - the title text to appear on the native Android prompt
       - `onAttempt: Function` - a callback function when users are trying to scan their fingerprint but failed.
 
       -----------------
       - Example:
       ```
       FingerprintScanner
-        .authenticate({ onAttempt: this.handleAuthenticationAttempted })
+        .authenticate({
+          description: 'Log in with Biometrics',
+          onAttempt: this.handleAuthenticationAttempted,
+        })
         .then(() => {
           this.props.handlePopupDismissed();
           Alert.alert('Fingerprint Authentication', 'Authenticated successfully');
