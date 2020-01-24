@@ -38,8 +38,15 @@ const authLegacy = (onAttempt) => {
 
 const nullOnAttempt = () => null;
 
-export default ({ description="Log In", onAttempt=nullOnAttempt }) => {
+export default ({ description, onAttempt }) => {
   return new Promise((resolve, reject) => {
+    if (!description) {
+      description = "Log In";
+    }
+    if (!onAttempt) {
+      onAttempt = nullOnAttempt;
+    }
+
     if (Platform.VERSION < 23) {
       return authLegacy(onAttempt);
     }
