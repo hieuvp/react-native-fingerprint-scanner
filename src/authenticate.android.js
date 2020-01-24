@@ -47,7 +47,7 @@ export default ({ description, onAttempt }) => {
       onAttempt = nullOnAttempt;
     }
 
-    if (Platform.VERSION < 23) {
+    if (Platform.Version < 23) {
       return authLegacy(onAttempt);
     }
 
