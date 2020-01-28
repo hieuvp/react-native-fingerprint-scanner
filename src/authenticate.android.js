@@ -7,7 +7,7 @@ import createError from './createError';
 
 const { ReactNativeFingerprintScanner } = NativeModules;
 
-const authCurrent = (description) => {
+const authCurrent = (description, resolve, reject) => {
   ReactNativeFingerprintScanner.authenticate(description)
     .then(() => {
       resolve(true);
@@ -18,7 +18,7 @@ const authCurrent = (description) => {
     });
 }
 
-const authLegacy = (onAttempt) => {
+const authLegacy = (onAttempt, resolve, reject) => {
   DeviceEventEmitter.addListener('FINGERPRINT_SCANNER_AUTHENTICATION', (name) => {
     if (name === 'AuthenticationNotMatch' && typeof onAttempt === 'function') {
       onAttempt(createError(name));
@@ -48,9 +48,9 @@ export default ({ description, onAttempt }) => {
     }
 
     if (Platform.Version < 23) {
-      return authLegacy(onAttempt);
+      return authLegacy(onAttempt, resolve, reject);
     }
 
-    return authCurrent(description);
+    return authCurrent(description, resolve, reject);
   });
 }
