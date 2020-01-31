@@ -1,8 +1,11 @@
-import { DeviceEventEmitter, NativeModules } from 'react-native';
+import { DeviceEventEmitter, NativeModules, Platform } from 'react-native';
 
 const { ReactNativeFingerprintScanner } = NativeModules;
 
 export default () => {
-  DeviceEventEmitter.removeAllListeners('FINGERPRINT_SCANNER_AUTHENTICATION');
+  if (Platform.Version < 23) {
+    DeviceEventEmitter.removeAllListeners('FINGERPRINT_SCANNER_AUTHENTICATION');
+  }
+
   ReactNativeFingerprintScanner.release();
 }

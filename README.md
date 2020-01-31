@@ -25,6 +25,10 @@ It provides a **Default View** that prompts the user to place a finger to the iP
 </div>
 
 ### Android Version
+4.0.0 Prefers the new native Android BiometricPrompt lib on any Android >= v23 (M)
+4.0.0 also DEPRECATES support for the legacy library that provides support for Samsung & MeiZu phones
+
+3.0.2 and below: 
 Using an expandable Android Fingerprint API library, which combines [Samsung](http://developer.samsung.com/galaxy/pass#) and [MeiZu](http://open-wiki.flyme.cn/index.php?title=%E6%8C%87%E7%BA%B9%E8%AF%86%E5%88%ABAPI)'s official Fingerprint API.
 
 Samsung and MeiZu's Fingerprint SDK supports most devices which system versions less than Android 6.0.
@@ -76,7 +80,7 @@ $ react-native link react-native-fingerprint-scanner
   	```
 3. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
   	```
-    compile project(':react-native-fingerprint-scanner')
+    implementation project(':react-native-fingerprint-scanner')
   	```
 
 ### App Permissions
@@ -86,12 +90,18 @@ Add the following permissions to their respective files:
 #### Android
 In your `AndroidManifest.xml`:
 
-API level 28+ ([Reference](https://developer.android.com/reference/android/Manifest.permission#USE_BIOMETRIC))
+API level 28+ (Uses Android native BiometricPrompt) ([Reference](https://developer.android.com/reference/android/Manifest.permission#USE_BIOMETRIC))
 ```xml
 <uses-permission android:name="android.permission.USE_BIOMETRIC" />
 ```
 
-API level <28 ([Reference](https://developer.android.com/reference/android/Manifest.permission#USE_FINGERPRINT))
+API level 23-28 (Uses Android native FingerprintCompat) [Reference](https://developer.android.com/reference/android/Manifest.permission#USE_FINGERPRINT)) 
+```xml
+<uses-permission android:name="android.permission.USE_FINGERPRINT" />
+```
+
+// DEPRECATED in 4.0.0
+API level <23 (Uses device-specific native fingerprinting, if available - Samsung & MeiZu only) [Reference](https://developer.android.com/reference/android/Manifest.permission#USE_FINGERPRINT)) 
 ```xml
 <uses-permission android:name="android.permission.USE_FINGERPRINT" />
 ```
@@ -107,23 +117,26 @@ In your `Info.plist`:
 
 1. Make sure the following versions are all correct in `android/app/build.gradle`
     ```
+    // API v29 enables FaceId
     android {
-        compileSdkVersion 25
-        buildToolsVersion "25.0.3"
+        compileSdkVersion 29
+        buildToolsVersion "29.0.2"
     ...
         defaultConfig {
-          targetSdkVersion 25
+          targetSdkVersion 29
     ```
 
 2. Add necessary rules to `android/app/proguard-rules.pro` if you are using proguard:
     ```
     # MeiZu Fingerprint
 
+    // DEPRECATED in 4.0.0
     -keep class com.fingerprints.service.** { *; }
     -dontwarn com.fingerprints.service.**
 
     # Samsung Fingerprint
 
+    // DEPRECATED in 4.0.0
     -keep class com.samsung.android.sdk.** { *; }
     -dontwarn com.samsung.android.sdk.**
     ```
@@ -133,6 +146,7 @@ In your `Info.plist`:
 * For Gradle < 3 you MUST install react-native-fingerprint-scanner at version <= 2.5.0
 * For RN >= 0.57 and/or Gradle >= 3 you MUST install react-native-fingerprint-scanner at version >= 2.6.0
 * For RN >= 0.60 you MUST install react-native-fingerprint-scanner at version >= 3.0.0
+* For Android native Face Unlock, MUST use >= 4.0.0
 
 ## Example
 
@@ -174,54 +188,84 @@ export default FingerprintPopup;
 
 **Android Implementation**
 ```javascript
+
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-
 import {
   Alert,
   Image,
   Text,
   TouchableOpacity,
   View,
-  ViewPropTypes
+  ViewPropTypes,
+  Platform,
 } from 'react-native';
+
 import FingerprintScanner from 'react-native-fingerprint-scanner';
-
-import ShakingText from './ShakingText.component';
 import styles from './FingerprintPopup.component.styles';
+import ShakingText from './ShakingText.component';
 
-class FingerprintPopup extends Component {
 
+// - this example component supports both the
+//   legacy device-specific (Android < v23) and
+//   current (Android >= 23) biometric APIs
+// - your lib and implementation may not need both
+class BiometricPopup extends Component {
   constructor(props) {
     super(props);
-    this.state = { errorMessage: undefined };
+    this.state = {
+      errorMessageLegacy: undefined,
+      biometricLegacy: undefined
+    };
+
+    this.description = null;
   }
 
   componentDidMount() {
+    if (requiresLegacyAuthentication()) {
+      authLegacy();
+    } else {
+      authCurrent();
+    }
+  }
+
+  componentWillUnmount = () => {
+    FingerprintScanner.release();
+  }
+
+  requiresLegacyAuthentication() {
+    return Platform.Version < 23;
+  }
+
+  authCurrent() {
     FingerprintScanner
-      .authenticate({ onAttempt: this.handleAuthenticationAttempted })
+      .authenticate({ description: 'Log in with Biometrics' })
       .then(() => {
-        this.props.handlePopupDismissed();
+        this.props.onAuthenticate();
+      });
+  }
+
+  authLegacy() {
+    FingerprintScanner
+      .authenticate({ onAttempt: this.handleAuthenticationAttemptedLegacy })
+      .then(() => {
+        this.props.handlePopupDismissedLegacy();
         Alert.alert('Fingerprint Authentication', 'Authenticated successfully');
       })
       .catch((error) => {
-        this.setState({ errorMessage: error.message });
+        this.setState({ errorMessageLegacy: error.message, biometricLegacy: error.biometric });
         this.description.shake();
       });
   }
 
-  componentWillUnmount() {
-    FingerprintScanner.release();
-  }
-
-  handleAuthenticationAttempted = (error) => {
-    this.setState({ errorMessage: error.message });
+  handleAuthenticationAttemptedLegacy = (error) => {
+    this.setState({ errorMessageLegacy: error.message });
     this.description.shake();
   };
 
-  render() {
-    const { errorMessage } = this.state;
-    const { style, handlePopupDismissed } = this.props;
+  renderLegacy() {
+    const { errorMessageLegacy, biometricLegacy } = this.state;
+    const { style, handlePopupDismissedLegacy } = this.props;
 
     return (
       <View style={styles.container}>
@@ -233,17 +277,17 @@ class FingerprintPopup extends Component {
           />
 
           <Text style={styles.heading}>
-            Fingerprint{'\n'}Authentication
+            Biometric{'\n'}Authentication
           </Text>
           <ShakingText
             ref={(instance) => { this.description = instance; }}
-            style={styles.description(!!errorMessage)}>
-            {errorMessage || 'Scan your fingerprint on the\ndevice scanner to continue'}
+            style={styles.description(!!errorMessageLegacy)}>
+            {errorMessageLegacy || `Scan your ${biometricLegacy} on the\ndevice scanner to continue`}
           </ShakingText>
 
           <TouchableOpacity
             style={styles.buttonContainer}
-            onPress={handlePopupDismissed}
+            onPress={handlePopupDismissedLegacy}
           >
             <Text style={styles.buttonText}>
               BACK TO MAIN
@@ -254,14 +298,25 @@ class FingerprintPopup extends Component {
       </View>
     );
   }
+
+
+  render = () => {
+    if (this.requiresLegacyAuthentication()) {
+      return this.renderLegacy();
+    }
+
+    // current API UI provided by native BiometricPrompt
+    return null;
+  }
 }
 
-FingerprintPopup.propTypes = {
+BiometricPopup.propTypes = {
+  onAuthenticate: PropTypes.func.isRequired,
+  handlePopupDismissedLegacy: PropTypes.func,
   style: ViewPropTypes.style,
-  handlePopupDismissed: PropTypes.func.isRequired,
 };
 
-export default FingerprintPopup;
+export default BiometricPopup;
 ```
 
 ## API
@@ -271,6 +326,8 @@ Checks if Fingerprint Scanner is able to be used by now.
 
 - Returns a `Promise<string>`
 - `biometryType: String` - The type of biometric authentication supported by the device.
+  - iOS: biometryType = 'Touch ID', 'Face ID'
+  - Android: biometryType = 'Biometrics'
 - `error: FingerprintScannerError { name, message, biometric }` - The name and message of failure and the biometric type in use.
 
 ```javascript
@@ -304,29 +361,59 @@ componentDidMount() {
 }
 ```
 
-### `authenticate({ onAttempt })`: (Android)
+### `authenticate({ description="Log In", onAttempt=() => (null) })`: (Android)
 Starts Fingerprint authentication on Android.
 
 - Returns a `Promise`
+- `description: String` the title text to display in the native Android popup
 - `onAttempt: Function` - a callback function when users are trying to scan their fingerprint but failed.
 
 ```javascript
 componentDidMount() {
+  if (requiresLegacyAuthentication()) {
+    authLegacy();
+  } else {
+    authCurrent();
+  }
+}
+
+componentWillUnmount = () => {
+  FingerprintScanner.release();
+}
+
+requiresLegacyAuthentication() {
+  return Platform.Version < 23;
+}
+
+authCurrent() {
   FingerprintScanner
-    .authenticate({ onAttempt: this.handleAuthenticationAttempted })
+    .authenticate({ description: 'Log in with Biometrics' })
     .then(() => {
-      this.props.handlePopupDismissed();
+      this.props.onAuthenticate();
+    });
+}
+
+authLegacy() {
+  FingerprintScanner
+    .authenticate({ onAttempt: this.handleAuthenticationAttemptedLegacy })
+    .then(() => {
+      this.props.handlePopupDismissedLegacy();
       Alert.alert('Fingerprint Authentication', 'Authenticated successfully');
     })
     .catch((error) => {
-      this.setState({ errorMessage: error.message });
+      this.setState({ errorMessageLegacy: error.message, biometricLegacy: error.biometric });
       this.description.shake();
     });
 }
+
+handleAuthenticationAttemptedLegacy = (error) => {
+  this.setState({ errorMessageLegacy: error.message });
+  this.description.shake();
+};
 ```
 
 ### `release()`: (Android)
-Stops fingerprint scanner listener, releases cache of internal state in native code.
+Stops fingerprint scanner listener, releases cache of internal state in native code, and cancels native prompt if visible.
 
 - Returns a `Void`
 
@@ -338,11 +425,11 @@ componentWillUnmount() {
 
 ### `Types of Biometrics`
 
-| Value | OS |
-|---|---|
-| Touch ID | iOS |
-| Face ID | iOS |
-| Fingerprint | Android |
+| Value | OS | Description|
+|---|---|---|
+| Touch ID | iOS | |
+| Face ID | iOS | |
+| Biometrics | Android | Refers to the biometric set as preferred on the device |
 
 ### `Errors`
 
@@ -350,15 +437,20 @@ componentWillUnmount() {
 |---|---|
 | AuthenticationNotMatch | No match |
 | AuthenticationFailed | Authentication was not successful because the user failed to provide valid credentials |
+| AuthenticationTimeout | Authentication was not successful because the operation timed out |
+| AuthenticationProcessFailed | 'Sensor was unable to process the image. Please try again |
 | UserCancel | Authentication was canceled by the user - e.g. the user tapped Cancel in the dialog |
 | UserFallback | Authentication was canceled because the user tapped the fallback button (Enter Password) |
 | SystemCancel | Authentication was canceled by system - e.g. if another application came to foreground while the authentication dialog was up |
 | PasscodeNotSet | Authentication could not start because the passcode is not set on the device |
-| FingerprintScannerNotAvailable | Authentication could not start because Fingerprint Scanner is not available on the device |
-| FingerprintScannerNotEnrolled | Authentication could not start because Fingerprint Scanner has no enrolled fingers |
+| DeviceLocked | Authentication was not successful, the device currently in a lockout of 30 seconds |
+| DeviceLockedPermanent | Authentication was not successful, device must be unlocked via password |
+| DeviceOutOfMemory | Authentication could not proceed because there is not enough free memory on the device |
+| HardwareError | A hardware error occurred |
 | FingerprintScannerUnknownError | Could not authenticate for an unknown reason |
 | FingerprintScannerNotSupported | Device does not support Fingerprint Scanner |
-| DeviceLocked | Authentication was not successful, the device currently in a lockout of 30 seconds |
+| FingerprintScannerNotEnrolled  | Authentication could not start because Fingerprint Scanner has no enrolled fingers |
+| FingerprintScannerNotAvailable | Authentication could not start because Fingerprint Scanner is not available on the device |
 
 ## License
 

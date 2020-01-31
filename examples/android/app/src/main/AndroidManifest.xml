@@ -5,7 +5,10 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <!-- API lvl 27- (Oreo MR1 and below) -->
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
+    <!-- API lvl 28+ (Pie and above) -->
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
 
     <uses-sdk
         android:minSdkVersion="16"
