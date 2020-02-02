@@ -115,7 +115,7 @@ public class ReactNativeFingerprintScannerModule
         return biometricPrompt;
     }
 
-    public void biometricAuthenticate(final String title, final String subtitle, final String description, final String cancelButton, final Promise promise) {
+    private void biometricAuthenticate(final String title, final String subtitle, final String description, final String cancelButton, final Promise promise) {
         UiThreadUtil.runOnUiThread(
             new Runnable() {
                 @Override
