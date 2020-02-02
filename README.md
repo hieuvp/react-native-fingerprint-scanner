@@ -239,7 +239,7 @@ class BiometricPopup extends Component {
 
   authCurrent() {
     FingerprintScanner
-      .authenticate({ description: 'Log in with Biometrics' })
+      .authenticate({ title: 'Log in with Biometrics' })
       .then(() => {
         this.props.onAuthenticate();
       });
@@ -361,11 +361,14 @@ componentDidMount() {
 }
 ```
 
-### `authenticate({ description="Log In", onAttempt=() => (null) })`: (Android)
+### `authenticate({ title="Log In", subTitle, description, cancelButton="Cancel", onAttempt=() => (null) })`: (Android)
 Starts Fingerprint authentication on Android.
 
 - Returns a `Promise`
-- `description: String` the title text to display in the native Android popup
+- `title: String` the title text to display in the native Android popup
+- `subTitle: String` the sub title text to display in the native Android popup
+- `description: String` the description text to display in the native Android popup
+- `cancelButton: String` the cancel button text to display in the native Android popup
 - `onAttempt: Function` - a callback function when users are trying to scan their fingerprint but failed.
 
 ```javascript
@@ -387,7 +390,7 @@ requiresLegacyAuthentication() {
 
 authCurrent() {
   FingerprintScanner
-    .authenticate({ description: 'Log in with Biometrics' })
+    .authenticate({ title: 'Log in with Biometrics' })
     .then(() => {
       this.props.onAuthenticate();
     });
