@@ -41,7 +41,8 @@ const nullOnAttempt = () => null;
 export default ({ title, subTitle, description, cancelButton, onAttempt }) => {
   return new Promise((resolve, reject) => {
     if (!title) {
-      title = "Log In";
+      title = description ? description : "Log In";
+      description = ""
     }
     if (!subTitle) {
       subTitle = "";
