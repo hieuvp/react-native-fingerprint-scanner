@@ -36,7 +36,7 @@ It provides a **Default View** that prompts the user to place a finger to the iP
 4.0.0 Prefers the new native Android BiometricPrompt lib on any Android >= v23 (M)
 4.0.0 also DEPRECATES support for the legacy library that provides support for Samsung & MeiZu phones
 
-3.0.2 and below: 
+3.0.2 and below:
 Using an expandable Android Fingerprint API library, which combines [Samsung](http://developer.samsung.com/galaxy/pass#) and [MeiZu](http://open-wiki.flyme.cn/index.php?title=%E6%8C%87%E7%BA%B9%E8%AF%86%E5%88%ABAPI)'s official Fingerprint API.
 
 Samsung and MeiZu's Fingerprint SDK supports most devices which system versions less than Android 6.0.
@@ -103,13 +103,13 @@ API level 28+ (Uses Android native BiometricPrompt) ([Reference](https://develop
 <uses-permission android:name="android.permission.USE_BIOMETRIC" />
 ```
 
-API level 23-28 (Uses Android native FingerprintCompat) [Reference](https://developer.android.com/reference/android/Manifest.permission#USE_FINGERPRINT)) 
+API level 23-28 (Uses Android native FingerprintCompat) [Reference](https://developer.android.com/reference/android/Manifest.permission#USE_FINGERPRINT))
 ```xml
 <uses-permission android:name="android.permission.USE_FINGERPRINT" />
 ```
 
 // DEPRECATED in 4.0.0
-API level <23 (Uses device-specific native fingerprinting, if available - Samsung & MeiZu only) [Reference](https://developer.android.com/reference/android/Manifest.permission#USE_FINGERPRINT)) 
+API level <23 (Uses device-specific native fingerprinting, if available - Samsung & MeiZu only) [Reference](https://developer.android.com/reference/android/Manifest.permission#USE_FINGERPRINT))
 ```xml
 <uses-permission android:name="android.permission.USE_FINGERPRINT" />
 ```
@@ -423,7 +423,7 @@ handleAuthenticationAttemptedLegacy = (error) => {
 };
 ```
 
-### `release()`: (Android)
+### `release()`:
 Stops fingerprint scanner listener, releases cache of internal state in native code, and cancels native prompt if visible.
 
 - Returns a `Void`
@@ -458,6 +458,7 @@ componentWillUnmount() {
 | DeviceLockedPermanent | Authentication was not successful, device must be unlocked via password |
 | DeviceOutOfMemory | Authentication could not proceed because there is not enough free memory on the device |
 | HardwareError | A hardware error occurred |
+| FingerprintScannerAppCancel | Scanner cancelled by the application |
 | FingerprintScannerUnknownError | Could not authenticate for an unknown reason |
 | FingerprintScannerNotSupported | Device does not support Fingerprint Scanner |
 | FingerprintScannerNotEnrolled  | Authentication could not start because Fingerprint Scanner has no enrolled fingers |
