@@ -38,7 +38,7 @@ const authLegacy = (onAttempt, resolve, reject) => {
 
 const nullOnAttempt = () => null;
 
-export default ({ description, onAttempt }) => {
+export default ({ description, onAttempt, deviceCredentialAllowed = false }) => {
   return new Promise((resolve, reject) => {
     if (!description) {
       description = "Log In";
@@ -49,6 +49,10 @@ export default ({ description, onAttempt }) => {
 
     if (Platform.Version < 23) {
       return authLegacy(onAttempt, resolve, reject);
+    }
+
+    if (Platform.Version >= 29 && deviceCredentialAllowed === true) {
+      ReactNativeFingerprintScanner.setDeviceCredentialAllowed(true);
     }
 
     return authCurrent(description, resolve, reject);

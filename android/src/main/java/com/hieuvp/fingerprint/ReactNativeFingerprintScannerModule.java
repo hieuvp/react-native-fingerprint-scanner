@@ -1,6 +1,8 @@
 package com.hieuvp.fingerprint;
 
+import android.annotation.TargetApi;
 import android.os.Build;
+import android.app.KeyguardManager;
 import androidx.annotation.NonNull;
 import androidx.biometric.BiometricPrompt;
 import androidx.biometric.BiometricManager;
@@ -26,6 +28,8 @@ import com.wei.android.lib.fingerprintidentify.FingerprintIdentify;
 import com.wei.android.lib.fingerprintidentify.base.BaseFingerprint.ExceptionListener;
 import com.wei.android.lib.fingerprintidentify.base.BaseFingerprint.IdentifyListener;
 
+import static android.content.Context.KEYGUARD_SERVICE;
+
 
 @ReactModule(name="ReactNativeFingerprintScanner")
 public class ReactNativeFingerprintScannerModule
@@ -38,6 +42,8 @@ public class ReactNativeFingerprintScannerModule
 
     private final ReactApplicationContext mReactContext;
     private BiometricPrompt biometricPrompt;
+    private KeyguardManager mKeyguardManager;
+    private boolean mDeviceCredentialAllowed = false;
 
     // for Samsung/MeiZu compat, Android v16-23
     private FingerprintIdentify mFingerprintIdentify;
@@ -45,6 +51,7 @@ public class ReactNativeFingerprintScannerModule
     public ReactNativeFingerprintScannerModule(ReactApplicationContext reactContext) {
         super(reactContext);
         mReactContext = reactContext;
+        mKeyguardManager = (KeyguardManager) reactContext.getSystemService(KEYGUARD_SERVICE);
     }
 
     @Override
@@ -71,6 +78,11 @@ public class ReactNativeFingerprintScannerModule
 
     private boolean requiresLegacyAuthentication() {
         return currentAndroidVersion() < 23;
+    }
+
+    @TargetApi(23)
+    private boolean isDeviceSecure() {
+        return currentAndroidVersion() >= 23 && mKeyguardManager.isDeviceSecure();
     }
 
     public class AuthCallback extends BiometricPrompt.AuthenticationCallback {
@@ -107,9 +119,9 @@ public class ReactNativeFingerprintScannerModule
         FragmentActivity fragmentActivity = (FragmentActivity) getCurrentActivity();
         Executor executor = Executors.newSingleThreadExecutor();
         biometricPrompt = new BiometricPrompt(
-            fragmentActivity,
-            executor,
-            authCallback
+                fragmentActivity,
+                executor,
+                authCallback
         );
 
         return biometricPrompt;
@@ -117,21 +129,27 @@ public class ReactNativeFingerprintScannerModule
 
     private void biometricAuthenticate(final String description, final Promise promise) {
         UiThreadUtil.runOnUiThread(
-            new Runnable() {
-                @Override
-                public void run() {
-                    BiometricPrompt bioPrompt = getBiometricPrompt(promise);
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        BiometricPrompt bioPrompt = getBiometricPrompt(promise);
+                        boolean allowDeviceCredential = mDeviceCredentialAllowed &&
+                                isDeviceSecure();
 
-                    PromptInfo promptInfo = new BiometricPrompt.PromptInfo.Builder()
-                        .setDeviceCredentialAllowed(false)
-                        .setConfirmationRequired(false)
-                        .setNegativeButtonText("Cancel")
-                        .setTitle(description)
-                        .build();
 
-                    bioPrompt.authenticate(promptInfo);
-                }
-            });
+                        PromptInfo.Builder builder = new BiometricPrompt.PromptInfo.Builder()
+                                .setDeviceCredentialAllowed(allowDeviceCredential)
+                                .setConfirmationRequired(false)
+                                .setTitle(description);
+
+                        // This should not be set if a backup is allowed (PIN/Pattern/Password)
+                        if(!allowDeviceCredential) {
+                            builder = builder.setNegativeButtonText("Cancel");
+                        }
+
+                        bioPrompt.authenticate(builder.build());
+                    }
+                });
     }
 
     // the below constants are consistent across BiometricPrompt and BiometricManager
@@ -240,6 +258,10 @@ public class ReactNativeFingerprintScannerModule
         }
     }
 
+    @ReactMethod
+    public void setDeviceCredentialAllowed(boolean allowed) {
+        mDeviceCredentialAllowed = allowed;
+    }
 
     // for Samsung/MeiZu compat, Android v16-23
     private FingerprintIdentify getFingerprintIdentify() {
@@ -250,12 +272,12 @@ public class ReactNativeFingerprintScannerModule
         mFingerprintIdentify = new FingerprintIdentify(mReactContext);
         mFingerprintIdentify.setSupportAndroidL(true);
         mFingerprintIdentify.setExceptionListener(
-            new ExceptionListener() {
-                @Override
-                public void onCatchException(Throwable exception) {
-                    mReactContext.removeLifecycleEventListener(ReactNativeFingerprintScannerModule.this);
+                new ExceptionListener() {
+                    @Override
+                    public void onCatchException(Throwable exception) {
+                        mReactContext.removeLifecycleEventListener(ReactNativeFingerprintScannerModule.this);
+                    }
                 }
-            }
         );
         mFingerprintIdentify.init();
         return mFingerprintIdentify;
@@ -293,7 +315,7 @@ public class ReactNativeFingerprintScannerModule
             @Override
             public void onNotMatch(int availableTimes) {
                 mReactContext.getJSModule(RCTDeviceEventEmitter.class)
-                    .emit("FINGERPRINT_SCANNER_AUTHENTICATION", "AuthenticationNotMatch");
+                        .emit("FINGERPRINT_SCANNER_AUTHENTICATION", "AuthenticationNotMatch");
             }
 
             @Override
