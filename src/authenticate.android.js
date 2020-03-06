@@ -7,8 +7,8 @@ import createError from './createError';
 
 const { ReactNativeFingerprintScanner } = NativeModules;
 
-const authCurrent = (description, resolve, reject) => {
-  ReactNativeFingerprintScanner.authenticate(description)
+const authCurrent = (options, resolve, reject) => {
+  ReactNativeFingerprintScanner.authenticate(options)
     .then(() => {
       resolve(true);
     })
@@ -38,7 +38,7 @@ const authLegacy = (onAttempt, resolve, reject) => {
 
 const nullOnAttempt = () => null;
 
-export default ({ description, onAttempt }) => {
+export default ({ description, cancelText = "Cancel", onAttempt }) => {
   return new Promise((resolve, reject) => {
     if (!description) {
       description = "Log In";
@@ -51,6 +51,6 @@ export default ({ description, onAttempt }) => {
       return authLegacy(onAttempt, resolve, reject);
     }
 
-    return authCurrent(description, resolve, reject);
+    return authCurrent({description, cancelText}, resolve, reject);
   });
 }
