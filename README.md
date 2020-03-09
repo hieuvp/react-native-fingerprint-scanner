@@ -367,6 +367,7 @@ Starts Fingerprint authentication on Android.
 - Returns a `Promise`
 - `description: String` the title text to display in the native Android popup
 - `onAttempt: Function` - a callback function when users are trying to scan their fingerprint but failed.
+- `cancelText?: String` optional cancel text to display on biometric prompt. default- "Cancel"
 
 ```javascript
 componentDidMount() {
