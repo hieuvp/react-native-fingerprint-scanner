@@ -146,7 +146,7 @@ public class ReactNativeFingerprintScannerModule
             case BiometricPrompt.ERROR_LOCKOUT:
                 return "DeviceLocked";
             case BiometricPrompt.ERROR_LOCKOUT_PERMANENT:
-                return "DeviceLocked";
+                return "DeviceLockedPermanent";
             case BiometricPrompt.ERROR_NEGATIVE_BUTTON:
                 return "UserCancel";
             case BiometricPrompt.ERROR_NO_BIOMETRICS:
