@@ -22,13 +22,44 @@ RCT_EXPORT_METHOD(isSensorAvailable: (RCTResponseSenderBlock)callback)
         NSString *message;
 
         switch (error.code) {
-            case LAErrorTouchIDNotAvailable:
+
+            case LAErrorBiometryNotAvailable:
                 code = @"FingerprintScannerNotAvailable";
                 message = [self getBiometryType:context];
                 break;
-
-            case LAErrorTouchIDNotEnrolled:
+                
+            case LAErrorBiometryNotEnrolled:
                 code = @"FingerprintScannerNotEnrolled";
+                message = [self getBiometryType:context];
+                break;
+
+            case LAErrorBiometryLockout:
+                code = @"DeviceLocked";
+                message = [self getBiometryType:context];
+                break;
+
+            case LAErrorAuthenticationFailed:
+                code = @"AuthenticationFailed";
+                message = [self getBiometryType:context];
+                break;
+
+            case LAErrorUserCancel:
+                code = @"UserCancel";
+                message = [self getBiometryType:context];
+                break;
+
+            case LAErrorUserFallback:
+                code = @"UserFallback";
+                message = [self getBiometryType:context];
+                break;
+
+            case LAErrorSystemCancel:
+                code = @"SystemCancel";
+                message = [self getBiometryType:context];
+                break;
+
+            case LAErrorPasscodeNotSet:
+                code = @"PasscodeNotSet";
                 message = [self getBiometryType:context];
                 break;
 
@@ -87,12 +118,16 @@ RCT_EXPORT_METHOD(authenticate: (NSString *)reason
                          errorReason = @"PasscodeNotSet";
                          break;
 
-                     case LAErrorTouchIDNotAvailable:
+                     case LAErrorBiometryNotAvailable:
                          errorReason = @"FingerprintScannerNotAvailable";
                          break;
-
-                     case LAErrorTouchIDNotEnrolled:
+                         
+                     case LAErrorBiometryNotEnrolled:
                          errorReason = @"FingerprintScannerNotEnrolled";
+                         break;
+                         
+                     case LAErrorBiometryLockout:
+                         errorReason = @"DeviceLocked";
                          break;
 
                      default:
