@@ -268,6 +268,7 @@ class BiometricPopup extends Component {
   }
 
   _androidTouchID() {
+    FingerprintScanner.release()
     FingerprintScanner
       .authenticate({
         description: 'Scan your fingerprint on the device scanner to continue',
@@ -276,6 +277,24 @@ class BiometricPopup extends Component {
       })
       .then(() => {
         this.props.onAuthenticate();
+      })
+      .catch(error => {
+        console.log('_androidTouchID:', error.message)
+        console.log('_androidTouchID:', error.biometric)
+        FingerprintScanner.release()
+        switch (error.biometric) {
+          case 'UserCancel':
+            console.log('Click the cancel button')
+            break
+          case 'DeviceLocked':
+            console.log('Accumulated 5 identification failures, fingerprint identification was locked')
+            break
+          case 'DeviceLockedPermanent':
+            console.log('Accumulates many times to recognize the failure, is locked permanently, needs to unlock')
+            break
+          default:
+            break
+        }
       });
   }
 
