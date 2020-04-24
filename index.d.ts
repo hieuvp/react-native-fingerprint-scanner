@@ -7,7 +7,8 @@ export type AuthenticateAndroid = { onAttempt: (error: FingerprintScannerError) 
 export type Biometrics = 'Touch ID' | 'Face ID' | 'Biometrics';
 
 export type Errors =
-  | { name: 'AuthenticationNotMatch'; message: 'No match' }
+  | { name: 'AuthenticationLockout'; message: 'Authentication lockout'; }
+  | { name: 'AuthenticationNotMatch'; message: 'No match'; }
   | {
       name: 'AuthenticationFailed';
       message: 'Authentication was not successful because the user failed to provide valid credentials';
@@ -38,11 +39,11 @@ export type Errors =
     }
   | {
       name: 'FingerprintScannerNotAvailable';
-      message: '	Authentication could not start because Fingerprint Scanner is not available on the device';
+      message: '  Authentication could not start because Fingerprint Scanner is not available on the device';
     }
   | {
       name: 'FingerprintScannerNotEnrolled';
-      message: '	Authentication could not start because Fingerprint Scanner has no enrolled fingers';
+      message: '  Authentication could not start because Fingerprint Scanner has no enrolled fingers';
     }
   | {
       name: 'FingerprintScannerUnknownError';
@@ -67,6 +68,10 @@ export type Errors =
   | {
       name: 'HardwareError';
       message: 'A hardware error occurred.';
+    }
+  | {
+      name: 'UserDeviceCancel';
+      message: 'Authentication Device was canceled';
     };
 
 export type FingerprintScannerError = { biometric: Biometrics } & Errors;
@@ -160,6 +165,27 @@ export interface FingerPrintProps {
   authenticate: (
     platformProps: AuthenticateIOS | AuthenticateAndroid
   ) => Promise<void>;
+
+  /**
+        ### authenticateDevice(): (iOS)
+        Unlock with the device password.
+        -  Returns a `Promise<Biometrics>`
+        - `error: FingerprintScannerError { name, message, biometric }` - The name and message of failure and the biometric type in use.
+        
+        -------------
+        Exemple
+
+        ```
+          FingerprintScanner
+            .authenticateDevice()
+            .then(() => {
+              AlertIOS.alert('Authenticated successfully');
+            })
+            .catch(error => this.setState({ errorMessage: error.message }));
+        ```
+        ------------
+      */
+  authenticateDevice: () => Promise<Biometrics>;
 }
 
 declare const FingerprintScanner: FingerPrintProps;

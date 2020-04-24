@@ -74,14 +74,14 @@ $ react-native link react-native-fingerprint-scanner
   - Add `import com.hieuvp.fingerprint.ReactNativeFingerprintScannerPackage;` to the imports at the top of the file
   - Add `new ReactNativeFingerprintScannerPackage()` to the list returned by the `getPackages()` method
 2. Append the following lines to `android/settings.gradle`:
-  	```
-  	include ':react-native-fingerprint-scanner'
-  	project(':react-native-fingerprint-scanner').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-fingerprint-scanner/android')
-  	```
+    ```
+    include ':react-native-fingerprint-scanner'
+    project(':react-native-fingerprint-scanner').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-fingerprint-scanner/android')
+    ```
 3. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
-  	```
+    ```
     implementation project(':react-native-fingerprint-scanner')
-  	```
+    ```
 
 ### App Permissions
 
@@ -162,26 +162,60 @@ import FingerprintScanner from 'react-native-fingerprint-scanner';
 class FingerprintPopup extends Component {
 
   componentDidMount() {
+    this._iosTouchID()
+  }
+
+  _iosTouchID = () => {
     FingerprintScanner
       .authenticate({ description: 'Scan your fingerprint on the device scanner to continue' })
       .then(() => {
-        this.props.handlePopupDismissed();
         AlertIOS.alert('Authenticated successfully');
       })
       .catch((error) => {
-        this.props.handlePopupDismissed();
+        switch (error.biometric) {
+          case 'UserCancel':
+            console.log('The user clicks the cancel button')
+            break
+          case 'AuthenticationFailed':
+            console.log('User failed to identify 3 times')
+            break
+          case 'AuthenticationLockout':
+            console.log('Accumulated 5 identification failures, fingerprint identification was locked')
+            AlertIOS.alert('Identify cumulative multiple failures, temporarily unavailable', [
+              {
+                text: 'cancel',
+                style: 'default',
+                onPress: () => {
+                }
+              }, {
+                text: 'To unlock',
+                style: 'default',
+                onPress: () => {
+                  this._iosAuthenticateDevice()
+                }
+              }
+            ])
+            break
+          default:
+            break
+        }
         AlertIOS.alert(error.message);
       });
+  }
+
+  _iosAuthenticateDevice = () => {
+    FingerprintScanner.authenticateDevice().then(() => {
+      console.log('Device unlocked')
+      this._iosTouchID()
+    }).catch((error) => {
+      console.log('catch error:', error.message, error.biometric)
+    })
   }
 
   render() {
     return false;
   }
 }
-
-FingerprintPopup.propTypes = {
-  handlePopupDismissed: PropTypes.func.isRequired,
-};
 
 export default FingerprintPopup;
 ```
@@ -222,11 +256,7 @@ class BiometricPopup extends Component {
   }
 
   componentDidMount() {
-    if (this.requiresLegacyAuthentication()) {
-      this.authLegacy();
-    } else {
-      this.authCurrent();
-    }
+    this._androidTouchID();
   }
 
   componentWillUnmount = () => {
@@ -237,24 +267,15 @@ class BiometricPopup extends Component {
     return Platform.Version < 23;
   }
 
-  authCurrent() {
+  _androidTouchID() {
     FingerprintScanner
-      .authenticate({ description: 'Log in with Biometrics' })
+      .authenticate({
+        description: 'Scan your fingerprint on the device scanner to continue',
+        cancelButton: 'cancel',
+        onAttempt: this.handleAuthenticationAttemptedLegacy
+      })
       .then(() => {
         this.props.onAuthenticate();
-      });
-  }
-
-  authLegacy() {
-    FingerprintScanner
-      .authenticate({ onAttempt: this.handleAuthenticationAttemptedLegacy })
-      .then(() => {
-        this.props.handlePopupDismissedLegacy();
-        Alert.alert('Fingerprint Authentication', 'Authenticated successfully');
-      })
-      .catch((error) => {
-        this.setState({ errorMessageLegacy: error.message, biometricLegacy: error.biometric });
-        this.description.shake();
       });
   }
 
@@ -337,6 +358,24 @@ componentDidMount() {
     .then(biometryType => this.setState({ biometryType }))
     .catch(error => this.setState({ errorMessage: error.message }));
 }
+```
+
+### `authenticateDevice()`: (iOS)
+Unlock with the device password.
+
+- Returns a `Promise<string>`
+- `error: FingerprintScannerError { name, message, biometric }` - The name and message of failure and the biometric type in use.
+
+
+```javascript
+  FingerprintScanner
+    .authenticateDevice()
+    .then(() => {
+      console.log('Device unlocked')
+      this._iosTouchID()
+    }).catch((error) => {
+      console.log('catch error:', error.message, error.biometric)
+    })
 ```
 
 ### `authenticate({ description, fallbackEnabled })`: (iOS)
@@ -435,6 +474,7 @@ componentWillUnmount() {
 
 | Name | Message |
 |---|---|
+| AuthenticationLockout | Authentication lockout |
 | AuthenticationNotMatch | No match |
 | AuthenticationFailed | Authentication was not successful because the user failed to provide valid credentials |
 | AuthenticationTimeout | Authentication was not successful because the operation timed out |
@@ -447,6 +487,7 @@ componentWillUnmount() {
 | DeviceLockedPermanent | Authentication was not successful, device must be unlocked via password |
 | DeviceOutOfMemory | Authentication could not proceed because there is not enough free memory on the device |
 | HardwareError | A hardware error occurred |
+| UserDeviceCancel | Authentication Device was canceled |
 | FingerprintScannerUnknownError | Could not authenticate for an unknown reason |
 | FingerprintScannerNotSupported | Device does not support Fingerprint Scanner |
 | FingerprintScannerNotEnrolled  | Authentication could not start because Fingerprint Scanner has no enrolled fingers |
