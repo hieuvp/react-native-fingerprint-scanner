@@ -84,7 +84,7 @@ public class ReactNativeFingerprintScannerModule
         @Override
         public void onAuthenticationError(int errorCode, @NonNull CharSequence errString) {
             super.onAuthenticationError(errorCode, errString);
-            this.promise.reject(biometricPromptErrName(errorCode), TYPE_BIOMETRICS);
+            this.promise.reject(biometricPromptErrName(errorCode), biometricPromptErrName(errorCode));
         }
 
         @Override
@@ -115,7 +115,7 @@ public class ReactNativeFingerprintScannerModule
         return biometricPrompt;
     }
 
-    private void biometricAuthenticate(final String description, final Promise promise) {
+    private void biometricAuthenticate(final String description, final String cancelButton, final Promise promise) {
         UiThreadUtil.runOnUiThread(
             new Runnable() {
                 @Override
@@ -125,7 +125,7 @@ public class ReactNativeFingerprintScannerModule
                     PromptInfo promptInfo = new BiometricPrompt.PromptInfo.Builder()
                         .setDeviceCredentialAllowed(false)
                         .setConfirmationRequired(false)
-                        .setNegativeButtonText("Cancel")
+                        .setNegativeButtonText(cancelButton)
                         .setTitle(description)
                         .build();
 
@@ -146,7 +146,7 @@ public class ReactNativeFingerprintScannerModule
             case BiometricPrompt.ERROR_LOCKOUT:
                 return "DeviceLocked";
             case BiometricPrompt.ERROR_LOCKOUT_PERMANENT:
-                return "DeviceLocked";
+                return "DeviceLockedPermanent";
             case BiometricPrompt.ERROR_NEGATIVE_BUTTON:
                 return "UserCancel";
             case BiometricPrompt.ERROR_NO_BIOMETRICS:
@@ -188,19 +188,18 @@ public class ReactNativeFingerprintScannerModule
     }
 
     @ReactMethod
-    public void authenticate(String description, final Promise promise) {
+    public void authenticate(String description, String cancelButton, final Promise promise) {
         if (requiresLegacyAuthentication()) {
             legacyAuthenticate(promise);
         }
         else {
             final String errorName = getSensorError();
             if (errorName != null) {
-                promise.reject(errorName, TYPE_BIOMETRICS);
-                ReactNativeFingerprintScannerModule.this.release();
+                promise.reject(errorName, errorName);
                 return;
             }
 
-            biometricAuthenticate(description, promise);
+            biometricAuthenticate(description, cancelButton, promise);
         }
     }
 
@@ -234,12 +233,11 @@ public class ReactNativeFingerprintScannerModule
         // current API
         String errorName = getSensorError();
         if (errorName != null) {
-            promise.reject(errorName, TYPE_BIOMETRICS);
+            promise.reject(errorName, errorName);
         } else {
             promise.resolve(TYPE_BIOMETRICS);
         }
     }
-
 
     // for Samsung/MeiZu compat, Android v16-23
     private FingerprintIdentify getFingerprintIdentify() {
@@ -287,13 +285,17 @@ public class ReactNativeFingerprintScannerModule
             @Override
             public void onSucceed() {
                 promise.resolve(true);
-                ReactNativeFingerprintScannerModule.this.release();
             }
 
             @Override
             public void onNotMatch(int availableTimes) {
-                mReactContext.getJSModule(RCTDeviceEventEmitter.class)
-                    .emit("FINGERPRINT_SCANNER_AUTHENTICATION", "AuthenticationNotMatch");
+                if( availableTimes <= 0 ){
+                    mReactContext.getJSModule(RCTDeviceEventEmitter.class)
+                        .emit("FINGERPRINT_SCANNER_AUTHENTICATION", "AuthenticationLockout");
+                }else{
+                    mReactContext.getJSModule(RCTDeviceEventEmitter.class)
+                        .emit("FINGERPRINT_SCANNER_AUTHENTICATION", "AuthenticationNotMatch");
+                }
             }
 
             @Override
@@ -303,7 +305,6 @@ public class ReactNativeFingerprintScannerModule
                 } else {
                     promise.reject("AuthenticationFailed", TYPE_FINGERPRINT_LEGACY);
                 }
-                ReactNativeFingerprintScannerModule.this.release();
             }
 
             @Override
