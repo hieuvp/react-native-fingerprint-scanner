@@ -174,13 +174,13 @@ class FingerprintPopup extends Component {
       .catch((error) => {
         switch (error.biometric) {
           case 'UserCancel':
-            console.log('The user clicks the cancel button')
+            AlertIOS.alert('The user clicks the cancel button')
             break
           case 'AuthenticationFailed':
-            console.log('User failed to identify 3 times')
+            AlertIOS.alert('User failed to identify 3 times')
             break
           case 'AuthenticationLockout':
-            console.log('Accumulated 5 identification failures, fingerprint identification was locked')
+            // console.log('Accumulated 5 identification failures, fingerprint identification was locked')
             AlertIOS.alert('Identify cumulative multiple failures, temporarily unavailable', [
               {
                 text: 'cancel',
@@ -205,10 +205,11 @@ class FingerprintPopup extends Component {
 
   _iosAuthenticateDevice = () => {
     FingerprintScanner.authenticateDevice().then(() => {
-      console.log('Device unlocked')
+      // console.log('Device unlocked')
       this._iosTouchID()
     }).catch((error) => {
-      console.log('catch error:', error.message, error.biometric)
+	   // error.biometric
+      AlertIOS.alert('catch error:', error.message)
     })
   }
 
@@ -272,25 +273,23 @@ class BiometricPopup extends Component {
     FingerprintScanner
       .authenticate({
         description: 'Scan your fingerprint on the device scanner to continue',
-        cancelButton: 'cancel',
+        cancelButton: 'cancel', // Android adds a cancelButton
         onAttempt: this.handleAuthenticationAttemptedLegacy
       })
       .then(() => {
         this.props.onAuthenticate();
       })
       .catch(error => {
-        console.log('_androidTouchID:', error.message)
-        console.log('_androidTouchID:', error.biometric)
         FingerprintScanner.release()
         switch (error.biometric) {
           case 'UserCancel':
-            console.log('Click the cancel button')
+            AlertIOS.alert('Click the cancel button')
             break
           case 'DeviceLocked':
-            console.log('Accumulated 5 identification failures, fingerprint identification was locked')
+            AlertIOS.alert('Accumulated 5 identification failures, fingerprint identification was locked')
             break
           case 'DeviceLockedPermanent':
-            console.log('Accumulates many times to recognize the failure, is locked permanently, needs to unlock')
+            AlertIOS.alert('Accumulates many times to recognize the failure, is locked permanently, needs to unlock')
             break
           default:
             break
@@ -390,10 +389,10 @@ Unlock with the device password.
   FingerprintScanner
     .authenticateDevice()
     .then(() => {
-      console.log('Device unlocked')
+      // AlertIOS.alert('Device unlocked')
       this._iosTouchID()
     }).catch((error) => {
-      console.log('catch error:', error.message, error.biometric)
+      // AlertIOS.alert('catch error:', error.message, error.biometric)
     })
 ```
 
@@ -515,3 +514,5 @@ componentWillUnmount() {
 ## License
 
 MIT
+
+
