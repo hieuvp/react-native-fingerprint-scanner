@@ -191,8 +191,7 @@ public class ReactNativeFingerprintScannerModule
     public void authenticate(String description, String cancelButton, final Promise promise) {
         if (requiresLegacyAuthentication()) {
             legacyAuthenticate(promise);
-        }
-        else {
+        } else {
             final String errorName = getSensorError();
             if (errorName != null) {
                 promise.reject(errorName, errorName);
@@ -289,10 +288,10 @@ public class ReactNativeFingerprintScannerModule
 
             @Override
             public void onNotMatch(int availableTimes) {
-                if( availableTimes <= 0 ){
+                if (availableTimes <= 0) {
                     mReactContext.getJSModule(RCTDeviceEventEmitter.class)
                         .emit("FINGERPRINT_SCANNER_AUTHENTICATION", "AuthenticationLockout");
-                }else{
+                } else {
                     mReactContext.getJSModule(RCTDeviceEventEmitter.class)
                         .emit("FINGERPRINT_SCANNER_AUTHENTICATION", "AuthenticationNotMatch");
                 }
@@ -300,7 +299,7 @@ public class ReactNativeFingerprintScannerModule
 
             @Override
             public void onFailed(boolean isDeviceLocked) {
-                if(isDeviceLocked){
+                if (isDeviceLocked) {
                     promise.reject("AuthenticationFailed", "DeviceLocked");
                 } else {
                     promise.reject("AuthenticationFailed", TYPE_FINGERPRINT_LEGACY);
