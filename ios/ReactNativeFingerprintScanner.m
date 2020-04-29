@@ -34,7 +34,7 @@ RCT_EXPORT_METHOD(isSensorAvailable: (RCTResponseSenderBlock)callback)
                 break;
 
             case LAErrorBiometryLockout:
-                code = @"DeviceLocked";
+                code = @"DeviceLockedPermanent";
                 message = [self getBiometryType:context];
                 break;
 
