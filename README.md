@@ -28,7 +28,7 @@ It provides a **Default View** that prompts the user to place a finger to the iP
 4.0.0 Prefers the new native Android BiometricPrompt lib on any Android >= v23 (M)
 4.0.0 also DEPRECATES support for the legacy library that provides support for Samsung & MeiZu phones
 
-3.0.2 and below: 
+3.0.2 and below:
 Using an expandable Android Fingerprint API library, which combines [Samsung](http://developer.samsung.com/galaxy/pass#) and [MeiZu](http://open-wiki.flyme.cn/index.php?title=%E6%8C%87%E7%BA%B9%E8%AF%86%E5%88%ABAPI)'s official Fingerprint API.
 
 Samsung and MeiZu's Fingerprint SDK supports most devices which system versions less than Android 6.0.
@@ -95,13 +95,13 @@ API level 28+ (Uses Android native BiometricPrompt) ([Reference](https://develop
 <uses-permission android:name="android.permission.USE_BIOMETRIC" />
 ```
 
-API level 23-28 (Uses Android native FingerprintCompat) [Reference](https://developer.android.com/reference/android/Manifest.permission#USE_FINGERPRINT)) 
+API level 23-28 (Uses Android native FingerprintCompat) [Reference](https://developer.android.com/reference/android/Manifest.permission#USE_FINGERPRINT))
 ```xml
 <uses-permission android:name="android.permission.USE_FINGERPRINT" />
 ```
 
 // DEPRECATED in 4.0.0
-API level <23 (Uses device-specific native fingerprinting, if available - Samsung & MeiZu only) [Reference](https://developer.android.com/reference/android/Manifest.permission#USE_FINGERPRINT)) 
+API level <23 (Uses device-specific native fingerprinting, if available - Samsung & MeiZu only) [Reference](https://developer.android.com/reference/android/Manifest.permission#USE_FINGERPRINT))
 ```xml
 <uses-permission android:name="android.permission.USE_FINGERPRINT" />
 ```
@@ -271,11 +271,7 @@ class BiometricPopup extends Component {
   _androidTouchID() {
     FingerprintScanner.release()
     FingerprintScanner
-      .authenticate({
-        description: 'Scan your fingerprint on the device scanner to continue',
-        cancelButton: 'cancel', // Android adds a cancelButton
-        onAttempt: this.handleAuthenticationAttemptedLegacy
-      })
+      .authenticate({ title: 'Log in with Biometrics' })
       .then(() => {
         this.props.onAuthenticate();
       })
@@ -418,11 +414,14 @@ componentDidMount() {
 }
 ```
 
-### `authenticate({ description="Log In", onAttempt=() => (null) })`: (Android)
+### `authenticate({ title="Log In", subTitle, description, cancelButton="Cancel", onAttempt=() => (null) })`: (Android)
 Starts Fingerprint authentication on Android.
 
 - Returns a `Promise`
-- `description: String` the title text to display in the native Android popup
+- `title: String` the title text to display in the native Android popup
+- `subTitle: String` the sub title text to display in the native Android popup
+- `description: String` the description text to display in the native Android popup
+- `cancelButton: String` the cancel button text to display in the native Android popup
 - `onAttempt: Function` - a callback function when users are trying to scan their fingerprint but failed.
 
 ```javascript
@@ -444,7 +443,7 @@ requiresLegacyAuthentication() {
 
 authCurrent() {
   FingerprintScanner
-    .authenticate({ description: 'Log in with Biometrics' })
+    .authenticate({ title: 'Log in with Biometrics' })
     .then(() => {
       this.props.onAuthenticate();
     });
