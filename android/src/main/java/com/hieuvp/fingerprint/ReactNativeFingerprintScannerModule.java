@@ -115,7 +115,7 @@ public class ReactNativeFingerprintScannerModule
         return biometricPrompt;
     }
 
-    private void biometricAuthenticate(final String description, final String cancelButton, final Promise promise) {
+    private void biometricAuthenticate(final String title, final String subtitle, final String description, final String cancelButton, final Promise promise) {
         UiThreadUtil.runOnUiThread(
             new Runnable() {
                 @Override
@@ -126,14 +126,16 @@ public class ReactNativeFingerprintScannerModule
                         .setDeviceCredentialAllowed(false)
                         .setConfirmationRequired(false)
                         .setNegativeButtonText(cancelButton)
-                        .setTitle(description)
+                        .setDescription(description)
+                        .setSubtitle(subtitle)
+                        .setTitle(title)
                         .build();
 
                     bioPrompt.authenticate(promptInfo);
                 }
             });
-    }
 
+    }
     // the below constants are consistent across BiometricPrompt and BiometricManager
     private String biometricPromptErrName(int errCode) {
         switch (errCode) {
@@ -188,7 +190,7 @@ public class ReactNativeFingerprintScannerModule
     }
 
     @ReactMethod
-    public void authenticate(String description, String cancelButton, final Promise promise) {
+    public void authenticate(String title, String subtitle, String description, String cancelButton, final Promise promise) {
         if (requiresLegacyAuthentication()) {
             legacyAuthenticate(promise);
         } else {
@@ -198,7 +200,7 @@ public class ReactNativeFingerprintScannerModule
                 return;
             }
 
-            biometricAuthenticate(description, cancelButton, promise);
+            biometricAuthenticate(title, subtitle, description, cancelButton, promise);
         }
     }
 
