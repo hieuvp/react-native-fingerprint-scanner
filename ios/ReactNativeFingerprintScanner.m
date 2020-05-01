@@ -22,7 +22,6 @@ RCT_EXPORT_METHOD(isSensorAvailable: (RCTResponseSenderBlock)callback)
         NSString *message;
 
         switch (error.code) {
-
             case LAErrorBiometryNotAvailable:
                 code = @"FingerprintScannerNotAvailable";
                 message = [self getBiometryType:context];
@@ -37,27 +36,7 @@ RCT_EXPORT_METHOD(isSensorAvailable: (RCTResponseSenderBlock)callback)
                 code = @"DeviceLockedPermanent";
                 message = [self getBiometryType:context];
                 break;
-
-            case LAErrorAuthenticationFailed:
-                code = @"AuthenticationFailed";
-                message = [self getBiometryType:context];
-                break;
-
-            case LAErrorUserCancel:
-                code = @"UserCancel";
-                message = [self getBiometryType:context];
-                break;
-
-            case LAErrorUserFallback:
-                code = @"UserFallback";
-                message = [self getBiometryType:context];
-                break;
-
-            case LAErrorSystemCancel:
-                code = @"SystemCancel";
-                message = [self getBiometryType:context];
-                break;
-
+            
             case LAErrorPasscodeNotSet:
                 code = @"PasscodeNotSet";
                 message = [self getBiometryType:context];
@@ -121,11 +100,11 @@ RCT_EXPORT_METHOD(authenticate: (NSString *)reason
                      case LAErrorBiometryNotAvailable:
                          errorReason = @"FingerprintScannerNotAvailable";
                          break;
-                         
+
                      case LAErrorBiometryNotEnrolled:
                          errorReason = @"FingerprintScannerNotEnrolled";
                          break;
-                         
+
                      case LAErrorBiometryLockout:
                          errorReason = @"DeviceLockedPermanent";
                          break;
@@ -154,40 +133,24 @@ RCT_EXPORT_METHOD(authenticate: (NSString *)reason
             NSString *errorReason;
 
             switch (error.code) {
-                case LAErrorAuthenticationFailed:
-                    errorReason = @"AuthenticationFailed";
+                case LAErrorBiometryNotAvailable:
+                    errorReason = @"FingerprintScannerNotAvailable";
                     break;
 
-                case LAErrorUserCancel:
-                    errorReason = @"UserCancel";
+                case LAErrorBiometryNotEnrolled:
+                    errorReason = @"FingerprintScannerNotEnrolled";
                     break;
 
-                case LAErrorUserFallback:
-                    errorReason = @"UserFallback";
-                    break;
-
-                case LAErrorSystemCancel:
-                    errorReason = @"SystemCancel";
+                case LAErrorBiometryLockout:
+                    errorReason = @"DeviceLockedPermanent";
                     break;
 
                 case LAErrorPasscodeNotSet:
                     errorReason = @"PasscodeNotSet";
                     break;
 
-                case LAErrorBiometryNotAvailable:
-                    errorReason = @"FingerprintScannerNotAvailable";
-                    break;
-                         
-                case LAErrorBiometryNotEnrolled:
-                    errorReason = @"FingerprintScannerNotEnrolled";
-                    break;
-                         
-                case LAErrorBiometryLockout:
-                    errorReason = @"DeviceLockedPermanent";
-                    break;
-
                 default:
-                    errorReason = @"FingerprintScannerUnknownError";
+                    errorReason = @"FingerprintScannerNotSupported";
                     break;
             }
 
