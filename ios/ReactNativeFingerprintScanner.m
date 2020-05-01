@@ -23,7 +23,7 @@ RCT_EXPORT_METHOD(isSensorAvailable: (RCTResponseSenderBlock)callback)
 
         switch (error.code) {
             case LAErrorTouchIDNotAvailable:
-                code = @"FingerprintScannerNotAvailable";
+                code = [error.localizedDescription isEqualToString:@"Biometry is not available on this device."]?@"FingerprintScannerNotSupported":@"FingerprintScannerNotAvailable";
                 message = [self getBiometryType:context];
                 break;
 
