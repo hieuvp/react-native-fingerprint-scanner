@@ -8,11 +8,16 @@
 
 @implementation ReactNativeFingerprintScanner
 
+static LAContext *context = nil;
+
 RCT_EXPORT_MODULE();
 
 RCT_EXPORT_METHOD(isSensorAvailable: (RCTResponseSenderBlock)callback)
 {
-    LAContext *context = [[LAContext alloc] init];
+    if (context == nil) {
+        context = [[LAContext alloc] init];
+    }
+
     NSError *error;
 
     if ([context canEvaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics error:&error]) {
@@ -47,7 +52,15 @@ RCT_EXPORT_METHOD(authenticate: (NSString *)reason
                   fallback: (BOOL)fallbackEnabled
                   callback: (RCTResponseSenderBlock)callback)
 {
-    LAContext *context = [[LAContext alloc] init];
+    if (context != nil) {
+        [context invalidate];
+
+        return;
+    }
+
+    context = [[LAContext alloc] init];
+
+
     NSError *error;
 
     // Toggle fallback button
@@ -62,6 +75,8 @@ RCT_EXPORT_METHOD(authenticate: (NSString *)reason
                 localizedReason:reason
                           reply:^(BOOL success, NSError *error)
          {
+            context = nil;
+
              // Failed Authentication
              if (error) {
                  NSString *errorReason;
@@ -95,6 +110,10 @@ RCT_EXPORT_METHOD(authenticate: (NSString *)reason
                          errorReason = @"FingerprintScannerNotEnrolled";
                          break;
 
+                    case LAErrorAppCancel:
+                        errorReason = @"FingerprintScannerAppCancel";
+                        break;
+
                      default:
                          errorReason = @"FingerprintScannerUnknownError";
                          break;
@@ -121,6 +140,17 @@ RCT_EXPORT_METHOD(authenticate: (NSString *)reason
     }
 }
 
+RCT_EXPORT_METHOD(invalidate)
+{
+    if (context == nil) {
+        context = [[LAContext alloc] init];
+    }
+
+    [context invalidate];
+
+    context = nil;
+}
+
 - (NSString *)getBiometryType:(LAContext *)context
 {
     if (@available(iOS 11, *)) {
@@ -129,5 +159,6 @@ RCT_EXPORT_METHOD(authenticate: (NSString *)reason
 
     return @"Touch ID";
 }
+
 
 @end
