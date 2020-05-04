@@ -22,13 +22,23 @@ RCT_EXPORT_METHOD(isSensorAvailable: (RCTResponseSenderBlock)callback)
         NSString *message;
 
         switch (error.code) {
-            case LAErrorTouchIDNotAvailable:
+            case LAErrorBiometryNotAvailable:
                 code = @"FingerprintScannerNotAvailable";
                 message = [self getBiometryType:context];
                 break;
-
-            case LAErrorTouchIDNotEnrolled:
+                
+            case LAErrorBiometryNotEnrolled:
                 code = @"FingerprintScannerNotEnrolled";
+                message = [self getBiometryType:context];
+                break;
+
+            case LAErrorBiometryLockout:
+                code = @"DeviceLockedPermanent";
+                message = [self getBiometryType:context];
+                break;
+            
+            case LAErrorPasscodeNotSet:
+                code = @"PasscodeNotSet";
                 message = [self getBiometryType:context];
                 break;
 
@@ -87,12 +97,16 @@ RCT_EXPORT_METHOD(authenticate: (NSString *)reason
                          errorReason = @"PasscodeNotSet";
                          break;
 
-                     case LAErrorTouchIDNotAvailable:
+                     case LAErrorBiometryNotAvailable:
                          errorReason = @"FingerprintScannerNotAvailable";
                          break;
 
-                     case LAErrorTouchIDNotEnrolled:
+                     case LAErrorBiometryNotEnrolled:
                          errorReason = @"FingerprintScannerNotEnrolled";
+                         break;
+
+                     case LAErrorBiometryLockout:
+                         errorReason = @"DeviceLockedPermanent";
                          break;
 
                      default:
@@ -115,6 +129,35 @@ RCT_EXPORT_METHOD(authenticate: (NSString *)reason
          }];
 
     } else {
+        if (error) {
+            NSString *errorReason;
+
+            switch (error.code) {
+                case LAErrorBiometryNotAvailable:
+                    errorReason = @"FingerprintScannerNotAvailable";
+                    break;
+
+                case LAErrorBiometryNotEnrolled:
+                    errorReason = @"FingerprintScannerNotEnrolled";
+                    break;
+
+                case LAErrorBiometryLockout:
+                    errorReason = @"DeviceLockedPermanent";
+                    break;
+
+                case LAErrorPasscodeNotSet:
+                    errorReason = @"PasscodeNotSet";
+                    break;
+
+                default:
+                    errorReason = @"FingerprintScannerNotSupported";
+                    break;
+            }
+
+            NSLog(@"Authentication failed: %@", errorReason);
+            callback(@[RCTJSErrorFromCodeMessageAndNSError(errorReason, errorReason, nil)]);
+            return;
+        }
         // Device does not support FingerprintScanner
         callback(@[RCTJSErrorFromCodeMessageAndNSError(@"FingerprintScannerNotSupported", @"FingerprintScannerNotSupported", nil)]);
         return;
