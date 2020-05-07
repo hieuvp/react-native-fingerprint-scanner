@@ -1,8 +1,14 @@
 export type AuthenticateIOS = {
-  description: string;
-  fallbackEnabled: boolean;
+  description?: string;
+  fallbackEnabled?: boolean;
 };
-export type AuthenticateAndroid = { onAttempt: (error: FingerprintScannerError) => void };
+export type AuthenticateAndroid = {
+  title?: string;
+  subTitle?: string;
+  description?: string;
+  cancelButton?: string;
+  onAttempt?: (error: FingerprintScannerError) => void;
+};
 
 export type Biometrics = 'Touch ID' | 'Face ID' | 'Biometrics';
 
@@ -83,7 +89,7 @@ export interface FingerPrintProps {
       - Returns a `void`
 
       -------------------
-      Exemple
+      Example
       
       ```
       componentWillUnmount() {
@@ -101,7 +107,7 @@ export interface FingerPrintProps {
         - `error: FingerprintScannerError { name, message, biometric }` - The name and message of failure and the biometric type in use.
         
         -------------
-        Exemple
+        Example
 
         ```
           FingerprintScanner

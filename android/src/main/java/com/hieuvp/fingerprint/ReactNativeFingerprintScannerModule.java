@@ -292,10 +292,11 @@ public class ReactNativeFingerprintScannerModule
             public void onNotMatch(int availableTimes) {
                 if (availableTimes <= 0) {
                     mReactContext.getJSModule(RCTDeviceEventEmitter.class)
-                        .emit("FINGERPRINT_SCANNER_AUTHENTICATION", "AuthenticationLockout");
+                            .emit("FINGERPRINT_SCANNER_AUTHENTICATION", "DeviceLocked");
+
                 } else {
                     mReactContext.getJSModule(RCTDeviceEventEmitter.class)
-                        .emit("FINGERPRINT_SCANNER_AUTHENTICATION", "AuthenticationNotMatch");
+                            .emit("FINGERPRINT_SCANNER_AUTHENTICATION", "AuthenticationNotMatch");
                 }
             }
 
