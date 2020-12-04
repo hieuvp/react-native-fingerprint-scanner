@@ -9,7 +9,7 @@
 @implementation ReactNativeFingerprintScanner
 
 RCT_EXPORT_MODULE();
-LAContext *context;
+LAContext *context; 
 
 RCT_EXPORT_METHOD(isSensorAvailable: (RCTResponseSenderBlock)callback)
 {
