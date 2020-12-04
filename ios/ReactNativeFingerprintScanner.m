@@ -164,7 +164,7 @@ RCT_EXPORT_METHOD(authenticate: (NSString *)reason
         return;
     }
 }
-RCT_EXPORT_METHOD(release){
+RCT_EXPORT_METHOD(invalidate){
     [context invalidate];
 }
 - (NSString *)getBiometryType:(LAContext *)context
