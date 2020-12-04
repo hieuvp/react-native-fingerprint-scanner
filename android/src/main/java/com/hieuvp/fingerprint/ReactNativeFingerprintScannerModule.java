@@ -211,16 +211,19 @@ public class ReactNativeFingerprintScannerModule
 
     @ReactMethod
     public void release() {
-        if (requiresLegacyAuthentication()) {
-            getFingerprintIdentify().cancelIdentify();
-            mFingerprintIdentify = null;
-        }
+//         if (requiresLegacyAuthentication()) {
+//             getFingerprintIdentify().cancelIdentify();
+//             mFingerprintIdentify = null;
+//         }
 
-        // consistent across legacy and current API
-        if (biometricPrompt != null) {
-            biometricPrompt.cancelAuthentication();  // if release called from eg React
-        }
-        biometricPrompt = null;
+//         // consistent across legacy and current API
+//         if (biometricPrompt != null) {
+//             biometricPrompt.cancelAuthentication();  // if release called from eg React
+//         }
+//         biometricPrompt = null;
+//         mReactContext.removeLifecycleEventListener(this);
+        getFingerprintIdentify().cancelIdentify();
+        mFingerprintIdentify = null;
         mReactContext.removeLifecycleEventListener(this);
     }
 
