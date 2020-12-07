@@ -9,6 +9,7 @@
 @implementation ReactNativeFingerprintScanner
 
 RCT_EXPORT_MODULE();
+LAContext *context;
 
 RCT_EXPORT_METHOD(isSensorAvailable: (RCTResponseSenderBlock)callback)
 {
@@ -47,7 +48,7 @@ RCT_EXPORT_METHOD(authenticate: (NSString *)reason
                   fallback: (BOOL)fallbackEnabled
                   callback: (RCTResponseSenderBlock)callback)
 {
-    LAContext *context = [[LAContext alloc] init];
+    context = [[LAContext alloc] init];
     NSError *error;
 
     // Toggle fallback button
@@ -119,6 +120,10 @@ RCT_EXPORT_METHOD(authenticate: (NSString *)reason
         callback(@[RCTJSErrorFromCodeMessageAndNSError(@"FingerprintScannerNotSupported", @"FingerprintScannerNotSupported", nil)]);
         return;
     }
+}
+
+RCT_EXPORT_METHOD(invalidate){
+    [context invalidate];
 }
 
 - (NSString *)getBiometryType:(LAContext *)context
