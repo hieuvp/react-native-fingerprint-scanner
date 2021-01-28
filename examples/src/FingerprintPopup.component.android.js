@@ -32,10 +32,10 @@ class BiometricPopup extends Component {
   }
 
   componentDidMount() {
-    if (requiresLegacyAuthentication()) {
-      authLegacy();
+    if (this.requiresLegacyAuthentication()) {
+      this.authLegacy();
     } else {
-      authCurrent();
+      this.authCurrent();
     }
   }
 
