@@ -52,6 +52,9 @@ class BiometricPopup extends Component {
       .authenticate({ description: this.props.description || 'Log in with Biometrics' })
       .then(() => {
         Alert.alert('Fingerprint Authentication', 'Authenticated successfully');
+      })
+      .catch((error) => {
+        Alert.alert('Fingerprint Authentication', error.message);
       });
   }
 
