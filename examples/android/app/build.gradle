@@ -129,7 +129,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.helloworld"
+        applicationId "com.example.fingerprintscannerexample"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
