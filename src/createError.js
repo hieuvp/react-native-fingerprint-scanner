@@ -5,6 +5,7 @@ const ERRORS = {
   FingerprintScannerNotAvailable: 'Authentication could not start because Fingerprint Scanner is not available on the device.',
 
   // auth failures
+  AuthenticationLockout: 'Authentication lockout',
   AuthenticationNotMatch: 'No match.',
   AuthenticationFailed: 'Authentication was not successful because the user failed to provide valid credentials.',
   AuthenticationTimeout: 'Authentication was not successful because the operation timed out.',
@@ -18,6 +19,7 @@ const ERRORS = {
   DeviceLockedPermanent: 'Authentication was not successful, device must be unlocked via password.',
   DeviceOutOfMemory: 'Authentication could not proceed because there is not enough free memory on the device.',
   HardwareError: 'A hardware error occurred.',
+  UserDeviceCancel: 'Authentication Device was canceled'
 };
 
 class FingerprintScannerError extends Error {

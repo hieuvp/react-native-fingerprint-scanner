@@ -84,7 +84,7 @@ public class ReactNativeFingerprintScannerModule
         @Override
         public void onAuthenticationError(int errorCode, @NonNull CharSequence errString) {
             super.onAuthenticationError(errorCode, errString);
-            this.promise.reject(biometricPromptErrName(errorCode), TYPE_BIOMETRICS);
+            this.promise.reject(biometricPromptErrName(errorCode), biometricPromptErrName(errorCode));
         }
 
         @Override
@@ -196,12 +196,10 @@ public class ReactNativeFingerprintScannerModule
     public void authenticate(String title, String subtitle, String description, String cancelButton, final Promise promise) {
         if (requiresLegacyAuthentication()) {
             legacyAuthenticate(promise);
-        }
-        else {
+        } else {
             final String errorName = getSensorError();
             if (errorName != null) {
-                promise.reject(errorName, TYPE_BIOMETRICS);
-                ReactNativeFingerprintScannerModule.this.release();
+                promise.reject(errorName, errorName);
                 return;
             }
 
@@ -239,12 +237,11 @@ public class ReactNativeFingerprintScannerModule
         // current API
         String errorName = getSensorError();
         if (errorName != null) {
-            promise.reject(errorName, TYPE_BIOMETRICS);
+            promise.reject(errorName, errorName);
         } else {
             promise.resolve(TYPE_BIOMETRICS);
         }
     }
-
 
     // for Samsung/MeiZu compat, Android v16-23
     private FingerprintIdentify getFingerprintIdentify() {
@@ -308,12 +305,11 @@ public class ReactNativeFingerprintScannerModule
 
             @Override
             public void onFailed(boolean isDeviceLocked) {
-                if(isDeviceLocked){
+                if (isDeviceLocked) {
                     promise.reject("AuthenticationFailed", "DeviceLocked");
                 } else {
                     promise.reject("AuthenticationFailed", TYPE_FINGERPRINT_LEGACY);
                 }
-                ReactNativeFingerprintScannerModule.this.release();
             }
 
             @Override
