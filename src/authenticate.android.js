@@ -18,14 +18,14 @@ const authCurrent = (title, subTitle, description, cancelButton, resolve, reject
     });
 }
 
-const authLegacy = (onAttempt, resolve, reject) => {
+const authLegacy = (title, subTitle, description, cancelButton, onAttempt, resolve, reject) => {
   DeviceEventEmitter.addListener('FINGERPRINT_SCANNER_AUTHENTICATION', (name) => {
     if (name === 'AuthenticationNotMatch' && typeof onAttempt === 'function') {
       onAttempt(createError(name));
     }
   });
 
-  ReactNativeFingerprintScanner.authenticate()
+  ReactNativeFingerprintScanner.authenticate(title, subTitle, description, cancelButton)
     .then(() => {
       DeviceEventEmitter.removeAllListeners('FINGERPRINT_SCANNER_AUTHENTICATION');
       resolve(true);
@@ -58,7 +58,7 @@ export default ({ title, subTitle, description, cancelButton, onAttempt }) => {
     }
 
     if (Platform.Version < 23) {
-      return authLegacy(onAttempt, resolve, reject);
+      return authLegacy(title, subTitle, description, cancelButton, onAttempt, resolve, reject);
     }
 
     return authCurrent(title, subTitle, description, cancelButton, resolve, reject);
