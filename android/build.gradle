@@ -9,7 +9,7 @@ buildscript {
     if (project == rootProject) {
         repositories {
             google()
-            jcenter()
+            maven { url 'https://jitpack.io' }
         }
 
         dependencies {
@@ -49,5 +49,5 @@ dependencies {
     // 1.2.3 is the minimum version compatible with androidx.
     // See https://github.com/uccmawei/FingerprintIdentify/issues/74
     // (translation https://translate.google.com/translate?sl=zh-CN&tl=en&u=https://github.com/uccmawei/FingerprintIdentify/issues/74)
-    implementation "com.wei.android.lib:fingerprintidentify:${safeExtGet("fingerprintidentify", "1.2.6")}"
+    implementation "com.github.uccmawei:fingerprintidentify:${safeExtGet("fingerprintidentify", "1.2.6")}"
 }
