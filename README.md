@@ -2,7 +2,8 @@
 
 # Looking for Maintainers
 
-This project is no longer actively maintained
+This project is no longer actively maintained by the previous maintainers.
+If you would like to propose a PR we can merge it though, it needs your effort to continue!
 
 ----
 
