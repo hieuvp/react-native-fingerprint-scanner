@@ -37,13 +37,13 @@ android {
 
 repositories {
     mavenCentral()
-    jcenter()
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
     implementation 'com.facebook.react:react-native:+'
     // androidx:biometric now supports fingerprint back to Android v23
-    implementation "androidx.biometric:biometric:1.0.1"
+    implementation "androidx.biometric:biometric:1.1.0"
 
     // retain fingerprintScanner lib for compat with Android v16-23 device-specific drivers (Samsung & MeiZu)
     // 1.2.3 is the minimum version compatible with androidx.
