@@ -7,12 +7,12 @@
   },
   "main": "src/Application.container",
   "dependencies": {
-    "prop-types": "15.7.2",
-    "react": "17.0.2",
-    "react-native": "0.66.4",
+    "prop-types": "15.6.1",
+    "react": "16.8.6",
+    "react-native": "0.60.0",
     "react-native-fingerprint-scanner": "file:../"
   },
   "devDependencies": {
-    "metro-react-native-babel-preset": "0.66.2"
+    "metro-react-native-babel-preset": "^0.54.1"
   }
 }
