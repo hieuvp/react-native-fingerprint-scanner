@@ -6,6 +6,7 @@ import androidx.biometric.BiometricPrompt;
 import androidx.biometric.BiometricManager;
 import androidx.biometric.BiometricPrompt.AuthenticationCallback;
 import androidx.biometric.BiometricPrompt.PromptInfo;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import java.util.concurrent.Executor;
@@ -104,7 +105,7 @@ public class ReactNativeFingerprintScannerModule
         mReactContext.addLifecycleEventListener(this);
 
         AuthCallback authCallback = new AuthCallback(promise);
-        Executor executor = Executors.newSingleThreadExecutor();
+        Executor executor = ContextCompat.getMainExecutor(mReactContext);
         biometricPrompt = new BiometricPrompt(
             fragmentActivity,
             executor,
