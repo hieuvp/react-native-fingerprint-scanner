@@ -217,9 +217,14 @@ public class ReactNativeFingerprintScannerModule
             mFingerprintIdentify = null;
         }
 
-        // consistent across legacy and current API
-        if (biometricPrompt != null) {
-            biometricPrompt.cancelAuthentication();  // if release called from eg React
+        try {
+            // consistent across legacy and current API
+            if (biometricPrompt != null) {
+                biometricPrompt.cancelAuthentication();  // if release called from eg React
+            }
+        } catch (NullPointerException exception) {
+            // component re-render already released biometric or reference to the biometricPrompt has been lost. 
+            // catch exception and continue on the next steps.
         }
         biometricPrompt = null;
         mReactContext.removeLifecycleEventListener(this);
