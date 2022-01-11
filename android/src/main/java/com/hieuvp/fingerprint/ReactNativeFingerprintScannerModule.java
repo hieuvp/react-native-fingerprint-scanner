@@ -222,7 +222,7 @@ public class ReactNativeFingerprintScannerModule
                 biometricPrompt.cancelAuthentication();  // if release called from eg React
             }
         } catch (NullPointerException exception) {
-            // component re-render already released biometric or reference to the biometricPrompt has been lost. 
+            // React component re-render already released biometric or then native reference to the biometricPrompt has been lost (biometric modal closed). 
             // catch exception and continue on the next steps.
         }
         biometricPrompt = null;
