@@ -3,29 +3,16 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "android": "react-native run-android",
-    "ios": "react-native run-ios",
-    "start": "react-native start",
-    "test": "jest",
-    "lint": "eslint ."
+    "start": "react-native start"
   },
+  "main": "src/Application.container",
   "dependencies": {
-    "prop-types": "^15.8.1",
-    "react": "17.0.2",
-    "react-native": "0.66.4",
+    "prop-types": "15.6.1",
+    "react": "16.8.6",
+    "react-native": "0.60.0",
     "react-native-fingerprint-scanner": "file:../"
   },
   "devDependencies": {
-    "@babel/core": "^7.16.7",
-    "@babel/runtime": "^7.16.7",
-    "@react-native-community/eslint-config": "^3.0.1",
-    "babel-jest": "^27.4.6",
-    "eslint": "^8.6.0",
-    "jest": "^27.4.7",
-    "metro-react-native-babel-preset": "^0.66.2",
-    "react-test-renderer": "17.0.2"
-  },
-  "jest": {
-    "preset": "react-native"
+    "metro-react-native-babel-preset": "^0.54.1"
   }
 }
