@@ -210,21 +210,17 @@ public class ReactNativeFingerprintScannerModule
     }
 
     @ReactMethod
-    public void release() {
+    public synchronized void release() {
         if (requiresLegacyAuthentication()) {
             getFingerprintIdentify().cancelIdentify();
             mFingerprintIdentify = null;
         }
 
-        try {
-            // consistent across legacy and current API
-            if (biometricPrompt != null) {
-                biometricPrompt.cancelAuthentication();  // if release called from eg React
-            }
-        } catch (NullPointerException exception) {
-            // React component re-render already released biometric or then native reference to the biometricPrompt has been lost (biometric modal closed). 
-            // catch exception and continue on the next steps.
+        // consistent across legacy and current API
+        if (biometricPrompt != null) {
+            biometricPrompt.cancelAuthentication();  // if release called from eg React
         }
+      
         biometricPrompt = null;
         mReactContext.removeLifecycleEventListener(this);
     }
