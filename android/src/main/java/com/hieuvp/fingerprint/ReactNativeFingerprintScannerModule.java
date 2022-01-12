@@ -220,7 +220,6 @@ public class ReactNativeFingerprintScannerModule
         if (biometricPrompt != null) {
             biometricPrompt.cancelAuthentication();  // if release called from eg React
         }
-      
         biometricPrompt = null;
         mReactContext.removeLifecycleEventListener(this);
     }
