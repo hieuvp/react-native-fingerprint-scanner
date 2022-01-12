@@ -210,7 +210,7 @@ public class ReactNativeFingerprintScannerModule
     }
 
     @ReactMethod
-    public void release() {
+    public synchronized void release() {
         if (requiresLegacyAuthentication()) {
             getFingerprintIdentify().cancelIdentify();
             mFingerprintIdentify = null;
