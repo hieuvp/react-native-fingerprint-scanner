@@ -9,7 +9,7 @@
   "dependencies": {
     "prop-types": "15.6.1",
     "react": "16.8.6",
-    "react-native": "0.60.0",
+    "react-native": "0.62.3",
     "react-native-fingerprint-scanner": "file:../"
   },
   "devDependencies": {
