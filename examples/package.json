@@ -7,9 +7,9 @@
   },
   "main": "src/Application.container",
   "dependencies": {
-    "prop-types": "15.6.1",
+    "prop-types": "15.8.1",
     "react": "16.8.6",
-    "react-native": "0.60.0",
+    "react-native": "0.70.6",
     "react-native-fingerprint-scanner": "file:../"
   },
   "devDependencies": {
