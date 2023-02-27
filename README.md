@@ -73,7 +73,12 @@ $ react-native link react-native-fingerprint-scanner
 
 1. In XCode, in the project navigator, right click `Libraries` ➜ `Add Files to [your project's name]`
 2. Go to `node_modules` ➜ `react-native-fingerprint-scanner` and add `ReactNativeFingerprintScanner.xcodeproj`
-3. In XCode, in the project navigator, select your project. Add `libReactNativeFingerprintScanner.a` to your project's `Build Phases` ➜ `Link Binary With Libraries`
+3. To add the library "libReactNativeFingerprintScanner.a" to your project in XCode:
+    - In the project navigator, select your project.
+    - Click on the "Build Phases" tab.
+    - Under "Link Binary With Libraries", click the "+" button to add a new library.
+    - Search for "libReactNativeFingerprintScanner.a" and select it.
+    - Click "Add" to add the library to your project.
 4. Run your project (`Cmd+R`)
 
 #### Android
