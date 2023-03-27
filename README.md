@@ -36,7 +36,7 @@ It provides a **Default View** that prompts the user to place a finger to the iP
 4.0.0 Prefers the new native Android BiometricPrompt lib on any Android >= v23 (M)
 4.0.0 also DEPRECATES support for the legacy library that provides support for Samsung & MeiZu phones
 
-3.0.2 and below: 
+3.0.2 and below:
 Using an expandable Android Fingerprint API library, which combines [Samsung](http://developer.samsung.com/galaxy/pass#) and [MeiZu](http://open-wiki.flyme.cn/index.php?title=%E6%8C%87%E7%BA%B9%E8%AF%86%E5%88%ABAPI)'s official Fingerprint API.
 
 Samsung and MeiZu's Fingerprint SDK supports most devices which system versions less than Android 6.0.
@@ -87,14 +87,14 @@ $ react-native link react-native-fingerprint-scanner
   - Add `import com.hieuvp.fingerprint.ReactNativeFingerprintScannerPackage;` to the imports at the top of the file
   - Add `new ReactNativeFingerprintScannerPackage()` to the list returned by the `getPackages()` method
 2. Append the following lines to `android/settings.gradle`:
-  	```
-  	include ':react-native-fingerprint-scanner'
-  	project(':react-native-fingerprint-scanner').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-fingerprint-scanner/android')
-  	```
+    ```
+    include ':react-native-fingerprint-scanner'
+    project(':react-native-fingerprint-scanner').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-fingerprint-scanner/android')
+    ```
 3. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
-  	```
+    ```
     implementation project(':react-native-fingerprint-scanner')
-  	```
+    ```
 
 ### App Permissions
 
@@ -108,13 +108,13 @@ API level 28+ (Uses Android native BiometricPrompt) ([Reference](https://develop
 <uses-permission android:name="android.permission.USE_BIOMETRIC" />
 ```
 
-API level 23-28 (Uses Android native FingerprintCompat) [Reference](https://developer.android.com/reference/android/Manifest.permission#USE_FINGERPRINT)) 
+API level 23-28 (Uses Android native FingerprintCompat) [Reference](https://developer.android.com/reference/android/Manifest.permission#USE_FINGERPRINT))
 ```xml
 <uses-permission android:name="android.permission.USE_FINGERPRINT" />
 ```
 
 // DEPRECATED in 4.0.0
-API level <23 (Uses device-specific native fingerprinting, if available - Samsung & MeiZu only) [Reference](https://developer.android.com/reference/android/Manifest.permission#USE_FINGERPRINT)) 
+API level <23 (Uses device-specific native fingerprinting, if available - Samsung & MeiZu only) [Reference](https://developer.android.com/reference/android/Manifest.permission#USE_FINGERPRINT))
 ```xml
 <uses-permission android:name="android.permission.USE_FINGERPRINT" />
 ```
@@ -175,26 +175,61 @@ import FingerprintScanner from 'react-native-fingerprint-scanner';
 class FingerprintPopup extends Component {
 
   componentDidMount() {
+    this._iosTouchID()
+  }
+
+  _iosTouchID = () => {
     FingerprintScanner
       .authenticate({ description: 'Scan your fingerprint on the device scanner to continue' })
       .then(() => {
-        this.props.handlePopupDismissed();
         AlertIOS.alert('Authenticated successfully');
       })
       .catch((error) => {
-        this.props.handlePopupDismissed();
+        switch (error.biometric) {
+          case 'UserCancel':
+            AlertIOS.alert('The user clicks the cancel button')
+            break
+          case 'AuthenticationFailed':
+            AlertIOS.alert('User failed to identify 3 times')
+            break
+          case 'AuthenticationLockout':
+            // console.log('Accumulated 5 identification failures, fingerprint identification was locked')
+            AlertIOS.alert('Identify cumulative multiple failures, temporarily unavailable', [
+              {
+                text: 'cancel',
+                style: 'default',
+                onPress: () => {
+                }
+              }, {
+                text: 'To unlock',
+                style: 'default',
+                onPress: () => {
+                  this._iosAuthenticateDevice()
+                }
+              }
+            ])
+            break
+          default:
+            break
+        }
         AlertIOS.alert(error.message);
       });
+  }
+
+  _iosAuthenticateDevice = () => {
+    FingerprintScanner.authenticateDevice().then(() => {
+      // console.log('Device unlocked')
+      this._iosTouchID()
+    }).catch((error) => {
+	   // error.biometric
+      AlertIOS.alert('catch error:', error.message)
+    })
   }
 
   render() {
     return false;
   }
 }
-
-FingerprintPopup.propTypes = {
-  handlePopupDismissed: PropTypes.func.isRequired,
-};
 
 export default FingerprintPopup;
 ```
@@ -235,11 +270,7 @@ class BiometricPopup extends Component {
   }
 
   componentDidMount() {
-    if (this.requiresLegacyAuthentication()) {
-      this.authLegacy();
-    } else {
-      this.authCurrent();
-    }
+    this._androidTouchID();
   }
 
   componentWillUnmount = () => {
@@ -250,24 +281,28 @@ class BiometricPopup extends Component {
     return Platform.Version < 23;
   }
 
-  authCurrent() {
+  _androidTouchID() {
+    FingerprintScanner.release()
     FingerprintScanner
       .authenticate({ title: 'Log in with Biometrics' })
       .then(() => {
         this.props.onAuthenticate();
-      });
-  }
-
-  authLegacy() {
-    FingerprintScanner
-      .authenticate({ onAttempt: this.handleAuthenticationAttemptedLegacy })
-      .then(() => {
-        this.props.handlePopupDismissedLegacy();
-        Alert.alert('Fingerprint Authentication', 'Authenticated successfully');
       })
-      .catch((error) => {
-        this.setState({ errorMessageLegacy: error.message, biometricLegacy: error.biometric });
-        this.description.shake();
+      .catch(error => {
+        FingerprintScanner.release()
+        switch (error.biometric) {
+          case 'UserCancel':
+            AlertIOS.alert('Click the cancel button')
+            break
+          case 'DeviceLocked':
+            AlertIOS.alert('Accumulated 5 identification failures, fingerprint identification was locked')
+            break
+          case 'DeviceLockedPermanent':
+            AlertIOS.alert('Accumulates many times to recognize the failure, is locked permanently, needs to unlock')
+            break
+          default:
+            break
+        }
       });
   }
 
@@ -350,6 +385,24 @@ componentDidMount() {
     .then(biometryType => this.setState({ biometryType }))
     .catch(error => this.setState({ errorMessage: error.message }));
 }
+```
+
+### `authenticateDevice()`: (iOS)
+Unlock with the device password.
+
+- Returns a `Promise<string>`
+- `error: FingerprintScannerError { name, message, biometric }` - The name and message of failure and the biometric type in use.
+
+
+```javascript
+  FingerprintScanner
+    .authenticateDevice()
+    .then(() => {
+      // AlertIOS.alert('Device unlocked')
+      this._iosTouchID()
+    }).catch((error) => {
+      // AlertIOS.alert('catch error:', error.message, error.biometric)
+    })
 ```
 
 ### `authenticate({ description, fallbackEnabled })`: (iOS)
@@ -451,6 +504,7 @@ componentWillUnmount() {
 
 | Name | Message |
 |---|---|
+| AuthenticationLockout | Authentication lockout |
 | AuthenticationNotMatch | No match |
 | AuthenticationFailed | Authentication was not successful because the user failed to provide valid credentials |
 | AuthenticationTimeout | Authentication was not successful because the operation timed out |
@@ -463,6 +517,7 @@ componentWillUnmount() {
 | DeviceLockedPermanent | Authentication was not successful, device must be unlocked via password |
 | DeviceOutOfMemory | Authentication could not proceed because there is not enough free memory on the device |
 | HardwareError | A hardware error occurred |
+| UserDeviceCancel | Authentication Device was canceled |
 | FingerprintScannerUnknownError | Could not authenticate for an unknown reason |
 | FingerprintScannerNotSupported | Device does not support Fingerprint Scanner |
 | FingerprintScannerNotEnrolled  | Authentication could not start because Fingerprint Scanner has no enrolled fingers |
@@ -471,3 +526,5 @@ componentWillUnmount() {
 ## License
 
 MIT
+
+
