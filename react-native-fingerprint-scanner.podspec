@@ -17,5 +17,5 @@ Pod::Spec.new do |s|
   s.preserve_paths  = '**/*.js'
   s.framework       = 'LocalAuthentication'
 
-  s.dependency 'React'
+  s.dependency 'React-Core'
 end
